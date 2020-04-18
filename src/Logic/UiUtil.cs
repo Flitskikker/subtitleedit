@@ -67,7 +67,7 @@ namespace Nikse.SubtitleEdit.Logic
             for (int i = 0; i < max; i++)
             {
                 var p = subtitle.Paragraphs[i];
-                if (p.StartTime.TotalMilliseconds <= positionInMilliseconds + 0.01 && p.EndTime.TotalMilliseconds >= positionInMilliseconds - 0.01)
+                if (p.StartTime.TotalMilliseconds <= positionInMilliseconds + 0.01 && p.EndTime.TotalMilliseconds > positionInMilliseconds - 0.01)
                 {
                     string text = p.Text.Replace("|", Environment.NewLine);
                     bool isInfo = p == subtitle.Paragraphs[0] && (Math.Abs(p.StartTime.TotalMilliseconds) < 0.01 && Math.Abs(p.Duration.TotalMilliseconds) < 0.01 || Math.Abs(p.StartTime.TotalMilliseconds - Pac.PacNullTime.TotalMilliseconds) < 0.01);
