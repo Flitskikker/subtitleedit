@@ -153,6 +153,24 @@ namespace Test.Logic
             string line1Expected = "";
             Assert.AreEqual(line1Expected, line1Actual);
         }
+        
+        [TestMethod]
+        public void SanitizeString15()
+        {
+            string line1 = "'This is " + Environment.NewLine + " a test'";
+            string line1Actual = ContinuationUtilities.SanitizeString(line1, false);
+            string line1Expected = "This is " + Environment.NewLine + " a test";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
+        public void SanitizeString15B()
+        {
+            string line1 = "This is " + Environment.NewLine + " a 'test'";
+            string line1Actual = ContinuationUtilities.SanitizeString(line1, false);
+            string line1Expected = "This is " + Environment.NewLine + " a 'test'";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
 
         [TestMethod]
         public void ExtractParagraphOnly1()
@@ -359,6 +377,26 @@ namespace Test.Logic
             var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
             string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
             string line1Expected = "<i>This is a test...</i>";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
+        public void AddSuffixIfNeeded8D()
+        {
+            string line1 = "This is a 'test'";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
+            string line1Expected = "This is a 'test'...";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
+        public void AddSuffixIfNeeded8E()
+        {
+            string line1 = "'This is a test'";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
+            string line1Expected = "'This is a test...'";
             Assert.AreEqual(line1Expected, line1Actual);
         }
 
@@ -1393,6 +1431,118 @@ namespace Test.Logic
         }
 
         [TestMethod]
+        public void IsFullQuote1()
+        {
+            string line1 = "'This is a quote.'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote2()
+        {
+            string line1 = "'This' is a quote.";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote2B()
+        {
+            string line1 = "This is a 'quote'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote3()
+        {
+            string line1 = "'This is a quote." + Environment.NewLine + "- Really?' Just stop it.";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote4()
+        {
+            string line1 = "'This is a quote." + Environment.NewLine + "This is, too.'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote5()
+        {
+            string line1 = "'This is a quote.'" + Environment.NewLine + "'This is, too.'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote6()
+        {
+            string line1 = "'- This is a quote.'" + Environment.NewLine + "'- This is, too.'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote7()
+        {
+            string line1 = "'This is a quote.' 'This too.'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote8()
+        {
+            string line1 = "'This is a quote." + Environment.NewLine + "This too.";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote9()
+        {
+            string line1 = "";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote9B()
+        {
+            string line1 = " ";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote10()
+        {
+            string line1 = "' '";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote11()
+        {
+            string line1 = "'This is a quote";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote11B()
+        {
+            string line1 = "and this is too.'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
         public void HasPrefix1()
         {
             string line1 = "...this is a prefix.";
@@ -1933,6 +2083,51 @@ namespace Test.Logic
             string line2Actual = result.Item2;
             string line1Expected = "This needs to be merged";
             string line2Expected = "";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper12()
+        {
+            string line1 = "This needs to be merged...";
+            string line2 = "-This is a response.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged...";
+            string line2Expected = "-This is a response.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper12A()
+        {
+            string line1 = "This needs to be merged...";
+            string line2 = "-This is a response.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDash);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged...";
+            string line2Expected = "-This is a response.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper12B()
+        {
+            string line1 = "This needs to be merged-";
+            string line2 = "-This is a response.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDash);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged";
+            string line2Expected = "This is a response.";
             Assert.AreEqual(line1Expected, line1Actual);
             Assert.AreEqual(line2Expected, line2Actual);
         }

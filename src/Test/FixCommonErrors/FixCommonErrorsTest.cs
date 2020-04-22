@@ -3155,6 +3155,45 @@ namespace Test.FixCommonErrors
             }
         }
 
+        [TestMethod]
+        public void FixContinuationStyle34()
+        {
+            using (var target = GetFixCommonErrorsLib())
+            {
+                InitializeFixCommonErrorsLine(target, "This is what you call a 'test'...", "and you can join.");
+                Configuration.Settings.General.ContinuationStyle = ContinuationStyle.LeadingTrailingDots;
+                new FixContinuationStyle().Fix(_subtitle, new EmptyFixCallback());
+                Assert.AreEqual("This is what you call a 'test'...", _subtitle.Paragraphs[0].Text);
+                Assert.AreEqual("...and you can join.", _subtitle.Paragraphs[1].Text);
+            }
+        }
+
+        [TestMethod]
+        public void FixContinuationStyle34B()
+        {
+            using (var target = GetFixCommonErrorsLib())
+            {
+                InitializeFixCommonErrorsLine(target, "This is what you call a 'test'", "and you can join.");
+                Configuration.Settings.General.ContinuationStyle = ContinuationStyle.LeadingTrailingDots;
+                new FixContinuationStyle().Fix(_subtitle, new EmptyFixCallback());
+                Assert.AreEqual("This is what you call a 'test'...", _subtitle.Paragraphs[0].Text);
+                Assert.AreEqual("...and you can join.", _subtitle.Paragraphs[1].Text);
+            }
+        }
+
+        [TestMethod]
+        public void FixContinuationStyle34C()
+        {
+            using (var target = GetFixCommonErrorsLib())
+            {
+                InitializeFixCommonErrorsLine(target, "'This is what you call a test'", "'and you can join.'");
+                Configuration.Settings.General.ContinuationStyle = ContinuationStyle.LeadingTrailingDots;
+                new FixContinuationStyle().Fix(_subtitle, new EmptyFixCallback());
+                Assert.AreEqual("'This is what you call a test...'", _subtitle.Paragraphs[0].Text);
+                Assert.AreEqual("'...and you can join.'", _subtitle.Paragraphs[1].Text);
+            }
+        }
+
         /*[TestMethod]
         public void FixContinuationStyle32()
         {

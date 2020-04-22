@@ -797,6 +797,44 @@ namespace Nikse.SubtitleEdit.Core
             return true;
         }
 
+        public static bool IsFullQuote(string input, string character)
+        {
+            input = ExtractParagraphOnly(input);
+
+            // Return if empty string
+            if (string.IsNullOrEmpty(input))
+            {
+                return false;
+            }
+
+            while (input.IndexOf("'", StringComparison.Ordinal) >= 0)
+            {
+                var startIndex = input.IndexOf("'", StringComparison.Ordinal);
+
+                if (startIndex > 0 && startIndex == input.Length - 1)
+                {
+                    var textToRemove = input.Substring(0, startIndex);
+                    input = input.Replace(textToRemove, "");
+                }
+                else
+                {
+                    var endIndex = input.IndexOf("'", startIndex + 1, StringComparison.Ordinal);
+                    var textToRemove = endIndex >= 0 ? input.Substring(startIndex, (endIndex + 1) - startIndex) : input.Substring(startIndex);
+                    input = input.Replace(textToRemove, "");
+                }
+            }
+
+            foreach (var c in input)
+            {
+                if (c != '\n' && c != '\r')
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static bool IsFullLineTag(string input, int position)
         {
             input = ExtractParagraphOnly(input);
