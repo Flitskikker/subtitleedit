@@ -2213,5 +2213,95 @@ namespace Test.Logic
             Assert.AreEqual(line1Expected, line1Actual);
             Assert.AreEqual(line2Expected, line2Actual);
         }
+
+        [TestMethod]
+        public void MergeHelper13()
+        {
+            string line1 = "This needs to be merged...";
+            string line2 = "with this.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged";
+            string line2Expected = "with this.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper13B()
+        {
+            string line1 = "This needs to be merged...";
+            string line2 = "-just something random.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged...";
+            string line2Expected = "-just something random.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper13C()
+        {
+            string line1 = "This needs to be merged.";
+            string line2 = "-just something random.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged.";
+            string line2Expected = "-just something random.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper13D()
+        {
+            string line1 = "This needs to be merged";
+            string line2 = "-just something random.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged";
+            string line2Expected = "-just something random.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper13E()
+        {
+            string line1 = "This needs to be merged...";
+            string line2 = "-just something random." + Environment.NewLine + "-Good idea.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged";
+            string line2Expected = "just something random." + Environment.NewLine + "-Good idea.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
+
+        [TestMethod]
+        public void MergeHelper14()
+        {
+            string line1 = "This needs to be merged.";
+            string line2 = "just something random.";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            var result = ContinuationUtilities.MergeHelper(line1, line2, profile, "en");
+            string line1Actual = result.Item1;
+            string line2Actual = result.Item2;
+            string line1Expected = "This needs to be merged.";
+            string line2Expected = "just something random.";
+            Assert.AreEqual(line1Expected, line1Actual);
+            Assert.AreEqual(line2Expected, line2Actual);
+        }
     }
 }
