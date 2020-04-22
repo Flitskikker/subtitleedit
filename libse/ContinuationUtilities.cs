@@ -100,6 +100,10 @@ namespace Nikse.SubtitleEdit.Core
                 {
                     // 'cause -- don't remove
                 }
+                else if (!IsFullQuote(checkString, checkString[0].ToString()))
+                {
+                    // Not a full quote (e.g. 'this' is what I mean) -- don't remove
+                }
                 else
                 {
                     checkString = checkString.Substring(1).Trim();
@@ -109,7 +113,14 @@ namespace Nikse.SubtitleEdit.Core
             // Remove double-char quotes from the beginning
             if (checkString.Length > 1 && DoubleQuotes.Contains(checkString.Substring(0, 2)))
             {
-                checkString = checkString.Substring(2).Trim();
+                if (!IsFullQuote(checkString, checkString.Substring(0, 2)))
+                {
+                    // Not a full quote (e.g. ''this'' is what I mean) -- don't remove
+                }
+                else
+                {
+                    checkString = checkString.Substring(2).Trim();
+                }
             }
 
             // Remove music symbols from the beginning
@@ -121,13 +132,9 @@ namespace Nikse.SubtitleEdit.Core
             // Remove single-char quotes from the ending
             if (checkString.Length > 0 && Quotes.Contains(checkString[checkString.Length - 1]))
             {
-                if (checkString[checkString.Length - 1] == '\'' && checkString.EndsWith("in'", StringComparison.Ordinal) && char.IsLetter(checkString[checkString.Length - 4]))
+                if (!IsFullQuote(checkString, checkString[checkString.Length - 1].ToString()))
                 {
-                    // nothin' -- Don't remove
-                }
-                else if (checkString[checkString.Length - 1] == '\'' && (checkString.EndsWith("déj'", StringComparison.Ordinal) || checkString.EndsWith("ap'", StringComparison.Ordinal) || checkString.EndsWith("app'", StringComparison.Ordinal)))
-                {
-                    // déj' -- Don't remove
+                    // Not a full quote (e.g. What I mean is 'this') -- don't remove
                 }
                 else
                 {
@@ -138,7 +145,14 @@ namespace Nikse.SubtitleEdit.Core
             // Remove double-char quotes from the ending
             if (checkString.Length > 1 && DoubleQuotes.Contains(checkString.Substring(checkString.Length - 2, 2)))
             {
-                checkString = checkString.Substring(0, checkString.Length - 2).Trim();
+                if (!IsFullQuote(checkString, checkString.Substring(checkString.Length - 2, 2)))
+                {
+                    // Not a full quote (e.g. What I mean is ''this'') -- don't remove
+                }
+                else
+                {
+                    checkString = checkString.Substring(0, checkString.Length - 2).Trim();
+                }
             }
 
             // Remove music symbols from the ending
@@ -797,7 +811,7 @@ namespace Nikse.SubtitleEdit.Core
             return true;
         }
 
-        public static bool IsFullQuote(string input, string character)
+        public static bool IsFullQuote(string input, string quote)
         {
             input = ExtractParagraphOnly(input);
 
@@ -807,9 +821,9 @@ namespace Nikse.SubtitleEdit.Core
                 return false;
             }
 
-            while (input.IndexOf("'", StringComparison.Ordinal) >= 0)
+            while (FindIndexOfActualQuote(input, quote) >= 0)
             {
-                var startIndex = input.IndexOf("'", StringComparison.Ordinal);
+                var startIndex = FindIndexOfActualQuote(input, quote);
 
                 if (startIndex > 0 && startIndex == input.Length - 1)
                 {
@@ -818,7 +832,7 @@ namespace Nikse.SubtitleEdit.Core
                 }
                 else
                 {
-                    var endIndex = input.IndexOf("'", startIndex + 1, StringComparison.Ordinal);
+                    var endIndex = FindIndexOfActualQuote(input, quote, startIndex + quote.Length);
                     var textToRemove = endIndex >= 0 ? input.Substring(startIndex, (endIndex + 1) - startIndex) : input.Substring(startIndex);
                     input = input.Replace(textToRemove, "");
                 }
@@ -833,6 +847,57 @@ namespace Nikse.SubtitleEdit.Core
             }
 
             return true;
+        }
+
+        public static int FindIndexOfActualQuote(string input, string find, int startIndex)
+        {
+            var index = input.IndexOf(find, startIndex, StringComparison.Ordinal);
+
+            while (index >= 0)
+            {
+                if (index == 0)
+                {
+                    return 0;
+                }
+
+                var checkString = input.Substring(0, index + find.Length);
+
+                if (checkString.EndsWith("in" + find, StringComparison.Ordinal) && checkString.Length > 4 && char.IsLetter(checkString[checkString.Length - 4]))
+                {
+                    // nothin' -- Not an actual quote
+                    if (input.Length >= index + find.Length)
+                    {
+                        index = input.IndexOf(find, index + find.Length, StringComparison.Ordinal);
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+                else if (checkString.EndsWith("déj" + find, StringComparison.Ordinal) || checkString.EndsWith("ap" + find, StringComparison.Ordinal) || checkString.EndsWith("app" + find, StringComparison.Ordinal))
+                {
+                    // déj' -- Not an actual quote
+                    if (input.Length >= index + find.Length)
+                    {
+                        index = input.IndexOf(find, index + find.Length, StringComparison.Ordinal);
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+                else
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+        
+        public static int FindIndexOfActualQuote(string input, string find)
+        {
+            return FindIndexOfActualQuote(input, find, 0);
         }
 
         public static bool IsFullLineTag(string input, int position)

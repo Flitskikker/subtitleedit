@@ -401,6 +401,56 @@ namespace Test.Logic
         }
 
         [TestMethod]
+        public void AddSuffixIfNeeded8F()
+        {
+            string line1 = "We just vibin' here you know";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
+            string line1Expected = "We just vibin' here you know...";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
+        public void AddSuffixIfNeeded8G()
+        {
+            string line1 = "'We just vibin' here you know";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
+            string line1Expected = "'We just vibin' here you know...";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
+        public void AddSuffixIfNeeded8H()
+        {
+            string line1 = "'We just vibin' here you know'";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
+            string line1Expected = "'We just vibin' here you know...'";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
+        public void AddSuffixIfNeeded8I()
+        {
+            string line1 = "test in'";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
+            string line1Expected = "test in...'";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
+        public void AddSuffixIfNeeded8J()
+        {
+            string line1 = "in'";
+            var profile = ContinuationUtilities.GetContinuationProfile(ContinuationStyle.LeadingTrailingDots);
+            string line1Actual = ContinuationUtilities.AddSuffixIfNeeded(line1, profile, false);
+            string line1Expected = "in...'";
+            Assert.AreEqual(line1Expected, line1Actual);
+        }
+
+        [TestMethod]
         public void AddSuffixIfNeeded9()
         {
             string line1 = "- Hello." + Environment.NewLine + "- This is a <i>test</i>";
@@ -1540,6 +1590,38 @@ namespace Test.Logic
             string line1 = "and this is too.'";
             bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
             Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote12()
+        {
+            string line1 = "'We just vibin' here you know.'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote12B()
+        {
+            string line1 = "'We just vibin' here you know.";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsTrue(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote12C()
+        {
+            string line1 = "We just vibin' here you know.";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
+        }
+
+        [TestMethod]
+        public void IsFullQuote12D()
+        {
+            string line1 = "We are just vibin'";
+            bool line1Actual = ContinuationUtilities.IsFullQuote(line1, "'");
+            Assert.IsFalse(line1Actual);
         }
 
         [TestMethod]
