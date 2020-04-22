@@ -704,9 +704,7 @@ $HorzAlign          =   Center
             FixEllipsesStartTicked = true;
             FixMissingOpenBracketTicked = true;
             FixMusicNotationTicked = true;
-            FixContinuationStyleTicked = Configuration.Settings.General.ContinuationStyle != ContinuationStyle.None &&
-                                         Configuration.Settings.General.ContinuationStyle != ContinuationStyle.NoneTrailingDots &&
-                                         Configuration.Settings.General.ContinuationStyle != ContinuationStyle.NoneLeadingTrailingDots;
+            FixContinuationStyleTicked = true;
             FixUnnecessaryLeadingDotsTicked = true;
         }
 
