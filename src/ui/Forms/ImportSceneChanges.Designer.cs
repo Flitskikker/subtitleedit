@@ -48,6 +48,7 @@
             this.textBoxGenerate = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.labelProgress = new System.Windows.Forms.Label();
             this.groupBoxImportText.SuspendLayout();
             this.groupBoxTimeCodes.SuspendLayout();
             this.groupBoxGenerateSceneChanges.SuspendLayout();
@@ -299,7 +300,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(12, 433);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(528, 23);
+            this.progressBar1.Size = new System.Drawing.Size(407, 23);
             this.progressBar1.TabIndex = 2;
             this.progressBar1.Visible = false;
             // 
@@ -307,11 +308,23 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // labelProgress
+            // 
+            this.labelProgress.AutoSize = true;
+            this.labelProgress.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.labelProgress.Location = new System.Drawing.Point(425, 438);
+            this.labelProgress.Name = "labelProgress";
+            this.labelProgress.Size = new System.Drawing.Size(102, 13);
+            this.labelProgress.TabIndex = 5;
+            this.labelProgress.Text = "00:00:00 / 00:00:00";
+            this.labelProgress.Visible = false;
+            // 
             // ImportSceneChanges
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(738, 468);
+            this.Controls.Add(this.labelProgress);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.buttonOK);
@@ -336,6 +349,7 @@
             this.groupBoxGenerateSceneChanges.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThreshold)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -361,5 +375,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDownThreshold;
         private System.Windows.Forms.Label labelFfmpegThreshold;
         private System.Windows.Forms.TextBox textBoxLog;
+        private System.Windows.Forms.Label labelProgress;
     }
 }

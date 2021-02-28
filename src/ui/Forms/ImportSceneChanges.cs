@@ -324,6 +324,7 @@ namespace Nikse.SubtitleEdit.Forms
             buttonOK.Enabled = false;
             progressBar1.Visible = true;
             progressBar1.Style = ProgressBarStyle.Marquee;
+            labelProgress.Visible = true;
             buttonImportWithFfmpeg.Enabled = false;
             numericUpDownThreshold.Enabled = false;
             Cursor = Cursors.WaitCursor;
@@ -366,9 +367,27 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void UpdateImportTextBox()
         {
+            if (_sceneChangesGenerator.TotalDuration > 0 && _sceneChangesGenerator.CurrentTime > 0)
+            {
+                if (progressBar1.Style != ProgressBarStyle.Blocks)
+                {
+                    progressBar1.Style = ProgressBarStyle.Blocks;
+                    progressBar1.Maximum = Convert.ToInt32(_sceneChangesGenerator.TotalDuration);
+                }
+
+                progressBar1.Value = Convert.ToInt32(_sceneChangesGenerator.CurrentTime);
+                labelProgress.Text = FormatSeconds(_sceneChangesGenerator.CurrentTime) + " / " + FormatSeconds(_sceneChangesGenerator.TotalDuration);
+            }
+
             textBoxGenerate.Text = _sceneChangesGenerator.GetTimeCodesString();
             textBoxGenerate.SelectionStart = textBoxGenerate.Text.Length;
             textBoxGenerate.ScrollToCaret();
+        }
+
+        private string FormatSeconds(double seconds)
+        {
+            TimeSpan t = TimeSpan.FromSeconds(seconds);
+            return t.ToString(@"hh\:mm\:ss");
         }
 
         private void ImportSceneChanges_Shown(object sender, EventArgs e)

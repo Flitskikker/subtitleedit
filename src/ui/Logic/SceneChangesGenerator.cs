@@ -24,8 +24,13 @@ namespace Nikse.SubtitleEdit.Logic
 
         private static readonly object TimeCodesLock = new object();
         public double LastSeconds { get; private set; }
+        
+        public double CurrentTime { get; private set; }
+        public double TotalDuration { get; private set; }
 
         private static readonly Regex TimeRegex = new Regex(@"pts_time:\d+[.,]*\d*", RegexOptions.Compiled);
+
+        private string line;
 
         public SceneChangesGenerator()
         {
@@ -51,7 +56,7 @@ namespace Nikse.SubtitleEdit.Logic
                 StartInfo =
                 {
                     FileName = ffmpegLocation,
-                    Arguments = $"-i \"{videoFileName}\" -vf \"select=gt(scene\\," + threshold.ToString(CultureInfo.InvariantCulture) + "),showinfo\" -vsync vfr -f null -",
+                    Arguments = $"-i \"{videoFileName}\" -vf \"select=gt(scene\\," + threshold.ToString(CultureInfo.InvariantCulture) + "),showinfo\" -threads 0 -vsync vfr -f null -",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -68,13 +73,34 @@ namespace Nikse.SubtitleEdit.Logic
 
         private void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
-            if (string.IsNullOrWhiteSpace(outLine.Data))
+            line = outLine.Data;
+            
+            if (string.IsNullOrWhiteSpace(line))
             {
                 return;
             }
 
-            Log.AppendLine(outLine.Data);
-            var match = TimeRegex.Match(outLine.Data);
+            if (line.Contains("Duration:"))
+            {
+                // Duration info
+                int startIndex = line.IndexOf("Duration:", StringComparison.Ordinal) + "Duration:".Length;
+                int length = line.IndexOf(",", StringComparison.Ordinal) - startIndex;
+                string durationString = line.Substring(startIndex, length).Trim();
+                
+                TotalDuration = TimeSpan.Parse(durationString).TotalSeconds;
+            }
+            else if (line.Contains("time="))
+            {
+                // Progress info
+                int startIndex = line.IndexOf("time=", StringComparison.Ordinal) + "time=".Length;
+                int length = line.IndexOf("bitrate=", StringComparison.Ordinal) - startIndex;
+                string timeString = line.Substring(startIndex, length).Trim();
+                
+                CurrentTime = TimeSpan.Parse(timeString).TotalSeconds;
+            }
+
+            Log.AppendLine(line);
+            var match = TimeRegex.Match(line);
             if (match.Success)
             {
                 var timeCode = match.Value.Replace("pts_time:", string.Empty).Replace(",", ".").Replace("٫", ".").Replace("⠨", ".");
