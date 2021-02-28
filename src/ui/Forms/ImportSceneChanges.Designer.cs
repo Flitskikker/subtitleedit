@@ -208,11 +208,11 @@
             this.groupBoxGenerateSceneChanges.TabStop = false;
             this.groupBoxGenerateSceneChanges.Text = "Generate scene changes";
             // 
-            // labelThressholdDescription
+            // labelThresholdDescription
             // 
             this.labelThresholdDescription.AutoSize = true;
             this.labelThresholdDescription.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.labelThresholdDescription.Location = new System.Drawing.Point(115, 384);
+            this.labelThresholdDescription.Location = new System.Drawing.Point(119, 384);
             this.labelThresholdDescription.Name = "labelThresholdDescription";
             this.labelThresholdDescription.Size = new System.Drawing.Size(195, 13);
             this.labelThresholdDescription.TabIndex = 5;
@@ -220,25 +220,25 @@
             // 
             // numericUpDownThreshold
             // 
-            this.numericUpDownThreshold.DecimalPlaces = 1;
+            this.numericUpDownThreshold.DecimalPlaces = 2;
             this.numericUpDownThreshold.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.numericUpDownThreshold.Location = new System.Drawing.Point(66, 382);
             this.numericUpDownThreshold.Maximum = new decimal(new int[] {
-            9,
+            95,
             0,
             0,
-            65536});
+            131072});
             this.numericUpDownThreshold.Minimum = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
-            65536});
+            131072});
             this.numericUpDownThreshold.Name = "numericUpDownThreshold";
-            this.numericUpDownThreshold.Size = new System.Drawing.Size(43, 20);
+            this.numericUpDownThreshold.Size = new System.Drawing.Size(47, 20);
             this.numericUpDownThreshold.TabIndex = 4;
             this.numericUpDownThreshold.Value = new decimal(new int[] {
             4,
