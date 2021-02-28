@@ -23,6 +23,8 @@ namespace Nikse.SubtitleEdit.Logic
         public LanguageStructure.AutoBreakUnbreakLines AutoBreakUnbreakLines;
         public LanguageStructure.BatchConvert BatchConvert;
         public LanguageStructure.Beamer Beamer;
+        public LanguageStructure.BeautifyTimeCodes BeautifyTimeCodes;
+        public LanguageStructure.BeautifyTimeCodesProfile BeautifyTimeCodesProfile;
         public LanguageStructure.BinEdit BinEdit;
         public LanguageStructure.Bookmarks Bookmarks;
         public LanguageStructure.ChangeCasing ChangeCasing;
@@ -403,6 +405,16 @@ namespace Nikse.SubtitleEdit.Logic
             Beamer = new LanguageStructure.Beamer
             {
                 Title = "Beamer",
+            };
+
+            BeautifyTimeCodes = new LanguageStructure.BeautifyTimeCodes
+            {
+                Title = "Beautify time codes",
+            };
+
+            BeautifyTimeCodesProfile = new LanguageStructure.BeautifyTimeCodesProfile
+            {
+                Title = "Edit profile",
             };
 
             BinEdit = new LanguageStructure.BinEdit
@@ -1307,6 +1319,8 @@ namespace Nikse.SubtitleEdit.Logic
                 CommonErrorsFixed = "Common errors fixed",
                 BeforeRenumbering = "Before renumbering",
                 RenumberedStartingFromX = "Renumbered starting from: {0}",
+                BeforeBeautifyTimeCodes = "Before beautifying time codes",
+                BeautifiedTimeCodes = "Time codes beautified",
                 BeforeRemovalOfTextingForHearingImpaired = "Before removal of texting for hearing impaired",
                 TextingForHearingImpairedRemovedOneLine = "Texting for hearing impaired removed: One line",
                 TextingForHearingImpairedRemovedXLines = "Texting for hearing impaired removed: {0} lines",
@@ -1609,6 +1623,7 @@ namespace Nikse.SubtitleEdit.Logic
                         SplitLongLines = "Break/split long lines...",
                         MinimumDisplayTimeBetweenParagraphs = "Apply minimum gap between subtitles...",
                         NetflixQualityCheck = "Netflix quality check...",
+                        BeautifyTimeCodes = "Beautify time codes...",
                         SortBy = "Sort by",
                         Number = "Number",
                         StartTime = "Start time",
@@ -2268,6 +2283,7 @@ can edit in same subtitle file (collaboration)",
                 VisualSync = "Visual sync",
                 SpellCheck = "Spell check",
                 NetflixQualityCheck = "Netflix quality check",
+                BeautifyTimeCodes = "Beautify time codes",
                 SettingsName = "Settings",
                 ToggleBookmarks = "Toggle bookmarks",
                 ToggleBookmarksWithComment = "Toggle bookmarks - add comment",

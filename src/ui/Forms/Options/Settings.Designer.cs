@@ -385,6 +385,9 @@
             this.buttonReset = new System.Windows.Forms.Button();
             this.toolTipContinuationPreview = new System.Windows.Forms.ToolTip(this.components);
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.labelTBBeautifyTimeCodes = new System.Windows.Forms.Label();
+            this.pictureBoxBeautifyTimeCodes = new System.Windows.Forms.PictureBox();
+            this.checkBoxBeautifyTimeCodes = new System.Windows.Forms.CheckBox();
             this.panelGeneral.SuspendLayout();
             this.groupBoxMiscellaneous.SuspendLayout();
             this.groupBoxGeneralRules.SuspendLayout();
@@ -452,6 +455,7 @@
             this.groupBoxNetworkSession.SuspendLayout();
             this.groupBoxProxySettings.SuspendLayout();
             this.groupBoxProxyAuthentication.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBeautifyTimeCodes)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -3665,6 +3669,9 @@
             // 
             this.groupBoxShowToolBarButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxShowToolBarButtons.Controls.Add(this.labelTBBeautifyTimeCodes);
+            this.groupBoxShowToolBarButtons.Controls.Add(this.pictureBoxBeautifyTimeCodes);
+            this.groupBoxShowToolBarButtons.Controls.Add(this.checkBoxBeautifyTimeCodes);
             this.groupBoxShowToolBarButtons.Controls.Add(this.labelTBNetflixQualityCheck);
             this.groupBoxShowToolBarButtons.Controls.Add(this.pictureBoxNetflixQualityCheck);
             this.groupBoxShowToolBarButtons.Controls.Add(this.checkBoxNetflixQualityCheck);
@@ -3714,7 +3721,7 @@
             // labelTBNetflixQualityCheck
             // 
             this.labelTBNetflixQualityCheck.AutoSize = true;
-            this.labelTBNetflixQualityCheck.Location = new System.Drawing.Point(636, 136);
+            this.labelTBNetflixQualityCheck.Location = new System.Drawing.Point(622, 136);
             this.labelTBNetflixQualityCheck.Name = "labelTBNetflixQualityCheck";
             this.labelTBNetflixQualityCheck.Size = new System.Drawing.Size(103, 13);
             this.labelTBNetflixQualityCheck.TabIndex = 42;
@@ -4630,18 +4637,45 @@
             this.toolTipContinuationPreview.InitialDelay = 500;
             this.toolTipContinuationPreview.ReshowDelay = 100;
             // 
+            // labelTBBeautifyTimeCodes
+            // 
+            this.labelTBBeautifyTimeCodes.AutoSize = true;
+            this.labelTBBeautifyTimeCodes.Location = new System.Drawing.Point(742, 136);
+            this.labelTBBeautifyTimeCodes.Name = "labelTBBeautifyTimeCodes";
+            this.labelTBBeautifyTimeCodes.Size = new System.Drawing.Size(101, 13);
+            this.labelTBBeautifyTimeCodes.TabIndex = 45;
+            this.labelTBBeautifyTimeCodes.Text = "Beautify time codes";
+            // 
+            // pictureBoxBeautifyTimeCodes
+            // 
+            this.pictureBoxBeautifyTimeCodes.Location = new System.Drawing.Point(751, 155);
+            this.pictureBoxBeautifyTimeCodes.Name = "pictureBoxBeautifyTimeCodes";
+            this.pictureBoxBeautifyTimeCodes.Size = new System.Drawing.Size(32, 32);
+            this.pictureBoxBeautifyTimeCodes.TabIndex = 44;
+            this.pictureBoxBeautifyTimeCodes.TabStop = false;
+            // 
+            // checkBoxBeautifyTimeCodes
+            // 
+            this.checkBoxBeautifyTimeCodes.AutoSize = true;
+            this.checkBoxBeautifyTimeCodes.Location = new System.Drawing.Point(754, 195);
+            this.checkBoxBeautifyTimeCodes.Name = "checkBoxBeautifyTimeCodes";
+            this.checkBoxBeautifyTimeCodes.Size = new System.Drawing.Size(55, 17);
+            this.checkBoxBeautifyTimeCodes.TabIndex = 43;
+            this.checkBoxBeautifyTimeCodes.Text = "Visible";
+            this.checkBoxBeautifyTimeCodes.UseVisualStyleBackColor = true;
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1092, 574);
+            this.Controls.Add(this.panelToolBar);
             this.Controls.Add(this.panelFont);
             this.Controls.Add(this.panelNetwork);
             this.Controls.Add(this.panelGeneral);
             this.Controls.Add(this.panelVideoPlayer);
             this.Controls.Add(this.panelWordLists);
             this.Controls.Add(this.panelTools);
-            this.Controls.Add(this.panelToolBar);
             this.Controls.Add(this.panelWaveform);
             this.Controls.Add(this.panelSyntaxColoring);
             this.Controls.Add(this.panelShortcuts);
@@ -4759,6 +4793,7 @@
             this.groupBoxProxySettings.PerformLayout();
             this.groupBoxProxyAuthentication.ResumeLayout(false);
             this.groupBoxProxyAuthentication.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBeautifyTimeCodes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -5122,5 +5157,8 @@
         private System.Windows.Forms.Panel panelVideoPlayerPreviewFontColor;
         private System.Windows.Forms.CheckBox checkBoxDarkThemeShowListViewGridLines;
         private System.Windows.Forms.GroupBox groupBoxFontInUI;
+        private System.Windows.Forms.Label labelTBBeautifyTimeCodes;
+        private System.Windows.Forms.PictureBox pictureBoxBeautifyTimeCodes;
+        private System.Windows.Forms.CheckBox checkBoxBeautifyTimeCodes;
     }
 }

@@ -273,6 +273,16 @@
             public string Title { get; set; }
         }
 
+        public class BeautifyTimeCodes
+        {
+            public string Title { get; set; }
+        }
+
+        public class BeautifyTimeCodesProfile
+        {
+            public string Title { get; set; }
+        }
+
         public class BinEdit
         {
             public string ImportImage { get; set; }
@@ -1173,6 +1183,8 @@
             public string CommonErrorsFixed { get; set; }
             public string BeforeRenumbering { get; set; }
             public string RenumberedStartingFromX { get; set; }
+            public string BeforeBeautifyTimeCodes { get; set; }
+            public string BeautifiedTimeCodes { get; set; }
             public string BeforeRemovalOfTextingForHearingImpaired { get; set; }
             public string TextingForHearingImpairedRemovedOneLine { get; set; }
             public string TextingForHearingImpairedRemovedXLines { get; set; }
@@ -1469,6 +1481,7 @@
                     public string MinimumDisplayTimeBetweenParagraphs { get; set; }
                     public string SortBy { get; set; }
                     public string NetflixQualityCheck { get; set; }
+                    public string BeautifyTimeCodes { get; set; }
                     public string Number { get; set; }
                     public string StartTime { get; set; }
                     public string EndTime { get; set; }
@@ -2123,6 +2136,7 @@
             public string VisualSync { get; set; }
             public string SpellCheck { get; set; }
             public string NetflixQualityCheck { get; set; }
+            public string BeautifyTimeCodes { get; set; }
             public string SettingsName { get; set; }
             public string ToggleBookmarks { get; set; }
             public string ToggleBookmarksWithComment { get; set; }

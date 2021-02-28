@@ -20,10 +20,10 @@ namespace Nikse.SubtitleEdit.Forms
             InitializeComponent();
             UiUtil.FixFonts(this);
 
-            var language = LanguageSettings.Current.Settings;
-            var settings = Configuration.Settings.General;
+            var language = LanguageSettings.Current.BeautifyTimeCodesProfile;
+            var settings = Configuration.Settings.BeautifyTimeCodes;
+            Text = language.Title;
             // TODO
-            //Text = language.FixContinuationStyleSettings;
 
             buttonOK.Text = LanguageSettings.Current.General.Ok;
             buttonCancel.Text = LanguageSettings.Current.General.Cancel;

@@ -36,17 +36,18 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripMenuItemLoadDefault = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemLoadNetflix = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxGeneral = new System.Windows.Forms.GroupBox();
-            this.groupBoxInCues = new System.Windows.Forms.GroupBox();
-            this.labelInCuesGap = new System.Windows.Forms.Label();
-            this.numericUpDownInCuesGap = new System.Windows.Forms.NumericUpDown();
-            this.labelGap = new System.Windows.Forms.Label();
-            this.numericUpDownGap = new System.Windows.Forms.NumericUpDown();
             this.labelGapSuffix = new System.Windows.Forms.Label();
-            this.numericUpDownInCuesRightRedZone = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownInCuesRightGreenZone = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownInCuesLeftRedZone = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownInCuesLeftGreenZone = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownGap = new System.Windows.Forms.NumericUpDown();
+            this.labelGap = new System.Windows.Forms.Label();
+            this.groupBoxInCues = new System.Windows.Forms.GroupBox();
             this.labelInCuesZones = new System.Windows.Forms.Label();
+            this.numericUpDownInCuesLeftGreenZone = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownInCuesLeftRedZone = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownInCuesRightGreenZone = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownInCuesRightRedZone = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownInCuesGap = new System.Windows.Forms.NumericUpDown();
+            this.labelInCuesGap = new System.Windows.Forms.Label();
+            this.cuesPreviewViewInCues = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
             this.groupBoxOutCues = new System.Windows.Forms.GroupBox();
             this.labelOutCuesZones = new System.Windows.Forms.Label();
             this.numericUpDownOutCuesLeftGreenZone = new System.Windows.Forms.NumericUpDown();
@@ -55,7 +56,13 @@ namespace Nikse.SubtitleEdit.Forms
             this.numericUpDownOutCuesRightGreenZone = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownOutCuesRightRedZone = new System.Windows.Forms.NumericUpDown();
             this.labelOutCuesGap = new System.Windows.Forms.Label();
+            this.cuesPreviewViewOutCues = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
             this.groupBoxConnectedSubtitles = new System.Windows.Forms.GroupBox();
+            this.labelConnectedSubtitlesTreatConnectedSuffix = new System.Windows.Forms.Label();
+            this.numericUpDownConnectedSubtitlesTreatConnected = new System.Windows.Forms.NumericUpDown();
+            this.labelConnectedSubtitlesTreatConnected = new System.Windows.Forms.Label();
+            this.labelConnectedSubtitlesBehavior = new System.Windows.Forms.Label();
+            this.comboBoxConnectedSubtitlesBehavior = new System.Windows.Forms.ComboBox();
             this.labelConnectedSubtitlesZones = new System.Windows.Forms.Label();
             this.numericUpDownConnectedSubtitlesLeftGreenZone = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownConnectedSubtitlesLeftRedZone = new System.Windows.Forms.NumericUpDown();
@@ -64,51 +71,44 @@ namespace Nikse.SubtitleEdit.Forms
             this.numericUpDownConnectedSubtitlesRightRedZone = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownConnectedSubtitlesRightGap = new System.Windows.Forms.NumericUpDown();
             this.labelConnectedSubtitlesGaps = new System.Windows.Forms.Label();
-            this.comboBoxConnectedSubtitlesBehavior = new System.Windows.Forms.ComboBox();
-            this.labelConnectedSubtitlesBehavior = new System.Windows.Forms.Label();
-            this.labelConnectedSubtitlesTreatConnected = new System.Windows.Forms.Label();
-            this.numericUpDownConnectedSubtitlesTreatConnected = new System.Windows.Forms.NumericUpDown();
-            this.labelConnectedSubtitlesTreatConnectedSuffix = new System.Windows.Forms.Label();
+            this.cuesPreviewViewConnectedSubtitles = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
             this.groupBoxChaining = new System.Windows.Forms.GroupBox();
+            this.cuesPreviewViewChainingGeneral = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
+            this.cuesPreviewViewChainingOutCueOnShot = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
+            this.cuesPreviewViewChainingInCueOnShot = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
             this.tabControlChaining = new System.Windows.Forms.TabControl();
             this.tabPageChainingGeneral = new System.Windows.Forms.TabPage();
-            this.tabPageChainingInCueOnShot = new System.Windows.Forms.TabPage();
-            this.numericUpDownChainingGeneralMaxGap = new System.Windows.Forms.NumericUpDown();
+            this.labelChainingGeneralShotChangeBehavior = new System.Windows.Forms.Label();
+            this.comboBoxChainingGeneralShotChangeBehavior = new System.Windows.Forms.ComboBox();
+            this.labelChainingGeneralMaxGapSuffix = new System.Windows.Forms.Label();
+            this.radioButtonChainingGeneralZones = new System.Windows.Forms.RadioButton();
+            this.radioButtonChainingGeneralMaxGap = new System.Windows.Forms.RadioButton();
             this.numericUpDownChainingGeneralLeftGreenZone = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownChainingGeneralRedGreenZone = new System.Windows.Forms.NumericUpDown();
-            this.radioButtonChainingGeneralMaxGap = new System.Windows.Forms.RadioButton();
-            this.radioButtonChainingGeneralZones = new System.Windows.Forms.RadioButton();
-            this.tabPageChainingOutCueOnShot = new System.Windows.Forms.TabPage();
-            this.labelChainingGeneralMaxGapSuffix = new System.Windows.Forms.Label();
-            this.comboBoxChainingGeneralShotChangeBehavior = new System.Windows.Forms.ComboBox();
-            this.labelChainingGeneralShotChangeBehavior = new System.Windows.Forms.Label();
+            this.numericUpDownChainingGeneralMaxGap = new System.Windows.Forms.NumericUpDown();
+            this.tabPageChainingInCueOnShot = new System.Windows.Forms.TabPage();
             this.labelChainingInCueOnShotMaxGapSuffix = new System.Windows.Forms.Label();
             this.radioButtonChainingInCueOnShotZones = new System.Windows.Forms.RadioButton();
             this.radioButtonChainingInCueOnShotMaxGap = new System.Windows.Forms.RadioButton();
             this.numericUpDownChainingInCueOnShotLeftGreenZone = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownChainingInCueOnShotLeftRedZone = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownChainingInCueOnShotMaxGap = new System.Windows.Forms.NumericUpDown();
+            this.tabPageChainingOutCueOnShot = new System.Windows.Forms.TabPage();
+            this.numericUpDownChainingOutCueOnShotRightGreenZone = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownChainingOutCueOnShotRightRedZone = new System.Windows.Forms.NumericUpDown();
             this.labelChainingOutCueOnShotMaxGapSuffix = new System.Windows.Forms.Label();
             this.radioButtonChainingOutCueOnShotZones = new System.Windows.Forms.RadioButton();
             this.radioButtonChainingOutCueOnShotMaxGap = new System.Windows.Forms.RadioButton();
             this.numericUpDownChainingOutCueOnShotMaxGap = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownChainingOutCueOnShotRightGreenZone = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDownChainingOutCueOnShotRightRedZone = new System.Windows.Forms.NumericUpDown();
-            this.cuesPreviewViewChainingGeneral = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
-            this.cuesPreviewViewChainingOutCueOnShot = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
-            this.cuesPreviewViewChainingInCueOnShot = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
-            this.cuesPreviewViewConnectedSubtitles = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
-            this.cuesPreviewViewOutCues = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
-            this.cuesPreviewViewInCues = new Nikse.SubtitleEdit.Controls.CuesPreviewView();
             this.menuStrip.SuspendLayout();
             this.groupBoxGeneral.SuspendLayout();
-            this.groupBoxInCues.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesGap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGap)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightRedZone)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightGreenZone)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesLeftRedZone)).BeginInit();
+            this.groupBoxInCues.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesLeftGreenZone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesLeftRedZone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightGreenZone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightRedZone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesGap)).BeginInit();
             this.groupBoxOutCues.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutCuesLeftGreenZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutCuesLeftRedZone)).BeginInit();
@@ -116,27 +116,27 @@ namespace Nikse.SubtitleEdit.Forms
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutCuesRightGreenZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutCuesRightRedZone)).BeginInit();
             this.groupBoxConnectedSubtitles.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesTreatConnected)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesLeftGreenZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesLeftRedZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesLeftGap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesRightGreenZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesRightRedZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesRightGap)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesTreatConnected)).BeginInit();
             this.groupBoxChaining.SuspendLayout();
             this.tabControlChaining.SuspendLayout();
             this.tabPageChainingGeneral.SuspendLayout();
-            this.tabPageChainingInCueOnShot.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralMaxGap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralLeftGreenZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralRedGreenZone)).BeginInit();
-            this.tabPageChainingOutCueOnShot.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralMaxGap)).BeginInit();
+            this.tabPageChainingInCueOnShot.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingInCueOnShotLeftGreenZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingInCueOnShotLeftRedZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingInCueOnShotMaxGap)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotMaxGap)).BeginInit();
+            this.tabPageChainingOutCueOnShot.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotRightGreenZone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotRightRedZone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotMaxGap)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -205,52 +205,14 @@ namespace Nikse.SubtitleEdit.Forms
             this.groupBoxGeneral.TabStop = false;
             this.groupBoxGeneral.Text = "General";
             // 
-            // groupBoxInCues
+            // labelGapSuffix
             // 
-            this.groupBoxInCues.Controls.Add(this.labelInCuesZones);
-            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesLeftGreenZone);
-            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesLeftRedZone);
-            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesRightGreenZone);
-            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesRightRedZone);
-            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesGap);
-            this.groupBoxInCues.Controls.Add(this.labelInCuesGap);
-            this.groupBoxInCues.Controls.Add(this.cuesPreviewViewInCues);
-            this.groupBoxInCues.Location = new System.Drawing.Point(12, 92);
-            this.groupBoxInCues.Name = "groupBoxInCues";
-            this.groupBoxInCues.Size = new System.Drawing.Size(420, 161);
-            this.groupBoxInCues.TabIndex = 2;
-            this.groupBoxInCues.TabStop = false;
-            this.groupBoxInCues.Text = "In cues";
-            // 
-            // labelInCuesGap
-            // 
-            this.labelInCuesGap.AutoSize = true;
-            this.labelInCuesGap.Location = new System.Drawing.Point(7, 101);
-            this.labelInCuesGap.Name = "labelInCuesGap";
-            this.labelInCuesGap.Size = new System.Drawing.Size(31, 15);
-            this.labelInCuesGap.TabIndex = 10;
-            this.labelInCuesGap.Text = "Gap:";
-            // 
-            // numericUpDownInCuesGap
-            // 
-            this.numericUpDownInCuesGap.Location = new System.Drawing.Point(218, 98);
-            this.numericUpDownInCuesGap.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.numericUpDownInCuesGap.Name = "numericUpDownInCuesGap";
-            this.numericUpDownInCuesGap.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownInCuesGap.TabIndex = 12;
-            // 
-            // labelGap
-            // 
-            this.labelGap.AutoSize = true;
-            this.labelGap.Location = new System.Drawing.Point(7, 25);
-            this.labelGap.Name = "labelGap";
-            this.labelGap.Size = new System.Drawing.Size(31, 15);
-            this.labelGap.TabIndex = 1;
-            this.labelGap.Text = "Gap:";
+            this.labelGapSuffix.AutoSize = true;
+            this.labelGapSuffix.Location = new System.Drawing.Point(108, 25);
+            this.labelGapSuffix.Name = "labelGapSuffix";
+            this.labelGapSuffix.Size = new System.Drawing.Size(205, 15);
+            this.labelGapSuffix.TabIndex = 4;
+            this.labelGapSuffix.Text = "frames (will override custom settings)";
             // 
             // numericUpDownGap
             // 
@@ -269,46 +231,54 @@ namespace Nikse.SubtitleEdit.Forms
             0,
             0});
             // 
-            // labelGapSuffix
+            // labelGap
             // 
-            this.labelGapSuffix.AutoSize = true;
-            this.labelGapSuffix.Location = new System.Drawing.Point(108, 25);
-            this.labelGapSuffix.Name = "labelGapSuffix";
-            this.labelGapSuffix.Size = new System.Drawing.Size(205, 15);
-            this.labelGapSuffix.TabIndex = 4;
-            this.labelGapSuffix.Text = "frames (will override custom settings)";
+            this.labelGap.AutoSize = true;
+            this.labelGap.Location = new System.Drawing.Point(7, 25);
+            this.labelGap.Name = "labelGap";
+            this.labelGap.Size = new System.Drawing.Size(31, 15);
+            this.labelGap.TabIndex = 1;
+            this.labelGap.Text = "Gap:";
             // 
-            // numericUpDownInCuesRightRedZone
+            // groupBoxInCues
             // 
-            this.numericUpDownInCuesRightRedZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.numericUpDownInCuesRightRedZone.Location = new System.Drawing.Point(218, 127);
-            this.numericUpDownInCuesRightRedZone.Maximum = new decimal(new int[] {
+            this.groupBoxInCues.Controls.Add(this.labelInCuesZones);
+            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesLeftGreenZone);
+            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesLeftRedZone);
+            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesRightGreenZone);
+            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesRightRedZone);
+            this.groupBoxInCues.Controls.Add(this.numericUpDownInCuesGap);
+            this.groupBoxInCues.Controls.Add(this.labelInCuesGap);
+            this.groupBoxInCues.Controls.Add(this.cuesPreviewViewInCues);
+            this.groupBoxInCues.Location = new System.Drawing.Point(12, 92);
+            this.groupBoxInCues.Name = "groupBoxInCues";
+            this.groupBoxInCues.Size = new System.Drawing.Size(420, 161);
+            this.groupBoxInCues.TabIndex = 2;
+            this.groupBoxInCues.TabStop = false;
+            this.groupBoxInCues.Text = "In cues";
+            // 
+            // labelInCuesZones
+            // 
+            this.labelInCuesZones.AutoSize = true;
+            this.labelInCuesZones.Location = new System.Drawing.Point(7, 130);
+            this.labelInCuesZones.Name = "labelInCuesZones";
+            this.labelInCuesZones.Size = new System.Drawing.Size(42, 15);
+            this.labelInCuesZones.TabIndex = 20;
+            this.labelInCuesZones.Text = "Zones:";
+            // 
+            // numericUpDownInCuesLeftGreenZone
+            // 
+            this.numericUpDownInCuesLeftGreenZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.numericUpDownInCuesLeftGreenZone.Location = new System.Drawing.Point(93, 127);
+            this.numericUpDownInCuesLeftGreenZone.Maximum = new decimal(new int[] {
             50,
             0,
             0,
             0});
-            this.numericUpDownInCuesRightRedZone.Name = "numericUpDownInCuesRightRedZone";
-            this.numericUpDownInCuesRightRedZone.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownInCuesRightRedZone.TabIndex = 23;
-            this.numericUpDownInCuesRightRedZone.Value = new decimal(new int[] {
-            7,
-            0,
-            0,
-            0});
-            // 
-            // numericUpDownInCuesRightGreenZone
-            // 
-            this.numericUpDownInCuesRightGreenZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.numericUpDownInCuesRightGreenZone.Location = new System.Drawing.Point(276, 127);
-            this.numericUpDownInCuesRightGreenZone.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.numericUpDownInCuesRightGreenZone.Name = "numericUpDownInCuesRightGreenZone";
-            this.numericUpDownInCuesRightGreenZone.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownInCuesRightGreenZone.TabIndex = 24;
-            this.numericUpDownInCuesRightGreenZone.Value = new decimal(new int[] {
+            this.numericUpDownInCuesLeftGreenZone.Name = "numericUpDownInCuesLeftGreenZone";
+            this.numericUpDownInCuesLeftGreenZone.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownInCuesLeftGreenZone.TabIndex = 21;
+            this.numericUpDownInCuesLeftGreenZone.Value = new decimal(new int[] {
             12,
             0,
             0,
@@ -332,32 +302,80 @@ namespace Nikse.SubtitleEdit.Forms
             0,
             0});
             // 
-            // numericUpDownInCuesLeftGreenZone
+            // numericUpDownInCuesRightGreenZone
             // 
-            this.numericUpDownInCuesLeftGreenZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.numericUpDownInCuesLeftGreenZone.Location = new System.Drawing.Point(93, 127);
-            this.numericUpDownInCuesLeftGreenZone.Maximum = new decimal(new int[] {
+            this.numericUpDownInCuesRightGreenZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.numericUpDownInCuesRightGreenZone.Location = new System.Drawing.Point(276, 127);
+            this.numericUpDownInCuesRightGreenZone.Maximum = new decimal(new int[] {
             50,
             0,
             0,
             0});
-            this.numericUpDownInCuesLeftGreenZone.Name = "numericUpDownInCuesLeftGreenZone";
-            this.numericUpDownInCuesLeftGreenZone.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownInCuesLeftGreenZone.TabIndex = 21;
-            this.numericUpDownInCuesLeftGreenZone.Value = new decimal(new int[] {
+            this.numericUpDownInCuesRightGreenZone.Name = "numericUpDownInCuesRightGreenZone";
+            this.numericUpDownInCuesRightGreenZone.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownInCuesRightGreenZone.TabIndex = 24;
+            this.numericUpDownInCuesRightGreenZone.Value = new decimal(new int[] {
             12,
             0,
             0,
             0});
             // 
-            // labelInCuesZones
+            // numericUpDownInCuesRightRedZone
             // 
-            this.labelInCuesZones.AutoSize = true;
-            this.labelInCuesZones.Location = new System.Drawing.Point(7, 130);
-            this.labelInCuesZones.Name = "labelInCuesZones";
-            this.labelInCuesZones.Size = new System.Drawing.Size(42, 15);
-            this.labelInCuesZones.TabIndex = 20;
-            this.labelInCuesZones.Text = "Zones:";
+            this.numericUpDownInCuesRightRedZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.numericUpDownInCuesRightRedZone.Location = new System.Drawing.Point(218, 127);
+            this.numericUpDownInCuesRightRedZone.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.numericUpDownInCuesRightRedZone.Name = "numericUpDownInCuesRightRedZone";
+            this.numericUpDownInCuesRightRedZone.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownInCuesRightRedZone.TabIndex = 23;
+            this.numericUpDownInCuesRightRedZone.Value = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownInCuesGap
+            // 
+            this.numericUpDownInCuesGap.Location = new System.Drawing.Point(218, 98);
+            this.numericUpDownInCuesGap.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDownInCuesGap.Name = "numericUpDownInCuesGap";
+            this.numericUpDownInCuesGap.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownInCuesGap.TabIndex = 12;
+            // 
+            // labelInCuesGap
+            // 
+            this.labelInCuesGap.AutoSize = true;
+            this.labelInCuesGap.Location = new System.Drawing.Point(7, 101);
+            this.labelInCuesGap.Name = "labelInCuesGap";
+            this.labelInCuesGap.Size = new System.Drawing.Size(31, 15);
+            this.labelInCuesGap.TabIndex = 10;
+            this.labelInCuesGap.Text = "Gap:";
+            // 
+            // cuesPreviewViewInCues
+            // 
+            this.cuesPreviewViewInCues.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cuesPreviewViewInCues.FrameRate = 25F;
+            this.cuesPreviewViewInCues.LeftGap = 0;
+            this.cuesPreviewViewInCues.LeftGreenZone = 12;
+            this.cuesPreviewViewInCues.LeftRedZone = 7;
+            this.cuesPreviewViewInCues.Location = new System.Drawing.Point(10, 22);
+            this.cuesPreviewViewInCues.Name = "cuesPreviewViewInCues";
+            this.cuesPreviewViewInCues.PreviewText = "Subtitle text.";
+            this.cuesPreviewViewInCues.RightGap = 0;
+            this.cuesPreviewViewInCues.RightGreenZone = 12;
+            this.cuesPreviewViewInCues.RightRedZone = 7;
+            this.cuesPreviewViewInCues.ShowShotChange = true;
+            this.cuesPreviewViewInCues.Size = new System.Drawing.Size(400, 70);
+            this.cuesPreviewViewInCues.TabIndex = 1;
             // 
             // groupBoxOutCues
             // 
@@ -478,6 +496,24 @@ namespace Nikse.SubtitleEdit.Forms
             this.labelOutCuesGap.TabIndex = 10;
             this.labelOutCuesGap.Text = "Gap:";
             // 
+            // cuesPreviewViewOutCues
+            // 
+            this.cuesPreviewViewOutCues.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cuesPreviewViewOutCues.FrameRate = 25F;
+            this.cuesPreviewViewOutCues.LeftGap = 0;
+            this.cuesPreviewViewOutCues.LeftGreenZone = 12;
+            this.cuesPreviewViewOutCues.LeftRedZone = 7;
+            this.cuesPreviewViewOutCues.Location = new System.Drawing.Point(10, 22);
+            this.cuesPreviewViewOutCues.Name = "cuesPreviewViewOutCues";
+            this.cuesPreviewViewOutCues.PreviewText = "Subtitle text.";
+            this.cuesPreviewViewOutCues.RightGap = 0;
+            this.cuesPreviewViewOutCues.RightGreenZone = 12;
+            this.cuesPreviewViewOutCues.RightRedZone = 7;
+            this.cuesPreviewViewOutCues.ShowShotChange = true;
+            this.cuesPreviewViewOutCues.Size = new System.Drawing.Size(400, 70);
+            this.cuesPreviewViewOutCues.TabIndex = 1;
+            // 
             // groupBoxConnectedSubtitles
             // 
             this.groupBoxConnectedSubtitles.Controls.Add(this.labelConnectedSubtitlesTreatConnectedSuffix);
@@ -500,6 +536,63 @@ namespace Nikse.SubtitleEdit.Forms
             this.groupBoxConnectedSubtitles.TabIndex = 102;
             this.groupBoxConnectedSubtitles.TabStop = false;
             this.groupBoxConnectedSubtitles.Text = "Connected subtitles";
+            // 
+            // labelConnectedSubtitlesTreatConnectedSuffix
+            // 
+            this.labelConnectedSubtitlesTreatConnectedSuffix.AutoSize = true;
+            this.labelConnectedSubtitlesTreatConnectedSuffix.Location = new System.Drawing.Point(334, 204);
+            this.labelConnectedSubtitlesTreatConnectedSuffix.Name = "labelConnectedSubtitlesTreatConnectedSuffix";
+            this.labelConnectedSubtitlesTreatConnectedSuffix.Size = new System.Drawing.Size(23, 15);
+            this.labelConnectedSubtitlesTreatConnectedSuffix.TabIndex = 27;
+            this.labelConnectedSubtitlesTreatConnectedSuffix.Text = "ms";
+            // 
+            // numericUpDownConnectedSubtitlesTreatConnected
+            // 
+            this.numericUpDownConnectedSubtitlesTreatConnected.Location = new System.Drawing.Point(276, 201);
+            this.numericUpDownConnectedSubtitlesTreatConnected.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.numericUpDownConnectedSubtitlesTreatConnected.Name = "numericUpDownConnectedSubtitlesTreatConnected";
+            this.numericUpDownConnectedSubtitlesTreatConnected.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownConnectedSubtitlesTreatConnected.TabIndex = 26;
+            this.numericUpDownConnectedSubtitlesTreatConnected.Value = new decimal(new int[] {
+            180,
+            0,
+            0,
+            0});
+            // 
+            // labelConnectedSubtitlesTreatConnected
+            // 
+            this.labelConnectedSubtitlesTreatConnected.AutoSize = true;
+            this.labelConnectedSubtitlesTreatConnected.Location = new System.Drawing.Point(7, 204);
+            this.labelConnectedSubtitlesTreatConnected.Name = "labelConnectedSubtitlesTreatConnected";
+            this.labelConnectedSubtitlesTreatConnected.Size = new System.Drawing.Size(220, 15);
+            this.labelConnectedSubtitlesTreatConnected.TabIndex = 25;
+            this.labelConnectedSubtitlesTreatConnected.Text = "Treat as connected if gap is smaller than:";
+            // 
+            // labelConnectedSubtitlesBehavior
+            // 
+            this.labelConnectedSubtitlesBehavior.AutoSize = true;
+            this.labelConnectedSubtitlesBehavior.Location = new System.Drawing.Point(7, 102);
+            this.labelConnectedSubtitlesBehavior.Name = "labelConnectedSubtitlesBehavior";
+            this.labelConnectedSubtitlesBehavior.Size = new System.Drawing.Size(56, 15);
+            this.labelConnectedSubtitlesBehavior.TabIndex = 5;
+            this.labelConnectedSubtitlesBehavior.Text = "Behavior:";
+            // 
+            // comboBoxConnectedSubtitlesBehavior
+            // 
+            this.comboBoxConnectedSubtitlesBehavior.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxConnectedSubtitlesBehavior.FormattingEnabled = true;
+            this.comboBoxConnectedSubtitlesBehavior.Items.AddRange(new object[] {
+            "Snap closest cue to shot change",
+            "Snap in-cue to shot change",
+            "Snap out-cue to shot change"});
+            this.comboBoxConnectedSubtitlesBehavior.Location = new System.Drawing.Point(93, 98);
+            this.comboBoxConnectedSubtitlesBehavior.Name = "comboBoxConnectedSubtitlesBehavior";
+            this.comboBoxConnectedSubtitlesBehavior.Size = new System.Drawing.Size(317, 23);
+            this.comboBoxConnectedSubtitlesBehavior.TabIndex = 6;
             // 
             // labelConnectedSubtitlesZones
             // 
@@ -615,62 +708,23 @@ namespace Nikse.SubtitleEdit.Forms
             this.labelConnectedSubtitlesGaps.TabIndex = 10;
             this.labelConnectedSubtitlesGaps.Text = "Gap:";
             // 
-            // comboBoxConnectedSubtitlesBehavior
+            // cuesPreviewViewConnectedSubtitles
             // 
-            this.comboBoxConnectedSubtitlesBehavior.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxConnectedSubtitlesBehavior.FormattingEnabled = true;
-            this.comboBoxConnectedSubtitlesBehavior.Items.AddRange(new object[] {
-            "Snap closest cue to shot change",
-            "Snap in-cue to shot change",
-            "Snap out-cue to shot change"});
-            this.comboBoxConnectedSubtitlesBehavior.Location = new System.Drawing.Point(93, 98);
-            this.comboBoxConnectedSubtitlesBehavior.Name = "comboBoxConnectedSubtitlesBehavior";
-            this.comboBoxConnectedSubtitlesBehavior.Size = new System.Drawing.Size(317, 23);
-            this.comboBoxConnectedSubtitlesBehavior.TabIndex = 6;
-            // 
-            // labelConnectedSubtitlesBehavior
-            // 
-            this.labelConnectedSubtitlesBehavior.AutoSize = true;
-            this.labelConnectedSubtitlesBehavior.Location = new System.Drawing.Point(7, 102);
-            this.labelConnectedSubtitlesBehavior.Name = "labelConnectedSubtitlesBehavior";
-            this.labelConnectedSubtitlesBehavior.Size = new System.Drawing.Size(56, 15);
-            this.labelConnectedSubtitlesBehavior.TabIndex = 5;
-            this.labelConnectedSubtitlesBehavior.Text = "Behavior:";
-            // 
-            // labelConnectedSubtitlesTreatConnected
-            // 
-            this.labelConnectedSubtitlesTreatConnected.AutoSize = true;
-            this.labelConnectedSubtitlesTreatConnected.Location = new System.Drawing.Point(7, 204);
-            this.labelConnectedSubtitlesTreatConnected.Name = "labelConnectedSubtitlesTreatConnected";
-            this.labelConnectedSubtitlesTreatConnected.Size = new System.Drawing.Size(220, 15);
-            this.labelConnectedSubtitlesTreatConnected.TabIndex = 25;
-            this.labelConnectedSubtitlesTreatConnected.Text = "Treat as connected if gap is smaller than:";
-            // 
-            // numericUpDownConnectedSubtitlesTreatConnected
-            // 
-            this.numericUpDownConnectedSubtitlesTreatConnected.Location = new System.Drawing.Point(276, 201);
-            this.numericUpDownConnectedSubtitlesTreatConnected.Maximum = new decimal(new int[] {
-            2000,
-            0,
-            0,
-            0});
-            this.numericUpDownConnectedSubtitlesTreatConnected.Name = "numericUpDownConnectedSubtitlesTreatConnected";
-            this.numericUpDownConnectedSubtitlesTreatConnected.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownConnectedSubtitlesTreatConnected.TabIndex = 26;
-            this.numericUpDownConnectedSubtitlesTreatConnected.Value = new decimal(new int[] {
-            180,
-            0,
-            0,
-            0});
-            // 
-            // labelConnectedSubtitlesTreatConnectedSuffix
-            // 
-            this.labelConnectedSubtitlesTreatConnectedSuffix.AutoSize = true;
-            this.labelConnectedSubtitlesTreatConnectedSuffix.Location = new System.Drawing.Point(334, 204);
-            this.labelConnectedSubtitlesTreatConnectedSuffix.Name = "labelConnectedSubtitlesTreatConnectedSuffix";
-            this.labelConnectedSubtitlesTreatConnectedSuffix.Size = new System.Drawing.Size(23, 15);
-            this.labelConnectedSubtitlesTreatConnectedSuffix.TabIndex = 27;
-            this.labelConnectedSubtitlesTreatConnectedSuffix.Text = "ms";
+            this.cuesPreviewViewConnectedSubtitles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cuesPreviewViewConnectedSubtitles.FrameRate = 25F;
+            this.cuesPreviewViewConnectedSubtitles.LeftGap = 0;
+            this.cuesPreviewViewConnectedSubtitles.LeftGreenZone = 12;
+            this.cuesPreviewViewConnectedSubtitles.LeftRedZone = 7;
+            this.cuesPreviewViewConnectedSubtitles.Location = new System.Drawing.Point(10, 22);
+            this.cuesPreviewViewConnectedSubtitles.Name = "cuesPreviewViewConnectedSubtitles";
+            this.cuesPreviewViewConnectedSubtitles.PreviewText = "Subtitle text.";
+            this.cuesPreviewViewConnectedSubtitles.RightGap = 0;
+            this.cuesPreviewViewConnectedSubtitles.RightGreenZone = 12;
+            this.cuesPreviewViewConnectedSubtitles.RightRedZone = 7;
+            this.cuesPreviewViewConnectedSubtitles.ShowShotChange = true;
+            this.cuesPreviewViewConnectedSubtitles.Size = new System.Drawing.Size(400, 70);
+            this.cuesPreviewViewConnectedSubtitles.TabIndex = 1;
             // 
             // groupBoxChaining
             // 
@@ -684,6 +738,62 @@ namespace Nikse.SubtitleEdit.Forms
             this.groupBoxChaining.TabIndex = 103;
             this.groupBoxChaining.TabStop = false;
             this.groupBoxChaining.Text = "Chaining";
+            // 
+            // cuesPreviewViewChainingGeneral
+            // 
+            this.cuesPreviewViewChainingGeneral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cuesPreviewViewChainingGeneral.FrameRate = 25F;
+            this.cuesPreviewViewChainingGeneral.LeftGap = 0;
+            this.cuesPreviewViewChainingGeneral.LeftGreenZone = 12;
+            this.cuesPreviewViewChainingGeneral.LeftRedZone = 7;
+            this.cuesPreviewViewChainingGeneral.Location = new System.Drawing.Point(10, 22);
+            this.cuesPreviewViewChainingGeneral.Name = "cuesPreviewViewChainingGeneral";
+            this.cuesPreviewViewChainingGeneral.PreviewText = "Subtitle text.";
+            this.cuesPreviewViewChainingGeneral.RightGap = 0;
+            this.cuesPreviewViewChainingGeneral.RightGreenZone = 12;
+            this.cuesPreviewViewChainingGeneral.RightRedZone = 7;
+            this.cuesPreviewViewChainingGeneral.ShowShotChange = true;
+            this.cuesPreviewViewChainingGeneral.Size = new System.Drawing.Size(400, 70);
+            this.cuesPreviewViewChainingGeneral.TabIndex = 1;
+            // 
+            // cuesPreviewViewChainingOutCueOnShot
+            // 
+            this.cuesPreviewViewChainingOutCueOnShot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cuesPreviewViewChainingOutCueOnShot.FrameRate = 25F;
+            this.cuesPreviewViewChainingOutCueOnShot.LeftGap = 0;
+            this.cuesPreviewViewChainingOutCueOnShot.LeftGreenZone = 12;
+            this.cuesPreviewViewChainingOutCueOnShot.LeftRedZone = 7;
+            this.cuesPreviewViewChainingOutCueOnShot.Location = new System.Drawing.Point(10, 22);
+            this.cuesPreviewViewChainingOutCueOnShot.Name = "cuesPreviewViewChainingOutCueOnShot";
+            this.cuesPreviewViewChainingOutCueOnShot.PreviewText = "Subtitle text.";
+            this.cuesPreviewViewChainingOutCueOnShot.RightGap = 0;
+            this.cuesPreviewViewChainingOutCueOnShot.RightGreenZone = 12;
+            this.cuesPreviewViewChainingOutCueOnShot.RightRedZone = 7;
+            this.cuesPreviewViewChainingOutCueOnShot.ShowShotChange = true;
+            this.cuesPreviewViewChainingOutCueOnShot.Size = new System.Drawing.Size(400, 70);
+            this.cuesPreviewViewChainingOutCueOnShot.TabIndex = 4;
+            this.cuesPreviewViewChainingOutCueOnShot.Visible = false;
+            // 
+            // cuesPreviewViewChainingInCueOnShot
+            // 
+            this.cuesPreviewViewChainingInCueOnShot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cuesPreviewViewChainingInCueOnShot.FrameRate = 25F;
+            this.cuesPreviewViewChainingInCueOnShot.LeftGap = 0;
+            this.cuesPreviewViewChainingInCueOnShot.LeftGreenZone = 12;
+            this.cuesPreviewViewChainingInCueOnShot.LeftRedZone = 7;
+            this.cuesPreviewViewChainingInCueOnShot.Location = new System.Drawing.Point(10, 22);
+            this.cuesPreviewViewChainingInCueOnShot.Name = "cuesPreviewViewChainingInCueOnShot";
+            this.cuesPreviewViewChainingInCueOnShot.PreviewText = "Subtitle text.";
+            this.cuesPreviewViewChainingInCueOnShot.RightGap = 0;
+            this.cuesPreviewViewChainingInCueOnShot.RightGreenZone = 12;
+            this.cuesPreviewViewChainingInCueOnShot.RightRedZone = 7;
+            this.cuesPreviewViewChainingInCueOnShot.ShowShotChange = true;
+            this.cuesPreviewViewChainingInCueOnShot.Size = new System.Drawing.Size(400, 70);
+            this.cuesPreviewViewChainingInCueOnShot.TabIndex = 3;
+            this.cuesPreviewViewChainingInCueOnShot.Visible = false;
             // 
             // tabControlChaining
             // 
@@ -718,38 +828,58 @@ namespace Nikse.SubtitleEdit.Forms
             this.tabPageChainingGeneral.Text = "General";
             this.tabPageChainingGeneral.UseVisualStyleBackColor = true;
             // 
-            // tabPageChainingInCueOnShot
+            // labelChainingGeneralShotChangeBehavior
             // 
-            this.tabPageChainingInCueOnShot.Controls.Add(this.labelChainingInCueOnShotMaxGapSuffix);
-            this.tabPageChainingInCueOnShot.Controls.Add(this.radioButtonChainingInCueOnShotZones);
-            this.tabPageChainingInCueOnShot.Controls.Add(this.radioButtonChainingInCueOnShotMaxGap);
-            this.tabPageChainingInCueOnShot.Controls.Add(this.numericUpDownChainingInCueOnShotLeftGreenZone);
-            this.tabPageChainingInCueOnShot.Controls.Add(this.numericUpDownChainingInCueOnShotLeftRedZone);
-            this.tabPageChainingInCueOnShot.Controls.Add(this.numericUpDownChainingInCueOnShotMaxGap);
-            this.tabPageChainingInCueOnShot.Location = new System.Drawing.Point(4, 27);
-            this.tabPageChainingInCueOnShot.Name = "tabPageChainingInCueOnShot";
-            this.tabPageChainingInCueOnShot.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChainingInCueOnShot.Size = new System.Drawing.Size(400, 100);
-            this.tabPageChainingInCueOnShot.TabIndex = 1;
-            this.tabPageChainingInCueOnShot.Text = "In cue on shot change";
-            this.tabPageChainingInCueOnShot.UseVisualStyleBackColor = true;
+            this.labelChainingGeneralShotChangeBehavior.AutoSize = true;
+            this.labelChainingGeneralShotChangeBehavior.Location = new System.Drawing.Point(0, 79);
+            this.labelChainingGeneralShotChangeBehavior.Name = "labelChainingGeneralShotChangeBehavior";
+            this.labelChainingGeneralShotChangeBehavior.Size = new System.Drawing.Size(193, 15);
+            this.labelChainingGeneralShotChangeBehavior.TabIndex = 30;
+            this.labelChainingGeneralShotChangeBehavior.Text = "If there\'s a shot change in between:";
             // 
-            // numericUpDownChainingGeneralMaxGap
+            // comboBoxChainingGeneralShotChangeBehavior
             // 
-            this.numericUpDownChainingGeneralMaxGap.Location = new System.Drawing.Point(141, 2);
-            this.numericUpDownChainingGeneralMaxGap.Maximum = new decimal(new int[] {
-            2000,
-            0,
-            0,
-            0});
-            this.numericUpDownChainingGeneralMaxGap.Name = "numericUpDownChainingGeneralMaxGap";
-            this.numericUpDownChainingGeneralMaxGap.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownChainingGeneralMaxGap.TabIndex = 2;
-            this.numericUpDownChainingGeneralMaxGap.Value = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
+            this.comboBoxChainingGeneralShotChangeBehavior.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxChainingGeneralShotChangeBehavior.FormattingEnabled = true;
+            this.comboBoxChainingGeneralShotChangeBehavior.Items.AddRange(new object[] {
+            "Don\'t chain",
+            "Extend, crossing shot change",
+            "Extend until shot change"});
+            this.comboBoxChainingGeneralShotChangeBehavior.Location = new System.Drawing.Point(208, 76);
+            this.comboBoxChainingGeneralShotChangeBehavior.Name = "comboBoxChainingGeneralShotChangeBehavior";
+            this.comboBoxChainingGeneralShotChangeBehavior.Size = new System.Drawing.Size(192, 23);
+            this.comboBoxChainingGeneralShotChangeBehavior.TabIndex = 31;
+            // 
+            // labelChainingGeneralMaxGapSuffix
+            // 
+            this.labelChainingGeneralMaxGapSuffix.AutoSize = true;
+            this.labelChainingGeneralMaxGapSuffix.Location = new System.Drawing.Point(199, 6);
+            this.labelChainingGeneralMaxGapSuffix.Name = "labelChainingGeneralMaxGapSuffix";
+            this.labelChainingGeneralMaxGapSuffix.Size = new System.Drawing.Size(23, 15);
+            this.labelChainingGeneralMaxGapSuffix.TabIndex = 13;
+            this.labelChainingGeneralMaxGapSuffix.Text = "ms";
+            // 
+            // radioButtonChainingGeneralZones
+            // 
+            this.radioButtonChainingGeneralZones.AutoSize = true;
+            this.radioButtonChainingGeneralZones.Location = new System.Drawing.Point(0, 32);
+            this.radioButtonChainingGeneralZones.Name = "radioButtonChainingGeneralZones";
+            this.radioButtonChainingGeneralZones.Size = new System.Drawing.Size(60, 19);
+            this.radioButtonChainingGeneralZones.TabIndex = 10;
+            this.radioButtonChainingGeneralZones.Text = "Zones:";
+            this.radioButtonChainingGeneralZones.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonChainingGeneralMaxGap
+            // 
+            this.radioButtonChainingGeneralMaxGap.AutoSize = true;
+            this.radioButtonChainingGeneralMaxGap.Checked = true;
+            this.radioButtonChainingGeneralMaxGap.Location = new System.Drawing.Point(0, 3);
+            this.radioButtonChainingGeneralMaxGap.Name = "radioButtonChainingGeneralMaxGap";
+            this.radioButtonChainingGeneralMaxGap.Size = new System.Drawing.Size(77, 19);
+            this.radioButtonChainingGeneralMaxGap.TabIndex = 1;
+            this.radioButtonChainingGeneralMaxGap.TabStop = true;
+            this.radioButtonChainingGeneralMaxGap.Text = "Max. gap:";
+            this.radioButtonChainingGeneralMaxGap.UseVisualStyleBackColor = true;
             // 
             // numericUpDownChainingGeneralLeftGreenZone
             // 
@@ -789,74 +919,38 @@ namespace Nikse.SubtitleEdit.Forms
             0,
             0});
             // 
-            // radioButtonChainingGeneralMaxGap
+            // numericUpDownChainingGeneralMaxGap
             // 
-            this.radioButtonChainingGeneralMaxGap.AutoSize = true;
-            this.radioButtonChainingGeneralMaxGap.Checked = true;
-            this.radioButtonChainingGeneralMaxGap.Location = new System.Drawing.Point(0, 3);
-            this.radioButtonChainingGeneralMaxGap.Name = "radioButtonChainingGeneralMaxGap";
-            this.radioButtonChainingGeneralMaxGap.Size = new System.Drawing.Size(77, 19);
-            this.radioButtonChainingGeneralMaxGap.TabIndex = 1;
-            this.radioButtonChainingGeneralMaxGap.TabStop = true;
-            this.radioButtonChainingGeneralMaxGap.Text = "Max. gap:";
-            this.radioButtonChainingGeneralMaxGap.UseVisualStyleBackColor = true;
+            this.numericUpDownChainingGeneralMaxGap.Location = new System.Drawing.Point(141, 2);
+            this.numericUpDownChainingGeneralMaxGap.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.numericUpDownChainingGeneralMaxGap.Name = "numericUpDownChainingGeneralMaxGap";
+            this.numericUpDownChainingGeneralMaxGap.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownChainingGeneralMaxGap.TabIndex = 2;
+            this.numericUpDownChainingGeneralMaxGap.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             // 
-            // radioButtonChainingGeneralZones
+            // tabPageChainingInCueOnShot
             // 
-            this.radioButtonChainingGeneralZones.AutoSize = true;
-            this.radioButtonChainingGeneralZones.Location = new System.Drawing.Point(0, 32);
-            this.radioButtonChainingGeneralZones.Name = "radioButtonChainingGeneralZones";
-            this.radioButtonChainingGeneralZones.Size = new System.Drawing.Size(60, 19);
-            this.radioButtonChainingGeneralZones.TabIndex = 10;
-            this.radioButtonChainingGeneralZones.Text = "Zones:";
-            this.radioButtonChainingGeneralZones.UseVisualStyleBackColor = true;
-            // 
-            // tabPageChainingOutCueOnShot
-            // 
-            this.tabPageChainingOutCueOnShot.Controls.Add(this.numericUpDownChainingOutCueOnShotRightGreenZone);
-            this.tabPageChainingOutCueOnShot.Controls.Add(this.numericUpDownChainingOutCueOnShotRightRedZone);
-            this.tabPageChainingOutCueOnShot.Controls.Add(this.labelChainingOutCueOnShotMaxGapSuffix);
-            this.tabPageChainingOutCueOnShot.Controls.Add(this.radioButtonChainingOutCueOnShotZones);
-            this.tabPageChainingOutCueOnShot.Controls.Add(this.radioButtonChainingOutCueOnShotMaxGap);
-            this.tabPageChainingOutCueOnShot.Controls.Add(this.numericUpDownChainingOutCueOnShotMaxGap);
-            this.tabPageChainingOutCueOnShot.Location = new System.Drawing.Point(4, 27);
-            this.tabPageChainingOutCueOnShot.Name = "tabPageChainingOutCueOnShot";
-            this.tabPageChainingOutCueOnShot.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChainingOutCueOnShot.Size = new System.Drawing.Size(400, 100);
-            this.tabPageChainingOutCueOnShot.TabIndex = 2;
-            this.tabPageChainingOutCueOnShot.Text = "Out cue on shot change";
-            this.tabPageChainingOutCueOnShot.UseVisualStyleBackColor = true;
-            // 
-            // labelChainingGeneralMaxGapSuffix
-            // 
-            this.labelChainingGeneralMaxGapSuffix.AutoSize = true;
-            this.labelChainingGeneralMaxGapSuffix.Location = new System.Drawing.Point(199, 6);
-            this.labelChainingGeneralMaxGapSuffix.Name = "labelChainingGeneralMaxGapSuffix";
-            this.labelChainingGeneralMaxGapSuffix.Size = new System.Drawing.Size(23, 15);
-            this.labelChainingGeneralMaxGapSuffix.TabIndex = 13;
-            this.labelChainingGeneralMaxGapSuffix.Text = "ms";
-            // 
-            // comboBoxChainingGeneralShotChangeBehavior
-            // 
-            this.comboBoxChainingGeneralShotChangeBehavior.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxChainingGeneralShotChangeBehavior.FormattingEnabled = true;
-            this.comboBoxChainingGeneralShotChangeBehavior.Items.AddRange(new object[] {
-            "Don\'t chain",
-            "Extend, crossing shot change",
-            "Extend until shot change"});
-            this.comboBoxChainingGeneralShotChangeBehavior.Location = new System.Drawing.Point(208, 76);
-            this.comboBoxChainingGeneralShotChangeBehavior.Name = "comboBoxChainingGeneralShotChangeBehavior";
-            this.comboBoxChainingGeneralShotChangeBehavior.Size = new System.Drawing.Size(192, 23);
-            this.comboBoxChainingGeneralShotChangeBehavior.TabIndex = 31;
-            // 
-            // labelChainingGeneralShotChangeBehavior
-            // 
-            this.labelChainingGeneralShotChangeBehavior.AutoSize = true;
-            this.labelChainingGeneralShotChangeBehavior.Location = new System.Drawing.Point(0, 79);
-            this.labelChainingGeneralShotChangeBehavior.Name = "labelChainingGeneralShotChangeBehavior";
-            this.labelChainingGeneralShotChangeBehavior.Size = new System.Drawing.Size(193, 15);
-            this.labelChainingGeneralShotChangeBehavior.TabIndex = 30;
-            this.labelChainingGeneralShotChangeBehavior.Text = "If there\'s a shot change in between:";
+            this.tabPageChainingInCueOnShot.Controls.Add(this.labelChainingInCueOnShotMaxGapSuffix);
+            this.tabPageChainingInCueOnShot.Controls.Add(this.radioButtonChainingInCueOnShotZones);
+            this.tabPageChainingInCueOnShot.Controls.Add(this.radioButtonChainingInCueOnShotMaxGap);
+            this.tabPageChainingInCueOnShot.Controls.Add(this.numericUpDownChainingInCueOnShotLeftGreenZone);
+            this.tabPageChainingInCueOnShot.Controls.Add(this.numericUpDownChainingInCueOnShotLeftRedZone);
+            this.tabPageChainingInCueOnShot.Controls.Add(this.numericUpDownChainingInCueOnShotMaxGap);
+            this.tabPageChainingInCueOnShot.Location = new System.Drawing.Point(4, 27);
+            this.tabPageChainingInCueOnShot.Name = "tabPageChainingInCueOnShot";
+            this.tabPageChainingInCueOnShot.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageChainingInCueOnShot.Size = new System.Drawing.Size(400, 100);
+            this.tabPageChainingInCueOnShot.TabIndex = 1;
+            this.tabPageChainingInCueOnShot.Text = "In cue on shot change";
+            this.tabPageChainingInCueOnShot.UseVisualStyleBackColor = true;
             // 
             // labelChainingInCueOnShotMaxGapSuffix
             // 
@@ -944,6 +1038,58 @@ namespace Nikse.SubtitleEdit.Forms
             0,
             0});
             // 
+            // tabPageChainingOutCueOnShot
+            // 
+            this.tabPageChainingOutCueOnShot.Controls.Add(this.numericUpDownChainingOutCueOnShotRightGreenZone);
+            this.tabPageChainingOutCueOnShot.Controls.Add(this.numericUpDownChainingOutCueOnShotRightRedZone);
+            this.tabPageChainingOutCueOnShot.Controls.Add(this.labelChainingOutCueOnShotMaxGapSuffix);
+            this.tabPageChainingOutCueOnShot.Controls.Add(this.radioButtonChainingOutCueOnShotZones);
+            this.tabPageChainingOutCueOnShot.Controls.Add(this.radioButtonChainingOutCueOnShotMaxGap);
+            this.tabPageChainingOutCueOnShot.Controls.Add(this.numericUpDownChainingOutCueOnShotMaxGap);
+            this.tabPageChainingOutCueOnShot.Location = new System.Drawing.Point(4, 27);
+            this.tabPageChainingOutCueOnShot.Name = "tabPageChainingOutCueOnShot";
+            this.tabPageChainingOutCueOnShot.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageChainingOutCueOnShot.Size = new System.Drawing.Size(400, 100);
+            this.tabPageChainingOutCueOnShot.TabIndex = 2;
+            this.tabPageChainingOutCueOnShot.Text = "Out cue on shot change";
+            this.tabPageChainingOutCueOnShot.UseVisualStyleBackColor = true;
+            // 
+            // numericUpDownChainingOutCueOnShotRightGreenZone
+            // 
+            this.numericUpDownChainingOutCueOnShotRightGreenZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.numericUpDownChainingOutCueOnShotRightGreenZone.Location = new System.Drawing.Point(266, 31);
+            this.numericUpDownChainingOutCueOnShotRightGreenZone.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.numericUpDownChainingOutCueOnShotRightGreenZone.Name = "numericUpDownChainingOutCueOnShotRightGreenZone";
+            this.numericUpDownChainingOutCueOnShotRightGreenZone.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownChainingOutCueOnShotRightGreenZone.TabIndex = 12;
+            this.numericUpDownChainingOutCueOnShotRightGreenZone.Value = new decimal(new int[] {
+            13,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownChainingOutCueOnShotRightRedZone
+            // 
+            this.numericUpDownChainingOutCueOnShotRightRedZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.numericUpDownChainingOutCueOnShotRightRedZone.Location = new System.Drawing.Point(208, 31);
+            this.numericUpDownChainingOutCueOnShotRightRedZone.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.numericUpDownChainingOutCueOnShotRightRedZone.Name = "numericUpDownChainingOutCueOnShotRightRedZone";
+            this.numericUpDownChainingOutCueOnShotRightRedZone.Size = new System.Drawing.Size(52, 23);
+            this.numericUpDownChainingOutCueOnShotRightRedZone.TabIndex = 11;
+            this.numericUpDownChainingOutCueOnShotRightRedZone.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            // 
             // labelChainingOutCueOnShotMaxGapSuffix
             // 
             this.labelChainingOutCueOnShotMaxGapSuffix.AutoSize = true;
@@ -992,152 +1138,6 @@ namespace Nikse.SubtitleEdit.Forms
             0,
             0});
             // 
-            // numericUpDownChainingOutCueOnShotRightGreenZone
-            // 
-            this.numericUpDownChainingOutCueOnShotRightGreenZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.numericUpDownChainingOutCueOnShotRightGreenZone.Location = new System.Drawing.Point(266, 31);
-            this.numericUpDownChainingOutCueOnShotRightGreenZone.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.numericUpDownChainingOutCueOnShotRightGreenZone.Name = "numericUpDownChainingOutCueOnShotRightGreenZone";
-            this.numericUpDownChainingOutCueOnShotRightGreenZone.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownChainingOutCueOnShotRightGreenZone.TabIndex = 12;
-            this.numericUpDownChainingOutCueOnShotRightGreenZone.Value = new decimal(new int[] {
-            13,
-            0,
-            0,
-            0});
-            // 
-            // numericUpDownChainingOutCueOnShotRightRedZone
-            // 
-            this.numericUpDownChainingOutCueOnShotRightRedZone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.numericUpDownChainingOutCueOnShotRightRedZone.Location = new System.Drawing.Point(208, 31);
-            this.numericUpDownChainingOutCueOnShotRightRedZone.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.numericUpDownChainingOutCueOnShotRightRedZone.Name = "numericUpDownChainingOutCueOnShotRightRedZone";
-            this.numericUpDownChainingOutCueOnShotRightRedZone.Size = new System.Drawing.Size(52, 23);
-            this.numericUpDownChainingOutCueOnShotRightRedZone.TabIndex = 11;
-            this.numericUpDownChainingOutCueOnShotRightRedZone.Value = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            // 
-            // cuesPreviewViewChainingGeneral
-            // 
-            this.cuesPreviewViewChainingGeneral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuesPreviewViewChainingGeneral.FrameRate = 25F;
-            this.cuesPreviewViewChainingGeneral.LeftGap = 0;
-            this.cuesPreviewViewChainingGeneral.LeftGreenZone = 12;
-            this.cuesPreviewViewChainingGeneral.LeftRedZone = 7;
-            this.cuesPreviewViewChainingGeneral.Location = new System.Drawing.Point(10, 22);
-            this.cuesPreviewViewChainingGeneral.Name = "cuesPreviewViewChainingGeneral";
-            this.cuesPreviewViewChainingGeneral.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewChainingGeneral.RightGap = 0;
-            this.cuesPreviewViewChainingGeneral.RightGreenZone = 12;
-            this.cuesPreviewViewChainingGeneral.RightRedZone = 7;
-            this.cuesPreviewViewChainingGeneral.ShowShotChange = true;
-            this.cuesPreviewViewChainingGeneral.Size = new System.Drawing.Size(400, 70);
-            this.cuesPreviewViewChainingGeneral.TabIndex = 1;
-            // 
-            // cuesPreviewViewChainingOutCueOnShot
-            // 
-            this.cuesPreviewViewChainingOutCueOnShot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuesPreviewViewChainingOutCueOnShot.FrameRate = 25F;
-            this.cuesPreviewViewChainingOutCueOnShot.LeftGap = 0;
-            this.cuesPreviewViewChainingOutCueOnShot.LeftGreenZone = 12;
-            this.cuesPreviewViewChainingOutCueOnShot.LeftRedZone = 7;
-            this.cuesPreviewViewChainingOutCueOnShot.Location = new System.Drawing.Point(10, 22);
-            this.cuesPreviewViewChainingOutCueOnShot.Name = "cuesPreviewViewChainingOutCueOnShot";
-            this.cuesPreviewViewChainingOutCueOnShot.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewChainingOutCueOnShot.RightGap = 0;
-            this.cuesPreviewViewChainingOutCueOnShot.RightGreenZone = 12;
-            this.cuesPreviewViewChainingOutCueOnShot.RightRedZone = 7;
-            this.cuesPreviewViewChainingOutCueOnShot.ShowShotChange = true;
-            this.cuesPreviewViewChainingOutCueOnShot.Size = new System.Drawing.Size(400, 70);
-            this.cuesPreviewViewChainingOutCueOnShot.TabIndex = 4;
-            this.cuesPreviewViewChainingOutCueOnShot.Visible = false;
-            // 
-            // cuesPreviewViewChainingInCueOnShot
-            // 
-            this.cuesPreviewViewChainingInCueOnShot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuesPreviewViewChainingInCueOnShot.FrameRate = 25F;
-            this.cuesPreviewViewChainingInCueOnShot.LeftGap = 0;
-            this.cuesPreviewViewChainingInCueOnShot.LeftGreenZone = 12;
-            this.cuesPreviewViewChainingInCueOnShot.LeftRedZone = 7;
-            this.cuesPreviewViewChainingInCueOnShot.Location = new System.Drawing.Point(10, 22);
-            this.cuesPreviewViewChainingInCueOnShot.Name = "cuesPreviewViewChainingInCueOnShot";
-            this.cuesPreviewViewChainingInCueOnShot.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewChainingInCueOnShot.RightGap = 0;
-            this.cuesPreviewViewChainingInCueOnShot.RightGreenZone = 12;
-            this.cuesPreviewViewChainingInCueOnShot.RightRedZone = 7;
-            this.cuesPreviewViewChainingInCueOnShot.ShowShotChange = true;
-            this.cuesPreviewViewChainingInCueOnShot.Size = new System.Drawing.Size(400, 70);
-            this.cuesPreviewViewChainingInCueOnShot.TabIndex = 3;
-            this.cuesPreviewViewChainingInCueOnShot.Visible = false;
-            // 
-            // cuesPreviewViewConnectedSubtitles
-            // 
-            this.cuesPreviewViewConnectedSubtitles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuesPreviewViewConnectedSubtitles.FrameRate = 25F;
-            this.cuesPreviewViewConnectedSubtitles.LeftGap = 0;
-            this.cuesPreviewViewConnectedSubtitles.LeftGreenZone = 12;
-            this.cuesPreviewViewConnectedSubtitles.LeftRedZone = 7;
-            this.cuesPreviewViewConnectedSubtitles.Location = new System.Drawing.Point(10, 22);
-            this.cuesPreviewViewConnectedSubtitles.Name = "cuesPreviewViewConnectedSubtitles";
-            this.cuesPreviewViewConnectedSubtitles.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewConnectedSubtitles.RightGap = 0;
-            this.cuesPreviewViewConnectedSubtitles.RightGreenZone = 12;
-            this.cuesPreviewViewConnectedSubtitles.RightRedZone = 7;
-            this.cuesPreviewViewConnectedSubtitles.ShowShotChange = true;
-            this.cuesPreviewViewConnectedSubtitles.Size = new System.Drawing.Size(400, 70);
-            this.cuesPreviewViewConnectedSubtitles.TabIndex = 1;
-            // 
-            // cuesPreviewViewOutCues
-            // 
-            this.cuesPreviewViewOutCues.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuesPreviewViewOutCues.FrameRate = 25F;
-            this.cuesPreviewViewOutCues.LeftGap = 0;
-            this.cuesPreviewViewOutCues.LeftGreenZone = 12;
-            this.cuesPreviewViewOutCues.LeftRedZone = 7;
-            this.cuesPreviewViewOutCues.Location = new System.Drawing.Point(10, 22);
-            this.cuesPreviewViewOutCues.Name = "cuesPreviewViewOutCues";
-            this.cuesPreviewViewOutCues.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewOutCues.RightGap = 0;
-            this.cuesPreviewViewOutCues.RightGreenZone = 12;
-            this.cuesPreviewViewOutCues.RightRedZone = 7;
-            this.cuesPreviewViewOutCues.ShowShotChange = true;
-            this.cuesPreviewViewOutCues.Size = new System.Drawing.Size(400, 70);
-            this.cuesPreviewViewOutCues.TabIndex = 1;
-            // 
-            // cuesPreviewViewInCues
-            // 
-            this.cuesPreviewViewInCues.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuesPreviewViewInCues.FrameRate = 25F;
-            this.cuesPreviewViewInCues.LeftGap = 0;
-            this.cuesPreviewViewInCues.LeftGreenZone = 12;
-            this.cuesPreviewViewInCues.LeftRedZone = 7;
-            this.cuesPreviewViewInCues.Location = new System.Drawing.Point(10, 22);
-            this.cuesPreviewViewInCues.Name = "cuesPreviewViewInCues";
-            this.cuesPreviewViewInCues.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewInCues.RightGap = 0;
-            this.cuesPreviewViewInCues.RightGreenZone = 12;
-            this.cuesPreviewViewInCues.RightRedZone = 7;
-            this.cuesPreviewViewInCues.ShowShotChange = true;
-            this.cuesPreviewViewInCues.Size = new System.Drawing.Size(400, 70);
-            this.cuesPreviewViewInCues.TabIndex = 1;
-            // 
             // BeautifyTimeCodesProfile
             // 
             this.AcceptButton = this.buttonOK;
@@ -1166,14 +1166,14 @@ namespace Nikse.SubtitleEdit.Forms
             this.menuStrip.PerformLayout();
             this.groupBoxGeneral.ResumeLayout(false);
             this.groupBoxGeneral.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGap)).EndInit();
             this.groupBoxInCues.ResumeLayout(false);
             this.groupBoxInCues.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesGap)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGap)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightRedZone)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightGreenZone)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesLeftRedZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesLeftGreenZone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesLeftRedZone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightGreenZone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesRightRedZone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInCuesGap)).EndInit();
             this.groupBoxOutCues.ResumeLayout(false);
             this.groupBoxOutCues.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutCuesLeftGreenZone)).EndInit();
@@ -1183,30 +1183,30 @@ namespace Nikse.SubtitleEdit.Forms
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutCuesRightRedZone)).EndInit();
             this.groupBoxConnectedSubtitles.ResumeLayout(false);
             this.groupBoxConnectedSubtitles.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesTreatConnected)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesLeftGreenZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesLeftRedZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesLeftGap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesRightGreenZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesRightRedZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesRightGap)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownConnectedSubtitlesTreatConnected)).EndInit();
             this.groupBoxChaining.ResumeLayout(false);
             this.tabControlChaining.ResumeLayout(false);
             this.tabPageChainingGeneral.ResumeLayout(false);
             this.tabPageChainingGeneral.PerformLayout();
-            this.tabPageChainingInCueOnShot.ResumeLayout(false);
-            this.tabPageChainingInCueOnShot.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralMaxGap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralLeftGreenZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralRedGreenZone)).EndInit();
-            this.tabPageChainingOutCueOnShot.ResumeLayout(false);
-            this.tabPageChainingOutCueOnShot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingGeneralMaxGap)).EndInit();
+            this.tabPageChainingInCueOnShot.ResumeLayout(false);
+            this.tabPageChainingInCueOnShot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingInCueOnShotLeftGreenZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingInCueOnShotLeftRedZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingInCueOnShotMaxGap)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotMaxGap)).EndInit();
+            this.tabPageChainingOutCueOnShot.ResumeLayout(false);
+            this.tabPageChainingOutCueOnShot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotRightGreenZone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotRightRedZone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownChainingOutCueOnShotMaxGap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
