@@ -29835,5 +29835,30 @@ namespace Nikse.SubtitleEdit.Forms
                 }
             }
         }
+
+        private void toolStripMenuItemBeautifyTimeCodes_Click(object sender, EventArgs e)
+        {
+            if (!IsSubtitleLoaded)
+            {
+                DisplaySubtitleNotLoadedMessage();
+                return;
+            }
+
+            ReloadFromSourceView();
+            using (var beautifyTimeCodes = new BeautifyTimeCodes())
+            {
+                if (beautifyTimeCodes.ShowDialog(this) == DialogResult.OK)
+                {
+                    SaveSubtitleListviewIndices();
+                    // TODO
+                    //MakeHistoryForUndo(_language.BeforeRenumbering);
+                    //ShowStatus(string.Format(_language.RenumberedStartingFromX, beautifyTimeCodes.StartFromNumber));
+                    //_subtitle.Renumber(beautifyTimeCodes.StartFromNumber);
+                    UpdateSourceView();
+                    SubtitleListview1.Fill(_subtitle, _subtitleOriginal);
+                    RestoreSubtitleListviewIndices();
+                }
+            }
+        }
     }
 }

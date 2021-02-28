@@ -204,6 +204,8 @@ namespace Nikse.SubtitleEdit.Forms
             this.AscendingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.descendingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.netflixQualityCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItemBeautifyTimeCodes = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemMakeEmptyFromCurrent = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemBatchConvert = new System.Windows.Forms.ToolStripMenuItem();
@@ -1780,6 +1782,8 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripMenuItemAutoSplitLongLines,
             this.toolStripMenuItemSortBy,
             this.netflixQualityCheckToolStripMenuItem,
+            this.toolStripSeparator26,
+            this.toolStripMenuItemBeautifyTimeCodes,
             this.toolStripSeparator22,
             this.toolStripMenuItemMakeEmptyFromCurrent,
             this.toolStripMenuItemBatchConvert,
@@ -2019,6 +2023,18 @@ namespace Nikse.SubtitleEdit.Forms
             this.netflixQualityCheckToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.netflixQualityCheckToolStripMenuItem.Text = "Netflix quality check";
             this.netflixQualityCheckToolStripMenuItem.Click += new System.EventHandler(this.netflixGlyphCheckToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator26
+            // 
+            this.toolStripSeparator26.Name = "toolStripSeparator26";
+            this.toolStripSeparator26.Size = new System.Drawing.Size(335, 6);
+            // 
+            // toolStripMenuItemBeautifyTimeCodes
+            // 
+            this.toolStripMenuItemBeautifyTimeCodes.Name = "toolStripMenuItemBeautifyTimeCodes";
+            this.toolStripMenuItemBeautifyTimeCodes.Size = new System.Drawing.Size(338, 22);
+            this.toolStripMenuItemBeautifyTimeCodes.Text = "Beautify time codes...";
+            this.toolStripMenuItemBeautifyTimeCodes.Click += new System.EventHandler(this.toolStripMenuItemBeautifyTimeCodes_Click);
             // 
             // toolStripSeparator22
             // 
@@ -5960,5 +5976,7 @@ namespace Nikse.SubtitleEdit.Forms
         private System.Windows.Forms.ToolStripButton toolStripButtonAssStyleManager;
         private System.Windows.Forms.ToolStripButton toolStripButtonAssProperties;
         private System.Windows.Forms.ToolStripButton toolStripButtonAssAttachments;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemBeautifyTimeCodes;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
     }
 }

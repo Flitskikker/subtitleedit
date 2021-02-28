@@ -85,6 +85,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CuesPreviewView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SETextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -126,6 +129,18 @@
     </Compile>
     <Compile Include="Forms\BatchConvertTsSettings.Designer.cs">
       <DependentUpon>BatchConvertTsSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\BeautifyTimeCodes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BeautifyTimeCodes.Designer.cs">
+      <DependentUpon>BeautifyTimeCodes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\BeautifyTimeCodesProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BeautifyTimeCodesProfile.Designer.cs">
+      <DependentUpon>BeautifyTimeCodesProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\BinaryEdit\BinEdit.cs">
       <SubType>Form</SubType>
@@ -1226,6 +1241,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BatchConvertTsSettings.resx">
       <DependentUpon>BatchConvertTsSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BeautifyTimeCodes.resx">
+      <DependentUpon>BeautifyTimeCodes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BeautifyTimeCodesProfile.resx">
+      <DependentUpon>BeautifyTimeCodesProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BinaryEdit\BinEdit.resx">
       <DependentUpon>BinEdit.cs</DependentUpon>
