@@ -69,8 +69,8 @@ namespace Nikse.SubtitleEdit.Forms
 
                 // Check if ffprobe is available
                 var ffProbePath = Path.GetDirectoryName(Configuration.Settings.General.FFmpegLocation) + Path.DirectorySeparatorChar + Path.GetExtension(Configuration.Settings.General.FFmpegLocation);
-                var isFFprobeAvailable = !string.IsNullOrEmpty(ffProbePath) && File.Exists(ffProbePath);
-                if (!isFFprobeAvailable)
+                var isffProbeAvailable = !string.IsNullOrEmpty(ffProbePath) && File.Exists(ffProbePath);
+                if (!isffProbeAvailable)
                 {
                     checkBoxExtractExactTimeCodes.Enabled = false;
                     checkBoxExtractExactTimeCodes.Checked = false;
