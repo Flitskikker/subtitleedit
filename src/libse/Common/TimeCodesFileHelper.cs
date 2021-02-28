@@ -28,13 +28,13 @@ namespace Nikse.SubtitleEdit.Core.Common
         public static List<double> FromDisk(string videoFileName)
         {
             var list = new List<double>();
-            var sceneChangesFileName = GetTimeCodesFileName(videoFileName);
-            if (!File.Exists(sceneChangesFileName))
+            var timeCodesFileName = GetTimeCodesFileName(videoFileName);
+            if (!File.Exists(timeCodesFileName))
             {
                 return list;
             }
 
-            foreach (var line in File.ReadLines(sceneChangesFileName))
+            foreach (var line in File.ReadLines(timeCodesFileName))
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {

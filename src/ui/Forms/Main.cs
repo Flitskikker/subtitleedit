@@ -29847,18 +29847,28 @@ namespace Nikse.SubtitleEdit.Forms
                 return;
             }
 
-            ReloadFromSourceView();
-            using (var beautifyTimeCodes = new BeautifyTimeCodes())
+            using (var form = new BeautifyTimeCodes(_subtitle, _videoInfo, VideoFileName, audioVisualizer.SceneChanges))
             {
-                if (beautifyTimeCodes.ShowDialog(this) == DialogResult.OK)
+                if (form.ShowDialog(this) == DialogResult.OK && form.FixedCount > 0)
                 {
-                    SaveSubtitleListviewIndices();
+                    int index = FirstSelectedIndex;
+                    if (index < 0)
+                    {
+                        index = 0;
+                    }
+
+                    if (form.ShotChangesInSeconds.Count > 0)
+                    {
+                        audioVisualizer.SceneChanges = form.ShotChangesInSeconds;
+                    }
+
                     MakeHistoryForUndo(_language.BeforeBeautifyTimeCodes);
-                    ShowStatus(_language.BeautifiedTimeCodes);
-                    // TODO
-                    //_subtitle.Renumber(beautifyTimeCodes.StartFromNumber);
-                    UpdateSourceView();
+                    SaveSubtitleListviewIndices();
+                    _subtitle.Paragraphs.Clear();
+                    _subtitle.Paragraphs.AddRange(form.FixedSubtitle.Paragraphs);
+
                     SubtitleListview1.Fill(_subtitle, _subtitleOriginal);
+                    SubtitleListview1.SelectIndexAndEnsureVisible(index, true);
                     RestoreSubtitleListviewIndices();
                 }
             }
