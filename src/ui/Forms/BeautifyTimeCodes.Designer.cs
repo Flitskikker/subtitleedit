@@ -119,7 +119,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.checkBoxExtractExactTimeCodes.Name = "checkBoxExtractExactTimeCodes";
             this.checkBoxExtractExactTimeCodes.Size = new System.Drawing.Size(266, 19);
             this.checkBoxExtractExactTimeCodes.TabIndex = 1;
-            this.checkBoxExtractExactTimeCodes.Text = "Use ffmpeg to extract exact frame time codes";
+            this.checkBoxExtractExactTimeCodes.Text = "Use ffprobe to extract exact frame time codes";
             this.checkBoxExtractExactTimeCodes.UseVisualStyleBackColor = true;
             this.checkBoxExtractExactTimeCodes.CheckedChanged += new System.EventHandler(this.checkBoxExtractExactTimeCodes_CheckedChanged);
             // 

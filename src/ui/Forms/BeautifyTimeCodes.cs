@@ -67,9 +67,10 @@ namespace Nikse.SubtitleEdit.Forms
                 this.timeCodes = TimeCodesFileHelper.FromDisk(videoFileName);
                 this.shotChanges = shotChanges;
 
-                // Check if ffmpeg is available
-                var isFfmpegAvailable = !string.IsNullOrEmpty(Configuration.Settings.General.FFmpegLocation) && File.Exists(Configuration.Settings.General.FFmpegLocation);
-                if (!isFfmpegAvailable)
+                // Check if ffprobe is available
+                var ffProbePath = Path.GetDirectoryName(Configuration.Settings.General.FFmpegLocation) + Path.DirectorySeparatorChar + Path.GetExtension(Configuration.Settings.General.FFmpegLocation);
+                var isFFprobeAvailable = !string.IsNullOrEmpty(ffProbePath) && File.Exists(ffProbePath);
+                if (!isFFprobeAvailable)
                 {
                     checkBoxExtractExactTimeCodes.Enabled = false;
                     checkBoxExtractExactTimeCodes.Checked = false;
