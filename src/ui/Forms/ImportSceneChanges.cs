@@ -3,6 +3,7 @@ using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Nikse.SubtitleEdit.Forms
     {
         public List<double> SceneChangesInSeconds = new List<double>();
         private readonly double _frameRate = 25;
+        private readonly double _duration = 0;
         private readonly string _videoFileName;
         private bool _abort;
         private bool _pause;
@@ -30,6 +32,10 @@ namespace Nikse.SubtitleEdit.Forms
             if (videoInfo != null && videoInfo.FramesPerSecond > 1)
             {
                 _frameRate = videoInfo.FramesPerSecond;
+            }
+            if (videoInfo != null && videoInfo.TotalMilliseconds > 0)
+            {
+                _duration = videoInfo.TotalMilliseconds;
             }
 
             _videoFileName = videoFileName;
@@ -367,16 +373,16 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void UpdateImportTextBox()
         {
-            if (_sceneChangesGenerator.TotalDuration > 0 && _sceneChangesGenerator.CurrentTime > 0)
+            if (_duration > 0 && _sceneChangesGenerator.LastSeconds > 0)
             {
                 if (progressBar1.Style != ProgressBarStyle.Blocks)
                 {
                     progressBar1.Style = ProgressBarStyle.Blocks;
-                    progressBar1.Maximum = Convert.ToInt32(_sceneChangesGenerator.TotalDuration);
+                    progressBar1.Maximum = Convert.ToInt32(_duration);
                 }
 
-                progressBar1.Value = Convert.ToInt32(_sceneChangesGenerator.CurrentTime);
-                labelProgress.Text = FormatSeconds(_sceneChangesGenerator.CurrentTime) + " / " + FormatSeconds(_sceneChangesGenerator.TotalDuration);
+                progressBar1.Value = Convert.ToInt32(_sceneChangesGenerator.LastSeconds);
+                labelProgress.Text = FormatSeconds(_sceneChangesGenerator.LastSeconds) + " / " + FormatSeconds(_duration);
             }
 
             textBoxGenerate.Text = _sceneChangesGenerator.GetTimeCodesString();

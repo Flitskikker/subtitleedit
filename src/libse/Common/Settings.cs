@@ -2244,7 +2244,7 @@ $HorzAlign          =   Center
         public BeautifyTimeCodesSettings()
         {
             AlignTimeCodes = true;
-            ExtractExactTimeCodes = true;
+            ExtractExactTimeCodes = false;
             SnapToShotChanges = true;
             Profile = new BeautifyTimeCodesProfile();
         }

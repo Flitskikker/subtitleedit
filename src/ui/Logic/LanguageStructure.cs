@@ -91,6 +91,7 @@
             public string Collapse { get; set; }
             public string ShortcutX { get; set; }
             public string ExampleX { get; set; }
+            public string Error { get; set; }
         }
 
         public class About
@@ -276,6 +277,21 @@
         public class BeautifyTimeCodes
         {
             public string Title { get; set; }
+            public string GroupTimeCodes { get; set; }
+            public string AlignTimeCodes { get; set; }
+            public string ExtractExactTimeCodes { get; set; }
+            public string ExtractTimeCodes { get; set; }
+            public string CancelTimeCodes { get; set; }
+            public string GroupShotChanges { get; set; }
+            public string SnapToShotChanges { get; set; }
+            public string ImportShotChanges { get; set; }
+            public string EditProfile { get; set; }
+            public string NoTimeCodesLoaded { get; set; }
+            public string XTimeCodesLoaded { get; set; }
+            public string NoTimeCodesLoadedError { get; set; }
+            public string NoShotChangesLoaded { get; set; }
+            public string XShotChangesLoaded { get; set; }
+            public string NoShotChangesLoadedError { get; set; }
         }
 
         public class BeautifyTimeCodesProfile

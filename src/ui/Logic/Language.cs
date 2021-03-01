@@ -209,6 +209,7 @@ namespace Nikse.SubtitleEdit.Logic
                 Collapse = "Collapse",
                 ShortcutX = "Shortcut: {0}",
                 ExampleX = "Example: {0}",
+                Error = "Error",
             };
 
             About = new LanguageStructure.About
@@ -410,6 +411,21 @@ namespace Nikse.SubtitleEdit.Logic
             BeautifyTimeCodes = new LanguageStructure.BeautifyTimeCodes
             {
                 Title = "Beautify time codes",
+                GroupTimeCodes = "Time codes",
+                AlignTimeCodes = "Align time codes to frame time codes",
+                ExtractExactTimeCodes = "Use ffprobe to extract exact frame time codes",
+                ExtractTimeCodes = "Extract time codes",
+                CancelTimeCodes = "Cancel",
+                GroupShotChanges = "Shot changes",
+                SnapToShotChanges = "Snap cues to shot changes",
+                ImportShotChanges = "Generate / import shot changes...",
+                EditProfile = "Edit profile...",
+                NoTimeCodesLoaded = "No time codes loaded",
+                XTimeCodesLoaded = "{0} time codes loaded",
+                NoTimeCodesLoadedError = "You've selected to extract exact frame time codes, but there are no time codes loaded.\n\nPlease click \"{0}\" to extract the time codes first, or disable this option.",
+                NoShotChangesLoaded = "No shot changes loaded",
+                XShotChangesLoaded = "{0} shot changes loaded",
+                NoShotChangesLoadedError = "You've selected to snap cues to shot changes, but there are no shot changes loaded.\n\nPlease click \"{0}\" to generate or import shot changes first, or disable this option.",
             };
 
             BeautifyTimeCodesProfile = new LanguageStructure.BeautifyTimeCodesProfile
