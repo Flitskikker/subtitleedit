@@ -2259,7 +2259,7 @@ namespace Nikse.SubtitleEdit.Forms
                 return;
             }
 
-            using (var visualSync = new VisualSync())
+            using (var visualSync = new VisualSync(this))
             {
                 visualSync.VideoFileName = VideoFileName;
                 visualSync.AudioTrackNumber = VideoAudioTrackNumber;
@@ -4624,7 +4624,11 @@ namespace Nikse.SubtitleEdit.Forms
             else
             {
                 _subtitle.MakeHistoryForUndo(string.Format(_language.BeforeConvertingToX, format.FriendlyName), _oldSubtitleFormat, _fileDateTime, _subtitleOriginal, _subtitleOriginalFileName, _subtitleListViewIndex, textBoxListViewText.SelectionStart, textBoxListViewTextOriginal.SelectionStart);
-                _oldSubtitleFormat.RemoveNativeFormatting(_subtitle, format);
+                if (_oldSubtitleFormat?.GetType() != format.GetType())
+                {
+                    _oldSubtitleFormat.RemoveNativeFormatting(_subtitle, format);
+                }
+
                 SaveSubtitleListviewIndices();
                 SubtitleListview1.Fill(_subtitle, _subtitleOriginal);
                 RestoreSubtitleListviewIndices();
@@ -7024,7 +7028,7 @@ namespace Nikse.SubtitleEdit.Forms
 
                         if (format != null && subtitleToAppend.Paragraphs.Count > 1)
                         {
-                            using (var visualSync = new VisualSync())
+                            using (var visualSync = new VisualSync(this))
                             {
                                 visualSync.Initialize(toolStripButtonVisualSync.Image as Bitmap, subtitleToAppend, null, _fileName, _language.AppendViaVisualSyncTitle, CurrentFrameRate);
                                 visualSync.ShowDialog(this);
@@ -29036,6 +29040,11 @@ namespace Nikse.SubtitleEdit.Forms
             // clear all bookmarks
             menuItem = new ToolStripMenuItem(LanguageSettings.Current.Settings.ClearBookmarks);
             menuItem.Click += (sender2, e2) => { ClearBookmarks(); };
+            _bookmarkContextMenu.Items.Add(menuItem);
+
+            // export bookmarks
+            menuItem = new ToolStripMenuItem(LanguageSettings.Current.Settings.ExportBookmarks);
+            menuItem.Click += (sender2, e2) => { BookmarksGoTo.ExportBookmarksAsCsv(_subtitle, this); };
             _bookmarkContextMenu.Items.Add(menuItem);
 
             UiUtil.FixFonts(_bookmarkContextMenu);

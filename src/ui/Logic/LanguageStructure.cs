@@ -2141,6 +2141,7 @@
             public string ToggleBookmarks { get; set; }
             public string ToggleBookmarksWithComment { get; set; }
             public string ClearBookmarks { get; set; }
+            public string ExportBookmarks { get; set; }
             public string GoToBookmark { get; set; }
             public string GoToPreviousBookmark { get; set; }
             public string GoToNextBookmark { get; set; }
@@ -2163,7 +2164,7 @@
             public string SubtitleLineMaximumLength { get; set; }
             public string OptimalCharactersPerSecond { get; set; }
             public string MaximumCharactersPerSecond { get; set; }
-            public string MaximumWordssPerMinute { get; set; }
+            public string MaximumWordsPerMinute { get; set; }
             public string AutoWrapWhileTyping { get; set; }
             public string DurationMinimumMilliseconds { get; set; }
             public string DurationMaximumMilliseconds { get; set; }

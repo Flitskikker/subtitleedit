@@ -5290,6 +5290,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/ClearBookmarks":
                     language.Settings.ClearBookmarks = reader.Value;
                     break;
+                case "Settings/ExportBookmarks":
+                    language.Settings.ExportBookmarks = reader.Value;
+                    break;
                 case "Settings/GoToBookmark":
                     language.Settings.GoToBookmark = reader.Value;
                     break;
@@ -5356,8 +5359,8 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/MaximumCharactersPerSecond":
                     language.Settings.MaximumCharactersPerSecond = reader.Value;
                     break;
-                case "Settings/MaximumWordssPerMinute":
-                    language.Settings.MaximumWordssPerMinute = reader.Value;
+                case "Settings/MaximumWordsPerMinute":
+                    language.Settings.MaximumWordsPerMinute = reader.Value;
                     break;
                 case "Settings/AutoWrapWhileTyping":
                     language.Settings.AutoWrapWhileTyping = reader.Value;
