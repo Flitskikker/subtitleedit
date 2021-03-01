@@ -213,9 +213,9 @@ namespace Nikse.SubtitleEdit.Forms
             this.labelGapSuffix.AutoSize = true;
             this.labelGapSuffix.Location = new System.Drawing.Point(108, 25);
             this.labelGapSuffix.Name = "labelGapSuffix";
-            this.labelGapSuffix.Size = new System.Drawing.Size(205, 15);
+            this.labelGapSuffix.Size = new System.Drawing.Size(211, 15);
             this.labelGapSuffix.TabIndex = 4;
-            this.labelGapSuffix.Text = "frames (will override custom settings)";
+            this.labelGapSuffix.Text = "frames (will overwrite custom settings)";
             // 
             // numericUpDownGap
             // 
@@ -1015,7 +1015,7 @@ namespace Nikse.SubtitleEdit.Forms
             // labelChainingOutCueOnShotMaxGapSuffix
             // 
             this.labelChainingOutCueOnShotMaxGapSuffix.AutoSize = true;
-            this.labelChainingOutCueOnShotMaxGapSuffix.Location = new System.Drawing.Point(199, 6);
+            this.labelChainingOutCueOnShotMaxGapSuffix.Location = new System.Drawing.Point(266, 6);
             this.labelChainingOutCueOnShotMaxGapSuffix.Name = "labelChainingOutCueOnShotMaxGapSuffix";
             this.labelChainingOutCueOnShotMaxGapSuffix.Size = new System.Drawing.Size(23, 15);
             this.labelChainingOutCueOnShotMaxGapSuffix.TabIndex = 3;
@@ -1047,7 +1047,7 @@ namespace Nikse.SubtitleEdit.Forms
             // 
             // numericUpDownChainingOutCueOnShotMaxGap
             // 
-            this.numericUpDownChainingOutCueOnShotMaxGap.Location = new System.Drawing.Point(141, 2);
+            this.numericUpDownChainingOutCueOnShotMaxGap.Location = new System.Drawing.Point(208, 2);
             this.numericUpDownChainingOutCueOnShotMaxGap.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -1076,7 +1076,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.cuesPreviewViewChainingGeneral.RightGap = 0;
             this.cuesPreviewViewChainingGeneral.RightGreenZone = 12;
             this.cuesPreviewViewChainingGeneral.RightRedZone = 7;
-            this.cuesPreviewViewChainingGeneral.ShowShotChange = true;
+            this.cuesPreviewViewChainingGeneral.ShowShotChange = false;
             this.cuesPreviewViewChainingGeneral.Size = new System.Drawing.Size(400, 70);
             this.cuesPreviewViewChainingGeneral.TabIndex = 1;
             // 
