@@ -36,6 +36,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.panelTimeCodes = new System.Windows.Forms.Panel();
             this.checkBoxExtractExactTimeCodes = new System.Windows.Forms.CheckBox();
             this.panelExtractTimeCodes = new System.Windows.Forms.Panel();
+            this.buttonCancelTimeCodes = new System.Windows.Forms.Button();
             this.labelExtractTimeCodesProgress = new System.Windows.Forms.Label();
             this.progressBarExtractTimeCodes = new System.Windows.Forms.ProgressBar();
             this.buttonExtractTimeCodes = new System.Windows.Forms.Button();
@@ -46,7 +47,6 @@ namespace Nikse.SubtitleEdit.Forms
             this.buttonImportShotChanges = new System.Windows.Forms.Button();
             this.labelShotChangesStatus = new System.Windows.Forms.Label();
             this.buttonEditProfile = new System.Windows.Forms.Button();
-            this.buttonCancelTimeCodes = new System.Windows.Forms.Button();
             this.groupBoxTimeCodes.SuspendLayout();
             this.panelTimeCodes.SuspendLayout();
             this.panelExtractTimeCodes.SuspendLayout();
@@ -57,7 +57,7 @@ namespace Nikse.SubtitleEdit.Forms
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(414, 318);
+            this.buttonOK.Location = new System.Drawing.Point(414, 321);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 3;
@@ -69,7 +69,7 @@ namespace Nikse.SubtitleEdit.Forms
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(495, 318);
+            this.buttonCancel.Location = new System.Drawing.Point(495, 321);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 4;
@@ -136,6 +136,17 @@ namespace Nikse.SubtitleEdit.Forms
             this.panelExtractTimeCodes.Size = new System.Drawing.Size(546, 78);
             this.panelExtractTimeCodes.TabIndex = 2;
             // 
+            // buttonCancelTimeCodes
+            // 
+            this.buttonCancelTimeCodes.Location = new System.Drawing.Point(23, 18);
+            this.buttonCancelTimeCodes.Name = "buttonCancelTimeCodes";
+            this.buttonCancelTimeCodes.Size = new System.Drawing.Size(149, 23);
+            this.buttonCancelTimeCodes.TabIndex = 5;
+            this.buttonCancelTimeCodes.Text = "Cancel";
+            this.buttonCancelTimeCodes.UseVisualStyleBackColor = true;
+            this.buttonCancelTimeCodes.Visible = false;
+            this.buttonCancelTimeCodes.Click += new System.EventHandler(this.buttonCancelTimeCodes_Click);
+            // 
             // labelExtractTimeCodesProgress
             // 
             this.labelExtractTimeCodesProgress.AutoSize = true;
@@ -181,7 +192,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.groupBoxShotChanges.Controls.Add(this.panelShotChanges);
             this.groupBoxShotChanges.Location = new System.Drawing.Point(12, 170);
             this.groupBoxShotChanges.Name = "groupBoxShotChanges";
-            this.groupBoxShotChanges.Size = new System.Drawing.Size(558, 137);
+            this.groupBoxShotChanges.Size = new System.Drawing.Size(558, 140);
             this.groupBoxShotChanges.TabIndex = 2;
             this.groupBoxShotChanges.TabStop = false;
             this.groupBoxShotChanges.Text = "Shot changes";
@@ -209,7 +220,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.panelShotChanges.Controls.Add(this.buttonEditProfile);
             this.panelShotChanges.Location = new System.Drawing.Point(6, 47);
             this.panelShotChanges.Name = "panelShotChanges";
-            this.panelShotChanges.Size = new System.Drawing.Size(546, 84);
+            this.panelShotChanges.Size = new System.Drawing.Size(546, 87);
             this.panelShotChanges.TabIndex = 2;
             // 
             // buttonImportShotChanges
@@ -242,24 +253,13 @@ namespace Nikse.SubtitleEdit.Forms
             this.buttonEditProfile.UseVisualStyleBackColor = true;
             this.buttonEditProfile.Click += new System.EventHandler(this.buttonEditProfile_Click);
             // 
-            // buttonCancelTimeCodes
-            // 
-            this.buttonCancelTimeCodes.Location = new System.Drawing.Point(24, 18);
-            this.buttonCancelTimeCodes.Name = "buttonCancelTimeCodes";
-            this.buttonCancelTimeCodes.Size = new System.Drawing.Size(149, 23);
-            this.buttonCancelTimeCodes.TabIndex = 5;
-            this.buttonCancelTimeCodes.Text = "Cancel";
-            this.buttonCancelTimeCodes.UseVisualStyleBackColor = true;
-            this.buttonCancelTimeCodes.Visible = false;
-            this.buttonCancelTimeCodes.Click += new System.EventHandler(this.buttonCancelTimeCodes_Click);
-            // 
             // BeautifyTimeCodes
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(582, 353);
+            this.ClientSize = new System.Drawing.Size(582, 356);
             this.Controls.Add(this.groupBoxShotChanges);
             this.Controls.Add(this.groupBoxTimeCodes);
             this.Controls.Add(this.buttonCancel);
