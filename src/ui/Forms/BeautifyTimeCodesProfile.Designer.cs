@@ -1067,15 +1067,15 @@ namespace Nikse.SubtitleEdit.Forms
             this.cuesPreviewViewChainingGeneral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cuesPreviewViewChainingGeneral.FrameRate = 25F;
-            this.cuesPreviewViewChainingGeneral.LeftGap = 0;
+            this.cuesPreviewViewChainingGeneral.LeftGap = 25;
             this.cuesPreviewViewChainingGeneral.LeftGreenZone = 12;
             this.cuesPreviewViewChainingGeneral.LeftRedZone = 7;
             this.cuesPreviewViewChainingGeneral.Location = new System.Drawing.Point(10, 22);
             this.cuesPreviewViewChainingGeneral.Name = "cuesPreviewViewChainingGeneral";
             this.cuesPreviewViewChainingGeneral.PreviewText = "Subtitle text.";
             this.cuesPreviewViewChainingGeneral.RightGap = 0;
-            this.cuesPreviewViewChainingGeneral.RightGreenZone = 12;
-            this.cuesPreviewViewChainingGeneral.RightRedZone = 7;
+            this.cuesPreviewViewChainingGeneral.RightGreenZone = 0;
+            this.cuesPreviewViewChainingGeneral.RightRedZone = 0;
             this.cuesPreviewViewChainingGeneral.ShowShotChange = false;
             this.cuesPreviewViewChainingGeneral.Size = new System.Drawing.Size(400, 70);
             this.cuesPreviewViewChainingGeneral.TabIndex = 1;
@@ -1086,12 +1086,12 @@ namespace Nikse.SubtitleEdit.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cuesPreviewViewChainingOutCueOnShot.FrameRate = 25F;
             this.cuesPreviewViewChainingOutCueOnShot.LeftGap = 0;
-            this.cuesPreviewViewChainingOutCueOnShot.LeftGreenZone = 12;
-            this.cuesPreviewViewChainingOutCueOnShot.LeftRedZone = 7;
+            this.cuesPreviewViewChainingOutCueOnShot.LeftGreenZone = 0;
+            this.cuesPreviewViewChainingOutCueOnShot.LeftRedZone = 0;
             this.cuesPreviewViewChainingOutCueOnShot.Location = new System.Drawing.Point(10, 22);
             this.cuesPreviewViewChainingOutCueOnShot.Name = "cuesPreviewViewChainingOutCueOnShot";
             this.cuesPreviewViewChainingOutCueOnShot.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewChainingOutCueOnShot.RightGap = 0;
+            this.cuesPreviewViewChainingOutCueOnShot.RightGap = 25;
             this.cuesPreviewViewChainingOutCueOnShot.RightGreenZone = 12;
             this.cuesPreviewViewChainingOutCueOnShot.RightRedZone = 7;
             this.cuesPreviewViewChainingOutCueOnShot.ShowShotChange = true;
@@ -1104,15 +1104,15 @@ namespace Nikse.SubtitleEdit.Forms
             this.cuesPreviewViewChainingInCueOnShot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cuesPreviewViewChainingInCueOnShot.FrameRate = 25F;
-            this.cuesPreviewViewChainingInCueOnShot.LeftGap = 0;
+            this.cuesPreviewViewChainingInCueOnShot.LeftGap = 25;
             this.cuesPreviewViewChainingInCueOnShot.LeftGreenZone = 12;
             this.cuesPreviewViewChainingInCueOnShot.LeftRedZone = 7;
             this.cuesPreviewViewChainingInCueOnShot.Location = new System.Drawing.Point(10, 22);
             this.cuesPreviewViewChainingInCueOnShot.Name = "cuesPreviewViewChainingInCueOnShot";
             this.cuesPreviewViewChainingInCueOnShot.PreviewText = "Subtitle text.";
             this.cuesPreviewViewChainingInCueOnShot.RightGap = 0;
-            this.cuesPreviewViewChainingInCueOnShot.RightGreenZone = 12;
-            this.cuesPreviewViewChainingInCueOnShot.RightRedZone = 7;
+            this.cuesPreviewViewChainingInCueOnShot.RightGreenZone = 0;
+            this.cuesPreviewViewChainingInCueOnShot.RightRedZone = 0;
             this.cuesPreviewViewChainingInCueOnShot.ShowShotChange = true;
             this.cuesPreviewViewChainingInCueOnShot.Size = new System.Drawing.Size(400, 70);
             this.cuesPreviewViewChainingInCueOnShot.TabIndex = 3;
@@ -1123,7 +1123,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.cuesPreviewViewConnectedSubtitles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cuesPreviewViewConnectedSubtitles.FrameRate = 25F;
-            this.cuesPreviewViewConnectedSubtitles.LeftGap = 0;
+            this.cuesPreviewViewConnectedSubtitles.LeftGap = 3;
             this.cuesPreviewViewConnectedSubtitles.LeftGreenZone = 12;
             this.cuesPreviewViewConnectedSubtitles.LeftRedZone = 7;
             this.cuesPreviewViewConnectedSubtitles.Location = new System.Drawing.Point(10, 22);
@@ -1147,7 +1147,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.cuesPreviewViewOutCues.Location = new System.Drawing.Point(10, 22);
             this.cuesPreviewViewOutCues.Name = "cuesPreviewViewOutCues";
             this.cuesPreviewViewOutCues.PreviewText = "Subtitle text.";
-            this.cuesPreviewViewOutCues.RightGap = 0;
+            this.cuesPreviewViewOutCues.RightGap = 999;
             this.cuesPreviewViewOutCues.RightGreenZone = 12;
             this.cuesPreviewViewOutCues.RightRedZone = 7;
             this.cuesPreviewViewOutCues.ShowShotChange = true;
@@ -1159,7 +1159,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.cuesPreviewViewInCues.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cuesPreviewViewInCues.FrameRate = 25F;
-            this.cuesPreviewViewInCues.LeftGap = 0;
+            this.cuesPreviewViewInCues.LeftGap = 999;
             this.cuesPreviewViewInCues.LeftGreenZone = 12;
             this.cuesPreviewViewInCues.LeftRedZone = 7;
             this.cuesPreviewViewInCues.Location = new System.Drawing.Point(10, 22);

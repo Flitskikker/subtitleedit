@@ -225,7 +225,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void buttonEditProfile_Click(object sender, EventArgs e)
         {
-            using (var form = new BeautifyTimeCodesProfile())
+            using (var form = new BeautifyTimeCodesProfile(_frameRate))
             {
                 form.ShowDialog(this);
             }

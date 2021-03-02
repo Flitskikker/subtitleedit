@@ -14,11 +14,21 @@ namespace Nikse.SubtitleEdit.Forms
 {
     public partial class BeautifyTimeCodesProfile : Form
     {
-        public BeautifyTimeCodesProfile()
+        public BeautifyTimeCodesProfile(double frameRate)
         {
             UiUtil.PreInitialize(this);
             InitializeComponent();
             UiUtil.FixFonts(this);
+
+            if (frameRate > 0)
+            {
+                cuesPreviewViewInCues.FrameRate = (float)frameRate;
+                cuesPreviewViewOutCues.FrameRate = (float)frameRate;
+                cuesPreviewViewConnectedSubtitles.FrameRate = (float)frameRate;
+                cuesPreviewViewChainingGeneral.FrameRate = (float)frameRate;
+                cuesPreviewViewChainingInCueOnShot.FrameRate = (float)frameRate;
+                cuesPreviewViewChainingOutCueOnShot.FrameRate = (float)frameRate;
+            }
 
             var language = LanguageSettings.Current.BeautifyTimeCodesProfile;
             Text = language.Title;
@@ -126,9 +136,11 @@ namespace Nikse.SubtitleEdit.Forms
             cuesPreviewViewChainingGeneral.LeftGreenZone = Convert.ToInt32(numericUpDownChainingGeneralLeftGreenZone.Value);
             cuesPreviewViewChainingGeneral.LeftRedZone = Convert.ToInt32(numericUpDownChainingGeneralLeftRedZone.Value);
             
+            cuesPreviewViewChainingInCueOnShot.RightGap = Convert.ToInt32(numericUpDownInCuesGap.Value);
             cuesPreviewViewChainingInCueOnShot.LeftGreenZone = Convert.ToInt32(numericUpDownChainingInCueOnShotLeftGreenZone.Value);
             cuesPreviewViewChainingInCueOnShot.LeftRedZone = Convert.ToInt32(numericUpDownChainingInCueOnShotLeftRedZone.Value);
-
+            
+            cuesPreviewViewChainingOutCueOnShot.LeftGap = Convert.ToInt32(numericUpDownOutCuesGap.Value);
             cuesPreviewViewChainingOutCueOnShot.RightRedZone = Convert.ToInt32(numericUpDownChainingOutCueOnShotRightRedZone.Value);
             cuesPreviewViewChainingOutCueOnShot.RightGreenZone = Convert.ToInt32(numericUpDownChainingOutCueOnShotRightGreenZone.Value);
         }
