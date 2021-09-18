@@ -420,7 +420,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                                 italic.InnerText = "yes";
                                 fontNode.Attributes.Append(italic);
 
-                                fontNode.InnerText = HtmlUtil.RemoveHtmlTags(line);
+                                fontNode.InnerText = HtmlUtil.RemoveHtmlTags(txt.ToString());
                                 html.Append(fontNode.OuterXml);
                             }
                         }
@@ -467,10 +467,16 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     no++;
                 }
             }
-            string result = ToUtf8XmlString(xml).Replace("encoding=\"utf-8\"", "encoding=\"UTF-8\"").Replace(" xmlns:dcst=\"dcst\"", string.Empty);
+
+            var result = ToUtf8XmlString(xml)
+                .Replace("encoding=\"utf-8\"", "encoding=\"UTF-8\"")
+                .Replace(" xmlns:dcst=\"dcst\"", string.Empty)
+                .Replace("<dcst:", "<")
+                .Replace("</dcst:", "</")
+                .Replace("xmlns:dcst=\"http://www.smpte-ra.org/schemas/", "xmlns=\"http://www.smpte-ra.org/schemas/");
 
             const string res = "Nikse.SubtitleEdit.Resources.SMPTE-428-7-2014-DCST.xsd.gz";
-            System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
             var stream = asm.GetManifestResourceStream(res);
             if (stream != null)
             {

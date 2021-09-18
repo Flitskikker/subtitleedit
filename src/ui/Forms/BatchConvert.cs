@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.BluRaySup;
+﻿using Nikse.SubtitleEdit.Core.BluRaySup;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.ContainerFormats.Matroska;
 using Nikse.SubtitleEdit.Core.ContainerFormats.TransportStream;
@@ -144,7 +143,7 @@ namespace Nikse.SubtitleEdit.Forms
             groupBoxSpeed.Text = LanguageSettings.Current.ChangeSpeedInPercent.TitleShort;
             labelFromFrameRate.Text = LanguageSettings.Current.ChangeFrameRate.FromFrameRate;
             labelToFrameRate.Text = LanguageSettings.Current.ChangeFrameRate.ToFrameRate;
-            labelHourMinSecMilliSecond.Text = Configuration.Settings.General.UseTimeFormatHHMMSSFF ? LanguageSettings.Current.General.HourMinutesSecondsFrames : LanguageSettings.Current.General.HourMinutesSecondsMilliseconds;
+            labelHourMinSecMilliSecond.Text = Configuration.Settings.General.UseTimeFormatHHMMSSFF ? LanguageSettings.Current.General.HourMinutesSecondsFrames : string.Format(LanguageSettings.Current.General.HourMinutesSecondsDecimalSeparatorMilliseconds, UiUtil.DecimalSeparator);
             openContainingFolderToolStripMenuItem.Text = LanguageSettings.Current.Main.Menu.File.OpenContainingFolder;
             removeToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.Remove;
             removeAllToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.RemoveAll;
@@ -156,6 +155,8 @@ namespace Nikse.SubtitleEdit.Forms
             numericUpDownDeleteFirst.Left = labelDeleteFirstLines.Left + labelDeleteFirstLines.Width + 5;
             numericUpDownDeleteLast.Left = labelDeleteLastLines.Left + labelDeleteLastLines.Width + 5;
             groupBoxAdjustDuration.Text = LanguageSettings.Current.AdjustDisplayDuration.Title;
+            addFilesToolStripMenuItem.Text = l.AddFiles;
+            groupBoxDeleteLines.Text = l.DeleteLines;
 
             comboBoxFrameRateFrom.Left = labelFromFrameRate.Left + labelFromFrameRate.Width + 3;
             comboBoxFrameRateTo.Left = labelToFrameRate.Left + labelToFrameRate.Width + 3;
@@ -380,7 +381,13 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 numericUpDownMaxCharacters.Value = Configuration.Settings.General.SubtitleLineMaximumLength;
             }
-            numericUpDownMaxMillisecondsBetweenLines.Value = Configuration.Settings.Tools.MergeShortLinesMaxGap;
+
+            if (Configuration.Settings.Tools.MergeShortLinesMaxGap >= numericUpDownMaxMillisecondsBetweenLines.Minimum &&
+                Configuration.Settings.Tools.MergeShortLinesMaxGap <= numericUpDownMaxMillisecondsBetweenLines.Maximum)
+            {
+                numericUpDownMaxMillisecondsBetweenLines.Value = Configuration.Settings.Tools.MergeShortLinesMaxGap;
+            }
+
             checkBoxOnlyContinuationLines.Checked = Configuration.Settings.Tools.MergeShortLinesOnlyContinuous;
 
             inverseSelectionToolStripMenuItem.Text = LanguageSettings.Current.Main.Menu.Edit.InverseSelection;
@@ -2321,14 +2328,16 @@ namespace Nikse.SubtitleEdit.Forms
                 return;
             }
 
-            int first = -1;
+            var first = int.MaxValue;
             for (int i = listViewInputFiles.SelectedIndices.Count - 1; i >= 0; i--)
             {
-                if (first < 0)
+                var idx = listViewInputFiles.SelectedIndices[i];
+                if (idx < first)
                 {
-                    first = listViewInputFiles.SelectedIndices[i];
+                    first = idx;
                 }
-                listViewInputFiles.Items.RemoveAt(listViewInputFiles.SelectedIndices[i]);
+
+                listViewInputFiles.Items.RemoveAt(idx);
             }
 
             // keep an item selected/focused for improved UX
@@ -2342,6 +2351,7 @@ namespace Nikse.SubtitleEdit.Forms
                 listViewInputFiles.Items[listViewInputFiles.Items.Count - 1].Selected = true;
                 listViewInputFiles.FocusedItem = listViewInputFiles.Items[listViewInputFiles.Items.Count - 1];
             }
+
             UpdateNumberOfFiles();
             UpdateTransportStreamSettings();
         }
@@ -2385,6 +2395,11 @@ namespace Nikse.SubtitleEdit.Forms
             else if (e.KeyCode == Keys.I && e.Modifiers == (Keys.Control | Keys.Shift)) //InverseSelection
             {
                 listViewInputFiles.InverseSelection();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyData == UiUtil.HelpKeys)
+            {
+                UiUtil.ShowHelp("#batchconvert");
                 e.SuppressKeyPress = true;
             }
         }
@@ -2678,13 +2693,36 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void BatchConvert_ResizeEnd(object sender, EventArgs e)
         {
-            listViewInputFiles.Columns[listViewInputFiles.Columns.Count - 1].Width = -2;
-            listViewConvertOptions.Columns[listViewConvertOptions.Columns.Count - 1].Width = -2;
+            listViewInputFiles.AutoSizeLastColumn();
+            listViewConvertOptions.AutoSizeLastColumn();
         }
 
         private void comboBoxFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBoxFilter.Visible = comboBoxFilter.SelectedIndex == 3 || comboBoxFilter.SelectedIndex == 4 || comboBoxFilter.SelectedIndex == 5;
+        }
+
+        private void textBoxFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (listViewInputFiles.Items.Count == 0)
+            {
+                return;
+            }
+
+            if (comboBoxFilter.SelectedIndex == 5)
+            {
+                var listViewItems = new List<ListViewItem>();
+                foreach (ListViewItem item in listViewInputFiles.Items)
+                {
+                    listViewItems.Add(item);
+                }
+
+                listViewInputFiles.BeginUpdate();
+                listViewInputFiles.Items.Clear();
+                listViewInputFiles.Items.AddRange(listViewItems.FindAll(item => item.SubItems[2].Text.Contains(textBoxFilter.Text, StringComparison.OrdinalIgnoreCase)).ToArray());
+                listViewInputFiles.EndUpdate();
+                UpdateNumberOfFiles();
+            }
         }
 
         private void buttonTransportStreamSettings_Click(object sender, EventArgs e)

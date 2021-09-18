@@ -1,5 +1,4 @@
 ﻿using Nikse.SubtitleEdit.Controls;
-using Nikse.SubtitleEdit.Core;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Core.Translate;
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows.Forms;
 
@@ -77,6 +77,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             if (target != null)
             {
                 TranslatedSubtitle = new Subtitle(target);
+                TranslatedSubtitle.Renumber();
                 subtitleListViewTarget.Fill(TranslatedSubtitle);
             }
             else
@@ -313,6 +314,21 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             Translate();
         }
 
+        public static bool IsAvailableNetworkActive()
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces();
+                return (from face in interfaces
+                        where face.OperationalStatus == OperationalStatus.Up
+                        where (face.NetworkInterfaceType != NetworkInterfaceType.Tunnel) && (face.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                        select face.GetIPv4Statistics()).Any(statistics => (statistics.BytesReceived > 0) && (statistics.BytesSent > 0));
+            }
+
+            return false;
+        }
+
+
         private void Translate()
         {
             var translator = (ITranslationProcessor)comboBoxParagraphHandling.SelectedItem;
@@ -340,8 +356,20 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             }
             catch (TranslationException translationException)
             {
-                MessageBox.Show(translationException.Message + Environment.NewLine +
-                                translationException.InnerException?.Source + ": " + translationException.InnerException?.Message);
+                if (translationException.InnerException != null && !IsAvailableNetworkActive())
+                {
+                    ShowNetworkError(translationException.InnerException);
+                }
+                else
+                {
+                    MessageBox.Show(translationException.Message + Environment.NewLine +
+                                    translationException.InnerException?.Source + ": " + translationException.InnerException?.Message);
+                }
+            }
+            catch (Exception exception)
+            {
+                SeLogger.Error(exception);
+                ShowNetworkError(exception);
             }
             finally
             {
@@ -355,6 +383,14 @@ namespace Nikse.SubtitleEdit.Forms.Translate
 
                 Configuration.Settings.Tools.GoogleTranslateLastTargetLanguage = _targetLanguageIsoCode;
             }
+        }
+
+        private static void ShowNetworkError(Exception exception)
+        {
+            MessageBox.Show("Subtitle Edit was unable to connect to the translation service." + Environment.NewLine +
+                            "Try again later or check your internet connection." + Environment.NewLine +
+                            Environment.NewLine +
+                            "Error: " + exception.Message);
         }
 
         private List<Paragraph> GetSelectedParagraphs()

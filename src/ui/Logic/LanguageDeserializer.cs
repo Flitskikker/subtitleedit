@@ -82,6 +82,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "General/Apply":
                     language.General.Apply = reader.Value;
                     break;
+                case "General/ApplyTo":
+                    language.General.ApplyTo = reader.Value;
+                    break;
                 case "General/None":
                     language.General.None = reader.Value;
                     break;
@@ -90,6 +93,12 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "General/Preview":
                     language.General.Preview = reader.Value;
+                    break;
+                case "General/ShowPreview":
+                    language.General.ShowPreview = reader.Value;
+                    break;
+                case "General/HidePreview":
+                    language.General.HidePreview = reader.Value;
                     break;
                 case "General/SubtitleFiles":
                     language.General.SubtitleFiles = reader.Value;
@@ -157,11 +166,14 @@ namespace Nikse.SubtitleEdit.Logic
                 case "General/Text":
                     language.General.Text = reader.Value;
                     break;
-                case "General/HourMinutesSecondsMilliseconds":
-                    language.General.HourMinutesSecondsMilliseconds = reader.Value;
+                case "General/HourMinutesSecondsDecimalSeparatorMilliseconds":
+                    language.General.HourMinutesSecondsDecimalSeparatorMilliseconds = reader.Value;
                     break;
                 case "General/HourMinutesSecondsFrames":
                     language.General.HourMinutesSecondsFrames = reader.Value;
+                    break;
+                case "General/XSeconds":
+                    language.General.XSeconds = reader.Value;
                     break;
                 case "General/Bold":
                     language.General.Bold = reader.Value;
@@ -171,6 +183,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "General/Underline":
                     language.General.Underline = reader.Value;
+                    break;
+                case "General/Strikeout":
+                    language.General.Strikeout = reader.Value;
                     break;
                 case "General/Visible":
                     language.General.Visible = reader.Value;
@@ -210,6 +225,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "General/NotAvailable":
                     language.General.NotAvailable = reader.Value;
+                    break;
+                case "General/Overlap":
+                    language.General.Overlap = reader.Value;
                     break;
                 case "General/OverlapPreviousLineX":
                     language.General.OverlapPreviousLineX = reader.Value;
@@ -481,6 +499,117 @@ namespace Nikse.SubtitleEdit.Logic
                 case "AssaAttachments/RemoveXAttachments":
                     language.AssaAttachments.RemoveXAttachments = reader.Value;
                     break;
+                case "AssaOverrideTags/ApplyCustomTags":
+                    language.AssaOverrideTags.ApplyCustomTags = reader.Value;
+                    break;
+                case "AssaOverrideTags/History":
+                    language.AssaOverrideTags.History = reader.Value;
+                    break;
+                case "AssaOverrideTags/TagsToApply":
+                    language.AssaOverrideTags.TagsToApply = reader.Value;
+                    break;
+                case "AssaOverrideTags/ApplyTo":
+                    language.AssaOverrideTags.ApplyTo = reader.Value;
+                    break;
+                case "AssaOverrideTags/SelectedLinesX":
+                    language.AssaOverrideTags.SelectedLinesX = reader.Value;
+                    break;
+                case "AssaOverrideTags/AdvancedSelection":
+                    language.AssaOverrideTags.AdvancedSelection = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/Title":
+                    language.AssaProgressBarGenerator.Title = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/Progressbar":
+                    language.AssaProgressBarGenerator.Progressbar = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/Chapters":
+                    language.AssaProgressBarGenerator.Chapters = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/SplitterWidth":
+                    language.AssaProgressBarGenerator.SplitterWidth = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/SplitterHeight":
+                    language.AssaProgressBarGenerator.SplitterHeight = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/XAdjustment":
+                    language.AssaProgressBarGenerator.XAdjustment = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/YAdjustment":
+                    language.AssaProgressBarGenerator.YAdjustment = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/Position":
+                    language.AssaProgressBarGenerator.Position = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/TextAlignment":
+                    language.AssaProgressBarGenerator.TextAlignment = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/SquareCorners":
+                    language.AssaProgressBarGenerator.SquareCorners = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/RoundedCorners":
+                    language.AssaProgressBarGenerator.RoundedCorners = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/Top":
+                    language.AssaProgressBarGenerator.Top = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/Bottom":
+                    language.AssaProgressBarGenerator.Bottom = reader.Value;
+                    break;
+                case "AssaProgressBarGenerator/TakePosFromVideo":
+                    language.AssaProgressBarGenerator.TakePosFromVideo = reader.Value;
+                    break;
+                case "AssaResulationChanger/Title":
+                    language.AssaResulationChanger.Title = reader.Value;
+                    break;
+                case "AssaResulationChanger/SourceVideoRes":
+                    language.AssaResulationChanger.SourceVideoRes = reader.Value;
+                    break;
+                case "AssaResulationChanger/TargetVideoRes":
+                    language.AssaResulationChanger.TargetVideoRes = reader.Value;
+                    break;
+                case "AssaResulationChanger/ChangeResolutionMargins":
+                    language.AssaResulationChanger.ChangeResolutionMargins = reader.Value;
+                    break;
+                case "AssaResulationChanger/ChangeResolutionFontSize":
+                    language.AssaResulationChanger.ChangeResolutionFontSize = reader.Value;
+                    break;
+                case "AssaResulationChanger/ChangeResolutionPositions":
+                    language.AssaResulationChanger.ChangeResolutionPositions = reader.Value;
+                    break;
+                case "AssaResulationChanger/ChangeResolutionDrawing":
+                    language.AssaResulationChanger.ChangeResolutionDrawing = reader.Value;
+                    break;
+                case "AssaSetPosition/SetPosition":
+                    language.AssaSetPosition.SetPosition = reader.Value;
+                    break;
+                case "AssaSetPosition/VideoResolutionX":
+                    language.AssaSetPosition.VideoResolutionX = reader.Value;
+                    break;
+                case "AssaSetPosition/StyleAlignmentX":
+                    language.AssaSetPosition.StyleAlignmentX = reader.Value;
+                    break;
+                case "AssaSetPosition/CurrentMousePositionX":
+                    language.AssaSetPosition.CurrentMousePositionX = reader.Value;
+                    break;
+                case "AssaSetPosition/CurrentTextPositionX":
+                    language.AssaSetPosition.CurrentTextPositionX = reader.Value;
+                    break;
+                case "AssaSetPosition/SetPosInfo":
+                    language.AssaSetPosition.SetPosInfo = reader.Value;
+                    break;
+                case "AssaSetPosition/Clipboard":
+                    language.AssaSetPosition.Clipboard = reader.Value;
+                    break;
+                case "AssaSetPosition/ResolutionMissing":
+                    language.AssaSetPosition.ResolutionMissing = reader.Value;
+                    break;
+                case "AssaSetPosition/RotateXAxis":
+                    language.AssaSetPosition.RotateXAxis = reader.Value;
+                    break;
+                case "AssaSetPosition/DistortX":
+                    language.AssaSetPosition.DistortX = reader.Value;
+                    break;
                 case "AudioToText/Title":
                     language.AudioToText.Title = reader.Value;
                     break;
@@ -613,6 +742,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "BatchConvert/Ocr":
                     language.BatchConvert.Ocr = reader.Value;
                     break;
+                case "BatchConvert/AddFiles":
+                    language.BatchConvert.AddFiles = reader.Value;
+                    break;
                 case "BatchConvert/Filter":
                     language.BatchConvert.Filter = reader.Value;
                     break;
@@ -696,9 +828,6 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "BatchConvert/MkvLanguageStyleEmpty":
                     language.BatchConvert.MkvLanguageStyleEmpty = reader.Value;
-                    break;
-                case "Beamer/Title":
-                    language.Beamer.Title = reader.Value;
                     break;
                 case "BinEdit/ImportImage":
                     language.BinEdit.ImportImage = reader.Value;
@@ -1738,8 +1867,8 @@ namespace Nikse.SubtitleEdit.Logic
                 case "FixCommonErrors/RemoveLineBreaksAll":
                     language.FixCommonErrors.RemoveLineBreaksAll = reader.Value;
                     break;
-                case "FixCommonErrors/FixUppercaseIInsindeLowercaseWords":
-                    language.FixCommonErrors.FixUppercaseIInsindeLowercaseWords = reader.Value;
+                case "FixCommonErrors/FixUppercaseIInsideLowercaseWords":
+                    language.FixCommonErrors.FixUppercaseIInsideLowercaseWords = reader.Value;
                     break;
                 case "FixCommonErrors/FixDoubleApostrophes":
                     language.FixCommonErrors.FixDoubleApostrophes = reader.Value;
@@ -1770,6 +1899,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "FixCommonErrors/FixDialogsOnOneLine":
                     language.FixCommonErrors.FixDialogsOnOneLine = reader.Value;
+                    break;
+                case "FixCommonErrors/RemoveDialogFirstInNonDialogs":
+                    language.FixCommonErrors.RemoveDialogFirstInNonDialogs = reader.Value;
                     break;
                 case "FixCommonErrors/NormalizeStrings":
                     language.FixCommonErrors.NormalizeStrings = reader.Value;
@@ -1867,8 +1999,8 @@ namespace Nikse.SubtitleEdit.Logic
                 case "FixCommonErrors/FixMissingSpacesExample":
                     language.FixCommonErrors.FixMissingSpacesExample = reader.Value;
                     break;
-                case "FixCommonErrors/FixUppercaseIInsindeLowercaseWordsExample":
-                    language.FixCommonErrors.FixUppercaseIInsindeLowercaseWordsExample = reader.Value;
+                case "FixCommonErrors/FixUppercaseIInsideLowercaseWordsExample":
+                    language.FixCommonErrors.FixUppercaseIInsideLowercaseWordsExample = reader.Value;
                     break;
                 case "FixCommonErrors/FixLowercaseIToUppercaseIExample":
                     language.FixCommonErrors.FixLowercaseIToUppercaseIExample = reader.Value;
@@ -1957,6 +2089,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "FixCommonErrors/FixDialogsOneLineExample":
                     language.FixCommonErrors.FixDialogsOneLineExample = reader.Value;
                     break;
+                case "FixCommonErrors/RemoveDialogFirstInNonDialogsExample":
+                    language.FixCommonErrors.RemoveDialogFirstInNonDialogsExample = reader.Value;
+                    break;
                 case "FixCommonErrors/SelectDefault":
                     language.FixCommonErrors.SelectDefault = reader.Value;
                     break;
@@ -1968,6 +2103,75 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "FixCommonErrors/FixUnnecessaryLeadingDots":
                     language.FixCommonErrors.FixUnnecessaryLeadingDots = reader.Value;
+                    break;
+                case "GenerateBlankVideo/Title":
+                    language.GenerateBlankVideo.Title = reader.Value;
+                    break;
+                case "GenerateBlankVideo/CheckeredImage":
+                    language.GenerateBlankVideo.CheckeredImage = reader.Value;
+                    break;
+                case "GenerateBlankVideo/SolidColor":
+                    language.GenerateBlankVideo.SolidColor = reader.Value;
+                    break;
+                case "GenerateBlankVideo/DurationInMinutes":
+                    language.GenerateBlankVideo.DurationInMinutes = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/Title":
+                    language.GenerateVideoWithBurnedInSubs.Title = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/InfoAssaOff":
+                    language.GenerateVideoWithBurnedInSubs.InfoAssaOff = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/InfoAssaOn":
+                    language.GenerateVideoWithBurnedInSubs.InfoAssaOn = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/XGeneratedWithBurnedInSubs":
+                    language.GenerateVideoWithBurnedInSubs.XGeneratedWithBurnedInSubs = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/TimeRemainingMinutes":
+                    language.GenerateVideoWithBurnedInSubs.TimeRemainingMinutes = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/TimeRemainingSeconds":
+                    language.GenerateVideoWithBurnedInSubs.TimeRemainingSeconds = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/TimeRemainingMinutesAndSeconds":
+                    language.GenerateVideoWithBurnedInSubs.TimeRemainingMinutesAndSeconds = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/TargetFileName":
+                    language.GenerateVideoWithBurnedInSubs.TargetFileName = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/TargetFileSize":
+                    language.GenerateVideoWithBurnedInSubs.TargetFileSize = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/FileSizeMb":
+                    language.GenerateVideoWithBurnedInSubs.FileSizeMb = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/PassX":
+                    language.GenerateVideoWithBurnedInSubs.PassX = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/Encoding":
+                    language.GenerateVideoWithBurnedInSubs.Encoding = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/BitRate":
+                    language.GenerateVideoWithBurnedInSubs.BitRate = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/SampleRate":
+                    language.GenerateVideoWithBurnedInSubs.SampleRate = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/Stereo":
+                    language.GenerateVideoWithBurnedInSubs.Stereo = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/Preset":
+                    language.GenerateVideoWithBurnedInSubs.Preset = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/Crf":
+                    language.GenerateVideoWithBurnedInSubs.Crf = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/TuneFor":
+                    language.GenerateVideoWithBurnedInSubs.TuneFor = reader.Value;
+                    break;
+                case "GenerateVideoWithBurnedInSubs/AlignRight":
+                    language.GenerateVideoWithBurnedInSubs.AlignRight = reader.Value;
                     break;
                 case "GetDictionaries/Title":
                     language.GetDictionaries.Title = reader.Value;
@@ -2214,6 +2418,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "ImportText/GenerateTimeCodes":
                     language.ImportText.GenerateTimeCodes = reader.Value;
+                    break;
+                case "ImportText/TakeTimeFromCurrentFile":
+                    language.ImportText.TakeTimeFromCurrentFile = reader.Value;
                     break;
                 case "ImportText/TakeTimeFromFileName":
                     language.ImportText.TakeTimeFromFileName = reader.Value;
@@ -3061,6 +3268,12 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Main/LinesMerged":
                     language.Main.LinesMerged = reader.Value;
                     break;
+                case "Main/MergeSentences":
+                    language.Main.MergeSentences = reader.Value;
+                    break;
+                case "Main/MergeSentencesXLines":
+                    language.Main.MergeSentencesXLines = reader.Value;
+                    break;
                 case "Main/BeforeSettingColor":
                     language.Main.BeforeSettingColor = reader.Value;
                     break;
@@ -3111,6 +3324,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Main/DropFileXNotAccepted":
                     language.Main.DropFileXNotAccepted = reader.Value;
+                    break;
+                case "Main/DropSubtitleFileXNotAccepted":
+                    language.Main.DropSubtitleFileXNotAccepted = reader.Value;
                     break;
                 case "Main/DropOnlyOneFile":
                     language.Main.DropOnlyOneFile = reader.Value;
@@ -3511,23 +3727,8 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Main/Menu/File/RestoreAutoBackup":
                     language.Main.Menu.File.RestoreAutoBackup = reader.Value;
                     break;
-                case "Main/Menu/File/AdvancedSubStationAlphaProperties":
-                    language.Main.Menu.File.AdvancedSubStationAlphaProperties = reader.Value;
-                    break;
-                case "Main/Menu/File/SubStationAlphaProperties":
-                    language.Main.Menu.File.SubStationAlphaProperties = reader.Value;
-                    break;
-                case "Main/Menu/File/EbuProperties":
-                    language.Main.Menu.File.EbuProperties = reader.Value;
-                    break;
-                case "Main/Menu/File/DvdStuioProProperties":
-                    language.Main.Menu.File.DvdStuioProProperties = reader.Value;
-                    break;
-                case "Main/Menu/File/TimedTextProperties":
-                    language.Main.Menu.File.TimedTextProperties = reader.Value;
-                    break;
-                case "Main/Menu/File/PacProperties":
-                    language.Main.Menu.File.PacProperties = reader.Value;
+                case "Main/Menu/File/FormatXProperties":
+                    language.Main.Menu.File.FormatXProperties = reader.Value;
                     break;
                 case "Main/Menu/File/OpenOriginal":
                     language.Main.Menu.File.OpenOriginal = reader.Value;
@@ -3847,6 +4048,12 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Main/Menu/Video/GenerateTextFromVideo":
                     language.Main.Menu.Video.GenerateTextFromVideo = reader.Value;
                     break;
+                case "Main/Menu/Video/GenerateBlankVideo":
+                    language.Main.Menu.Video.GenerateBlankVideo = reader.Value;
+                    break;
+                case "Main/Menu/Video/GenerateVideoWithBurnedInSub":
+                    language.Main.Menu.Video.GenerateVideoWithBurnedInSub = reader.Value;
+                    break;
                 case "Main/Menu/Video/ImportChaptersFromVideo":
                     language.Main.Menu.Video.ImportChaptersFromVideo = reader.Value;
                     break;
@@ -4003,17 +4210,20 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Main/Menu/ToolBar/ShowHideVideo":
                     language.Main.Menu.ToolBar.ShowHideVideo = reader.Value;
                     break;
+                case "Main/Menu/ToolBar/AssaDraw":
+                    language.Main.Menu.ToolBar.AssaDraw = reader.Value;
+                    break;
                 case "Main/Menu/ContextMenu/SizeAllColumnsToFit":
                     language.Main.Menu.ContextMenu.SizeAllColumnsToFit = reader.Value;
                     break;
-                case "Main/Menu/ContextMenu/AdvancedSubStationAlphaSetStyle":
-                    language.Main.Menu.ContextMenu.AdvancedSubStationAlphaSetStyle = reader.Value;
-                    break;
-                case "Main/Menu/ContextMenu/SubStationAlphaSetStyle":
-                    language.Main.Menu.ContextMenu.SubStationAlphaSetStyle = reader.Value;
+                case "Main/Menu/ContextMenu/SetStyle":
+                    language.Main.Menu.ContextMenu.SetStyle = reader.Value;
                     break;
                 case "Main/Menu/ContextMenu/SetActor":
                     language.Main.Menu.ContextMenu.SetActor = reader.Value;
+                    break;
+                case "Main/Menu/ContextMenu/AssaTools":
+                    language.Main.Menu.ContextMenu.AssaTools = reader.Value;
                     break;
                 case "Main/Menu/ContextMenu/SubStationAlphaStyles":
                     language.Main.Menu.ContextMenu.SubStationAlphaStyles = reader.Value;
@@ -4062,6 +4272,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Main/Menu/ContextMenu/SelectAll":
                     language.Main.Menu.ContextMenu.SelectAll = reader.Value;
+                    break;
+                case "Main/Menu/ContextMenu/Insert":
+                    language.Main.Menu.ContextMenu.Insert = reader.Value;
                     break;
                 case "Main/Menu/ContextMenu/InsertFirstLine":
                     language.Main.Menu.ContextMenu.InsertFirstLine = reader.Value;
@@ -4195,6 +4408,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Main/Menu/ContextMenu/GoogleAndMicrosoftTranslateSelectedLine":
                     language.Main.Menu.ContextMenu.GoogleAndMicrosoftTranslateSelectedLine = reader.Value;
                     break;
+                case "Main/Menu/ContextMenu/SelectedLines":
+                    language.Main.Menu.ContextMenu.SelectedLines = reader.Value;
+                    break;
                 case "Main/Menu/ContextMenu/TranslateSelectedLines":
                     language.Main.Menu.ContextMenu.TranslateSelectedLines = reader.Value;
                     break;
@@ -4203,6 +4419,18 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Main/Menu/ContextMenu/ApplyDurationLimitsForSelectedLines":
                     language.Main.Menu.ContextMenu.ApplyDurationLimitsForSelectedLines = reader.Value;
+                    break;
+                case "Main/Menu/ContextMenu/ApplyCustomOverrideTag":
+                    language.Main.Menu.ContextMenu.ApplyCustomOverrideTag = reader.Value;
+                    break;
+                case "Main/Menu/ContextMenu/SetPosition":
+                    language.Main.Menu.ContextMenu.SetPosition = reader.Value;
+                    break;
+                case "Main/Menu/ContextMenu/GenerateProgressBar":
+                    language.Main.Menu.ContextMenu.GenerateProgressBar = reader.Value;
+                    break;
+                case "Main/Menu/ContextMenu/AssaResolutionChanger":
+                    language.Main.Menu.ContextMenu.AssaResolutionChanger = reader.Value;
                     break;
                 case "Main/Menu/ContextMenu/FixCommonErrorsInSelectedLines":
                     language.Main.Menu.ContextMenu.FixCommonErrorsInSelectedLines = reader.Value;
@@ -4357,14 +4585,17 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Main/VideoControls/SetEndTime":
                     language.Main.VideoControls.SetEndTime = reader.Value;
                     break;
-                case "Main/VideoControls/SetstartTimeAndOffsetOfRest":
-                    language.Main.VideoControls.SetstartTimeAndOffsetOfRest = reader.Value;
+                case "Main/VideoControls/SetStartTimeAndOffsetTheRest":
+                    language.Main.VideoControls.SetStartTimeAndOffsetTheRest = reader.Value;
                     break;
                 case "Main/VideoControls/SearchTextOnline":
                     language.Main.VideoControls.SearchTextOnline = reader.Value;
                     break;
                 case "Main/VideoControls/GoogleTranslate":
                     language.Main.VideoControls.GoogleTranslate = reader.Value;
+                    break;
+                case "Main/VideoControls/AutoTranslate":
+                    language.Main.VideoControls.AutoTranslate = reader.Value;
                     break;
                 case "Main/VideoControls/GoogleIt":
                     language.Main.VideoControls.GoogleIt = reader.Value;
@@ -5116,6 +5347,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "RemoveTextFromHearImpaired/EditInterjections":
                     language.RemoveTextFromHearImpaired.EditInterjections = reader.Value;
                     break;
+                case "RemoveTextFromHearImpaired/Apply":
+                    language.RemoveTextFromHearImpaired.Apply = reader.Value;
+                    break;
                 case "ReplaceDialog/Title":
                     language.ReplaceDialog.Title = reader.Value;
                     break;
@@ -5224,6 +5458,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/General":
                     language.Settings.General = reader.Value;
                     break;
+                case "Settings/SubtitleFormats":
+                    language.Settings.SubtitleFormats = reader.Value;
+                    break;
                 case "Settings/Toolbar":
                     language.Settings.Toolbar = reader.Value;
                     break;
@@ -5304,6 +5541,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/ChooseProfile":
                     language.Settings.ChooseProfile = reader.Value;
+                    break;
+                case "Settings/OpenDataFolder":
+                    language.Settings.OpenDataFolder = reader.Value;
                     break;
                 case "Settings/DuplicateLine":
                     language.Settings.DuplicateLine = reader.Value;
@@ -5421,6 +5661,18 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/RemoveBlankLinesWhenOpening":
                     language.Settings.RemoveBlankLinesWhenOpening = reader.Value;
+                    break;
+                case "Settings/RemoveBlankLines":
+                    language.Settings.RemoveBlankLines = reader.Value;
+                    break;
+                case "Settings/ApplyAssaOverrideTags":
+                    language.Settings.ApplyAssaOverrideTags = reader.Value;
+                    break;
+                case "Settings/SetAssaPosition":
+                    language.Settings.SetAssaPosition = reader.Value;
+                    break;
+                case "Settings/SetAssaResolution":
+                    language.Settings.SetAssaResolution = reader.Value;
                     break;
                 case "Settings/ShowLineBreaksAs":
                     language.Settings.ShowLineBreaksAs = reader.Value;
@@ -5815,6 +6067,12 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/ContinuationStyleLeadingTrailingDots":
                     language.Settings.ContinuationStyleLeadingTrailingDots = reader.Value;
                     break;
+                case "Settings/ContinuationStyleLeadingTrailingEllipsis":
+                    language.Settings.ContinuationStyleLeadingTrailingEllipsis = reader.Value;
+                    break;
+                case "Settings/ContinuationStyleNoneTrailingEllipsis":
+                    language.Settings.ContinuationStyleNoneTrailingEllipsis = reader.Value;
+                    break;
                 case "Settings/ContinuationStyleLeadingTrailingDash":
                     language.Settings.ContinuationStyleLeadingTrailingDash = reader.Value;
                     break;
@@ -5835,6 +6093,24 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/FixCommonErrorsSkipStepOne":
                     language.Settings.FixCommonErrorsSkipStepOne = reader.Value;
+                    break;
+                case "Settings/DefaultFormat":
+                    language.Settings.DefaultFormat = reader.Value;
+                    break;
+                case "Settings/DefaultSaveAsFormat":
+                    language.Settings.DefaultSaveAsFormat = reader.Value;
+                    break;
+                case "Settings/DefaultSaveAsFormatAuto":
+                    language.Settings.DefaultSaveAsFormatAuto = reader.Value;
+                    break;
+                case "Settings/Favorites":
+                    language.Settings.Favorites = reader.Value;
+                    break;
+                case "Settings/FavoriteFormats":
+                    language.Settings.FavoriteFormats = reader.Value;
+                    break;
+                case "Settings/FavoriteSubtitleFormatsNote":
+                    language.Settings.FavoriteSubtitleFormatsNote = reader.Value;
                     break;
                 case "Settings/Shortcuts":
                     language.Settings.Shortcuts = reader.Value;
@@ -5968,6 +6244,15 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/AdjustSetStartTimeKeepDuration":
                     language.Settings.AdjustSetStartTimeKeepDuration = reader.Value;
                     break;
+                case "Settings/AdjustVideoSetStartForAppropriateLine":
+                    language.Settings.AdjustVideoSetStartForAppropriateLine = reader.Value;
+                    break;
+                case "Settings/AdjustVideoSetEndForAppropriateLine":
+                    language.Settings.AdjustVideoSetEndForAppropriateLine = reader.Value;
+                    break;
+                case "Settings/AdjustSetStartAndOffsetTheWholeSubtitle":
+                    language.Settings.AdjustSetStartAndOffsetTheWholeSubtitle = reader.Value;
+                    break;
                 case "Settings/AdjustSetEndAndOffsetTheRest":
                     language.Settings.AdjustSetEndAndOffsetTheRest = reader.Value;
                     break;
@@ -6025,11 +6310,17 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/GoToNext":
                     language.Settings.GoToNext = reader.Value;
                     break;
+                case "Settings/GoToNextPlayTranslate":
+                    language.Settings.GoToNextPlayTranslate = reader.Value;
+                    break;
                 case "Settings/GoToNextCursorAtEnd":
                     language.Settings.GoToNextCursorAtEnd = reader.Value;
                     break;
                 case "Settings/GoToPrevious":
                     language.Settings.GoToPrevious = reader.Value;
+                    break;
+                case "Settings/GoToPreviousPlayTranslate":
+                    language.Settings.GoToPreviousPlayTranslate = reader.Value;
                     break;
                 case "Settings/GoToCurrentSubtitleStart":
                     language.Settings.GoToCurrentSubtitleStart = reader.Value;
@@ -6057,6 +6348,12 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/ToggleDialogDashes":
                     language.Settings.ToggleDialogDashes = reader.Value;
+                    break;
+                case "Settings/ToggleQuotes":
+                    language.Settings.ToggleQuotes = reader.Value;
+                    break;
+                case "Settings/ToggleHiTags":
+                    language.Settings.ToggleHiTags = reader.Value;
                     break;
                 case "Settings/ToggleMusicSymbols":
                     language.Settings.ToggleMusicSymbols = reader.Value;
@@ -6211,8 +6508,8 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/ToggleStartEndCurrent":
                     language.Settings.ToggleStartEndCurrent = reader.Value;
                     break;
-                case "Settings/PlayCurrent":
-                    language.Settings.PlayCurrent = reader.Value;
+                case "Settings/PlaySelectedLines":
+                    language.Settings.PlaySelectedLines = reader.Value;
                     break;
                 case "Settings/WaveformGoToPrevSubtitle":
                     language.Settings.WaveformGoToPrevSubtitle = reader.Value;
@@ -6249,6 +6546,12 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/MainToggleVideoControls":
                     language.Settings.MainToggleVideoControls = reader.Value;
+                    break;
+                case "Settings/VideoToggleContrast":
+                    language.Settings.VideoToggleContrast = reader.Value;
+                    break;
+                case "Settings/VideoToggleBrightness":
+                    language.Settings.VideoToggleBrightness = reader.Value;
                     break;
                 case "Settings/CustomSearch1":
                     language.Settings.CustomSearch1 = reader.Value;
@@ -6379,9 +6682,6 @@ namespace Nikse.SubtitleEdit.Logic
                 case "Settings/ListViewGoToNextError":
                     language.Settings.ListViewGoToNextError = reader.Value;
                     break;
-                case "Settings/ShowBeamer":
-                    language.Settings.ShowBeamer = reader.Value;
-                    break;
                 case "Settings/ShowStyleManager":
                     language.Settings.ShowStyleManager = reader.Value;
                     break;
@@ -6393,6 +6693,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/MainTextBoxMoveFirstWordUpCurrent":
                     language.Settings.MainTextBoxMoveFirstWordUpCurrent = reader.Value;
+                    break;
+                case "Settings/MainTextBoxMoveFromCursorToNext":
+                    language.Settings.MainTextBoxMoveFromCursorToNext = reader.Value;
                     break;
                 case "Settings/MainTextBoxMoveLastWordDownCurrent":
                     language.Settings.MainTextBoxMoveLastWordDownCurrent = reader.Value;
@@ -6426,6 +6729,12 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/MainTextBoxUnbreakNoSpace":
                     language.Settings.MainTextBoxUnbreakNoSpace = reader.Value;
+                    break;
+                case "Settings/MainTextBoxAssaIntellisense":
+                    language.Settings.MainTextBoxAssaIntellisense = reader.Value;
+                    break;
+                case "Settings/MainTextBoxAssaRemoveTag":
+                    language.Settings.MainTextBoxAssaRemoveTag = reader.Value;
                     break;
                 case "Settings/MainFileSaveAll":
                     language.Settings.MainFileSaveAll = reader.Value;
@@ -6513,6 +6822,15 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Settings/UseXAsNewGap":
                     language.Settings.UseXAsNewGap = reader.Value;
+                    break;
+                case "Settings/BDOpensIn":
+                    language.Settings.BDOpensIn = reader.Value;
+                    break;
+                case "Settings/BDOpensInOcr":
+                    language.Settings.BDOpensInOcr = reader.Value;
+                    break;
+                case "Settings/BDOpensInEdit":
+                    language.Settings.BDOpensInEdit = reader.Value;
                     break;
                 case "SettingsMpv/DownloadMpv":
                     language.SettingsMpv.DownloadMpv = reader.Value;
@@ -6973,6 +7291,9 @@ namespace Nikse.SubtitleEdit.Logic
                 case "SubStationAlphaProperties/VideoResolution":
                     language.SubStationAlphaProperties.VideoResolution = reader.Value;
                     break;
+                case "SubStationAlphaProperties/FromCurrentVideo":
+                    language.SubStationAlphaProperties.FromCurrentVideo = reader.Value;
+                    break;
                 case "SubStationAlphaProperties/Options":
                     language.SubStationAlphaProperties.Options = reader.Value;
                     break;
@@ -7147,23 +7468,68 @@ namespace Nikse.SubtitleEdit.Logic
                 case "SubStationAlphaStyles/OverwriteX":
                     language.SubStationAlphaStyles.OverwriteX = reader.Value;
                     break;
-                case "SubStationAlphaStyles/Category":
-                    language.SubStationAlphaStyles.Category = reader.Value;
-                    break;
-                case "SubStationAlphaStyles/NewCategory":
-                    language.SubStationAlphaStyles.NewCategory = reader.Value;
-                    break;
-                case "SubStationAlphaStyles/CategoryName":
-                    language.SubStationAlphaStyles.CategoryName = reader.Value;
-                    break;
-                case "SubStationAlphaStyles/CategorySetDefault":
-                    language.SubStationAlphaStyles.CategorySetDefault = reader.Value;
-                    break;
                 case "SubStationAlphaStyles/CategoryNote":
                     language.SubStationAlphaStyles.CategoryNote = reader.Value;
                     break;
-                case "SubStationAlphaStyles/CategoryDelete":
-                    language.SubStationAlphaStyles.CategoryDelete = reader.Value;
+                case "SubStationAlphaStyles/CategoriesManage":
+                    language.SubStationAlphaStyles.CategoriesManage = reader.Value;
+                    break;
+                case "SubStationAlphaStyles/MoveToCategory":
+                    language.SubStationAlphaStyles.MoveToCategory = reader.Value;
+                    break;
+                case "SubStationAlphaStyles/ScaleX":
+                    language.SubStationAlphaStyles.ScaleX = reader.Value;
+                    break;
+                case "SubStationAlphaStyles/ScaleY":
+                    language.SubStationAlphaStyles.ScaleY = reader.Value;
+                    break;
+                case "SubStationAlphaStyles/Spacing":
+                    language.SubStationAlphaStyles.Spacing = reader.Value;
+                    break;
+                case "SubStationAlphaStyles/Angle":
+                    language.SubStationAlphaStyles.Angle = reader.Value;
+                    break;
+                case "SubStationAlphaStyles/BoxPerLine":
+                    language.SubStationAlphaStyles.BoxPerLine = reader.Value;
+                    break;
+                case "SubStationAlphaStyles/BoxMultiLine":
+                    language.SubStationAlphaStyles.BoxMultiLine = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/Category":
+                    language.SubStationAlphaStylesCategoriesManager.Category = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/Categories":
+                    language.SubStationAlphaStylesCategoriesManager.Categories = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/CategoryName":
+                    language.SubStationAlphaStylesCategoriesManager.CategoryName = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/CategoryDelete":
+                    language.SubStationAlphaStylesCategoriesManager.CategoryDelete = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/NewCategory":
+                    language.SubStationAlphaStylesCategoriesManager.NewCategory = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/CategoryRename":
+                    language.SubStationAlphaStylesCategoriesManager.CategoryRename = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/CategorySetDefault":
+                    language.SubStationAlphaStylesCategoriesManager.CategorySetDefault = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/NumberOfStyles":
+                    language.SubStationAlphaStylesCategoriesManager.NumberOfStyles = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/CategoryDefault":
+                    language.SubStationAlphaStylesCategoriesManager.CategoryDefault = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/ChooseCategories":
+                    language.SubStationAlphaStylesCategoriesManager.ChooseCategories = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/ImportCategoriesTitle":
+                    language.SubStationAlphaStylesCategoriesManager.ImportCategoriesTitle = reader.Value;
+                    break;
+                case "SubStationAlphaStylesCategoriesManager/ExportCategoriesTitle":
+                    language.SubStationAlphaStylesCategoriesManager.ExportCategoriesTitle = reader.Value;
                     break;
                 case "PointSync/Title":
                     language.PointSync.Title = reader.Value;
@@ -7716,6 +8082,9 @@ namespace Nikse.SubtitleEdit.Logic
                     break;
                 case "Waveform/RemoveSceneChange":
                     language.Waveform.RemoveSceneChange = reader.Value;
+                    break;
+                case "Waveform/RemoveSceneChangesFromSelection":
+                    language.Waveform.RemoveSceneChangesFromSelection = reader.Value;
                     break;
                 case "Waveform/GuessTimeCodes":
                     language.Waveform.GuessTimeCodes = reader.Value;

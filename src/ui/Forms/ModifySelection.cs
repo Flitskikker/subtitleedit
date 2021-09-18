@@ -1,5 +1,4 @@
 ﻿using Nikse.SubtitleEdit.Controls;
-using Nikse.SubtitleEdit.Core;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
@@ -16,7 +15,7 @@ namespace Nikse.SubtitleEdit.Forms
         private readonly SubtitleListView _subtitleListView;
         private readonly Subtitle _subtitle;
         private readonly SubtitleFormat _format;
-        private readonly bool _loading;
+        private bool _loading;
 
         private const int FunctionContains = 0;
         private const int FunctionStartsWith = 1;
@@ -255,7 +254,7 @@ namespace Nikse.SubtitleEdit.Forms
             var listViewItems = new List<ListViewItem>();
             listViewFixes.BeginUpdate();
             listViewFixes.Items.Clear();
-            string text = textBoxText.Text;
+            var text = textBoxText.Text;
             if (comboBoxRule.SelectedIndex != FunctionRegEx)
             {
                 text = text.Replace("\\r\\n", Environment.NewLine);
@@ -341,6 +340,7 @@ namespace Nikse.SubtitleEdit.Forms
                             }
                         }
                     }
+
                     if (comboBoxRule.SelectedIndex == FunctionOdd) // Select odd lines
                     {
                         if (i % 2 == 0)
@@ -410,6 +410,7 @@ namespace Nikse.SubtitleEdit.Forms
             listViewFixes.Items.AddRange(listViewItems.ToArray());
             listViewFixes.EndUpdate();
             groupBoxPreview.Text = string.Format(LanguageSettings.Current.ModifySelection.MatchingLinesX, listViewFixes.Items.Count);
+            listViewFixes.AutoSizeLastColumn();
         }
 
         private void ApplySelection()
@@ -426,7 +427,7 @@ namespace Nikse.SubtitleEdit.Forms
                 {
                     if (item.Checked)
                     {
-                        int index = Convert.ToInt32(item.Tag);
+                        var index = Convert.ToInt32(item.Tag);
                         _subtitleListView.Items[index].Selected = true;
                     }
                 }
@@ -437,7 +438,7 @@ namespace Nikse.SubtitleEdit.Forms
                 {
                     if (item.Checked)
                     {
-                        int index = Convert.ToInt32(item.Tag);
+                        var index = Convert.ToInt32(item.Tag);
                         _subtitleListView.Items[index].Selected = false;
                     }
                 }
@@ -515,7 +516,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void FillStyles()
         {
-            listViewStyles.Columns[listViewStyles.Columns.Count - 1].Width = -2;
+            listViewStyles.AutoSizeLastColumn();
             var styles = new List<string>();
             var formatType = _format.GetType();
             if (formatType == typeof(AdvancedSubStationAlpha) || formatType == typeof(SubStationAlpha))
@@ -531,16 +532,15 @@ namespace Nikse.SubtitleEdit.Forms
                 styles = _subtitle.Header == null ? Sami.GetStylesFromSubtitle(_subtitle) : Sami.GetStylesFromHeader(_subtitle.Header);
             }
 
+            _loading = true;
             listViewStyles.Items.Clear();
-            foreach (var style in styles.OrderBy(p => p))
-            {
-                listViewStyles.Items.Add(style);
-            }
+            listViewStyles.Items.AddRange(styles.OrderBy(p => p).Select(p => new ListViewItem { Text = p }).ToArray());
+            _loading = false;
         }
 
         private void FillActors()
         {
-            listViewStyles.Columns[listViewStyles.Columns.Count - 1].Width = -2;
+            listViewStyles.AutoSizeLastColumn();
             var actors = new List<string>();
             foreach (var paragraph in _subtitle.Paragraphs)
             {
@@ -550,11 +550,10 @@ namespace Nikse.SubtitleEdit.Forms
                 }
             }
 
+            _loading = true;
             listViewStyles.Items.Clear();
-            foreach (var style in actors.OrderBy(p => p))
-            {
-                listViewStyles.Items.Add(style);
-            }
+            listViewStyles.Items.AddRange(actors.OrderBy(p => p).Select(p => new ListViewItem { Text = p }).ToArray());
+            _loading = false;
         }
 
         private void checkBoxCaseSensitive_CheckedChanged(object sender, EventArgs e)
@@ -565,12 +564,6 @@ namespace Nikse.SubtitleEdit.Forms
         private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
             Preview();
-        }
-
-        private void ModifySelection_Resize(object sender, EventArgs e)
-        {
-            listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
-            listViewStyles.Columns[listViewStyles.Columns.Count - 1].Width = -2;
         }
 
         private void ModifySelection_Shown(object sender, EventArgs e)
@@ -602,6 +595,26 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 item.Checked = !item.Checked;
             }
+        }
+
+        private void ModifySelection_Resize(object sender, EventArgs e)
+        {
+            ModifySelection_ResizeEnd(null, null);
+        }
+
+        private void ModifySelection_ResizeEnd(object sender, EventArgs e)
+        {
+            listViewFixes.Columns[0].Width = 50;
+            listViewFixes.Columns[1].Width = 80;
+
+            var remainingWidth = listViewFixes.ClientSize.Width - listViewFixes.Columns[0].Width - listViewFixes.Columns[1].Width;
+            if (_format.HasStyleSupport)
+            {
+                listViewFixes.Columns[2].Width = 4 * remainingWidth / 5;
+                remainingWidth -= listViewFixes.Columns[2].Width;
+            }
+
+            listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = remainingWidth;
         }
     }
 }

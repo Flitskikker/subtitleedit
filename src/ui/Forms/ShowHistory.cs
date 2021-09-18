@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Drawing;
@@ -76,7 +75,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void FormShowHistory_ResizeEnd(object sender, EventArgs e)
         {
-            listViewHistory.Columns[listViewHistory.Columns.Count - 1].Width = -2;
+            listViewHistory.AutoSizeLastColumn();
         }
 
         private void FormShowHistory_Shown(object sender, EventArgs e)

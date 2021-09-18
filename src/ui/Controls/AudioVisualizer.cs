@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.ContainerFormats.Matroska;
 using Nikse.SubtitleEdit.Logic;
 using System;
@@ -326,6 +325,23 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        public void UseSmpteDropFrameTime()
+        {
+            if (_wavePeaks != null)
+            {
+                var list = new List<WavePeak>();
+                for (int i = 0; i < _wavePeaks.Peaks.Count; i++)
+                {
+                    if (i % 1001 != 0)
+                    {
+                        list.Add(_wavePeaks.Peaks[i]);
+                    }
+                }
+
+                _wavePeaks = new WavePeakData(_wavePeaks.SampleRate, list);
+            }
+        }
+
         public void SetSpectrogram(SpectrogramData spectrogramData)
         {
             InitializeSpectrogram(spectrogramData);
@@ -402,6 +418,8 @@ namespace Nikse.SubtitleEdit.Controls
             double startThresholdMilliseconds = (_startPositionSeconds - additionalSeconds) * TimeCode.BaseUnit;
             double endThresholdMilliseconds = (EndPositionSeconds + additionalSeconds) * TimeCode.BaseUnit;
 
+            var lastTimeStampHash = -1;
+            var lastLastTimeStampHash = -2;
             for (int i = 0; i < subtitle.Paragraphs.Count; i++)
             {
                 var p = subtitle.Paragraphs[i];
@@ -415,7 +433,20 @@ namespace Nikse.SubtitleEdit.Controls
 
                 if (p.EndTime.TotalMilliseconds >= startThresholdMilliseconds && p.StartTime.TotalMilliseconds <= endThresholdMilliseconds)
                 {
+                    var timeStampHash = p.StartTime.TotalMilliseconds.GetHashCode() + p.EndTime.TotalMilliseconds.GetHashCode();
+                    if (timeStampHash == lastTimeStampHash && timeStampHash == lastLastTimeStampHash)
+                    {
+                        continue;
+                    }
+
                     _displayableParagraphs.Add(p);
+                    if (_displayableParagraphs.Count > 200)
+                    {
+                        break;
+                    }
+
+                    lastLastTimeStampHash = lastTimeStampHash;
+                    lastTimeStampHash = timeStampHash;
                 }
             }
 
@@ -1278,7 +1309,7 @@ namespace Nikse.SubtitleEdit.Controls
                     }
                     else
                     {
-                        Paragraph p = GetParagraphAtMilliseconds(milliseconds);
+                        var p = GetParagraphAtMilliseconds(milliseconds);
                         RightClickedParagraph = p;
                         RightClickedSeconds = seconds;
                         if (p != null)

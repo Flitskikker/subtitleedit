@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -316,7 +318,7 @@ namespace Nikse.SubtitleEdit.Core.Common
                     default:
                         if (ch > 127)
                         {
-                            encoded.Append("&#" + (int)ch + ";");
+                            encoded.Append("&#").Append((int)ch).Append(';');
                         }
                         else
                         {
@@ -439,6 +441,7 @@ namespace Nikse.SubtitleEdit.Core.Common
                         inside = true;
                         continue;
                     }
+
                     if (next == '/' && i < s.Length - 3)
                     {
                         var nextNextNext = s[i + 3];
@@ -453,7 +456,14 @@ namespace Nikse.SubtitleEdit.Core.Common
                             inside = true;
                             continue;
                         }
+
+                        if (nextNext == 'c' && nextNextNext == '.')
+                        {
+                            inside = true;
+                            continue;
+                        }
                     }
+
                     if (nextNext == '/' && i < s.Length - 3)
                     { // some bad end tags sometimes seen
                         var nextNextNext = s[i + 3];
@@ -469,8 +479,17 @@ namespace Nikse.SubtitleEdit.Core.Common
                             continue;
                         }
                     }
+
                     if ((next == 'f' || next == 'F') && s.Substring(i).StartsWith("<font", StringComparison.OrdinalIgnoreCase) || // <font
-                        next == '/' && (nextNext == 'f' || nextNext == 'F') && s.Substring(i).StartsWith("</font>", StringComparison.OrdinalIgnoreCase))  // </font>
+                        next == '/' && (nextNext == 'f' || nextNext == 'F') && s.Substring(i).StartsWith("</font>", StringComparison.OrdinalIgnoreCase) ||  // </font>                        
+                        next == ' ' && nextNext == '/' && s.Substring(i).StartsWith("< /font>", StringComparison.OrdinalIgnoreCase) ||  // < /font>
+                        next == '/' && nextNext == ' ' && s.Substring(i).StartsWith("</ font>", StringComparison.OrdinalIgnoreCase))  // </ font>
+                    {
+                        inside = true;
+                        continue;
+                    }
+
+                    if (next == 'c' && nextNext == '.')
                     {
                         inside = true;
                         continue;
@@ -883,9 +902,43 @@ namespace Nikse.SubtitleEdit.Core.Common
             return preTags + text;
         }
 
-        public static string ToggleTag(string input, string tag)
+        public static string ToggleTag(string input, string tag, bool wholeLine, bool assa)
         {
             var text = input;
+
+            if (assa)
+            {
+                var onOffTags = new List<string> { "i", "b", "u", "s", "be" };
+                if (onOffTags.Contains(tag))
+                {
+                    if (text.Contains($"\\{tag}1"))
+                    {
+                        text = text.Replace($"{{\\{tag}1}}", string.Empty);
+                        text = text.Replace($"{{\\{tag}0}}", string.Empty);
+                        text = text.Replace($"\\{tag}1", string.Empty);
+                        text = text.Replace($"\\{tag}0", string.Empty);
+                    }
+                    else
+                    {
+                        text = wholeLine ? $"{{\\{tag}1}}{text}" : $"{{\\{tag}1}}{text}{{\\{tag}0}}";
+                    }
+                }
+                else
+                {
+                    if (text.Contains($"\\{tag}"))
+                    {
+                        text = text.Replace($"{{\\{tag}}}", string.Empty);
+                        text = text.Replace($"\\{tag}", string.Empty);
+                    }
+                    else
+                    {
+                        text = $"{{\\{tag}}}{text}";
+                    }
+                }
+
+                return text;
+            }
+
             if (text.IndexOf("<" + tag + ">", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 text.IndexOf("</" + tag + ">", StringComparison.OrdinalIgnoreCase) >= 0)
             {
@@ -907,6 +960,29 @@ namespace Nikse.SubtitleEdit.Core.Common
                 }
             }
             return text;
+        }
+
+        public static Color GetColorFromString(string color)
+        {
+            Color c = Color.White;
+            try
+            {
+                if (color.StartsWith("rgb(", StringComparison.Ordinal))
+                {
+                    string[] arr = color.Remove(0, 4).TrimEnd(')').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    c = Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
+                }
+                else
+                {
+                    c = ColorTranslator.FromHtml(color);
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return c;
         }
 
     }

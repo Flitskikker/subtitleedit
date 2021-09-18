@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.Enums;
 using System;
 using System.Drawing;
@@ -350,12 +349,14 @@ namespace Nikse.SubtitleEdit.Controls
                     {
                         _simpleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
                     }
-
-                    _simpleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
+                    else
+                    {
+                        _simpleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
+                    }
                 }
                 else if (_uiTextBox != null)
                 {
-                    _uiTextBox.ScrollBars = value;
+                    // auto show/hide for rich text box just works
                 }
             }
         }

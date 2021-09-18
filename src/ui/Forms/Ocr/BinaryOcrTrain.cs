@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using Nikse.SubtitleEdit.Logic.Ocr.Binary;
@@ -352,7 +351,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
 
         private void BinaryOcrTrain_ResizeEnd(object sender, EventArgs e)
         {
-            listViewFonts.Columns[listViewFonts.Columns.Count - 1].Width = -2;
+            listViewFonts.AutoSizeLastColumn();
         }
 
         private void BinaryOcrTrain_Shown(object sender, EventArgs e)

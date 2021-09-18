@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
@@ -102,9 +101,9 @@ namespace Nikse.SubtitleEdit.Controls
             public Paragraph Paragraph { get; set; }
         }
 
-        private List<SyntaxColorLineParamter> _syntaxColorList = new List<SyntaxColorLineParamter>();
-        private object _syntaxColorListLock = new object();
-        private Timer _syntaxColorLineTimer = null;
+        private readonly List<SyntaxColorLineParamter> _syntaxColorList = new List<SyntaxColorLineParamter>();
+        private static readonly object SyntaxColorListLock = new object();
+        private readonly Timer _syntaxColorLineTimer;
 
         public int FirstVisibleIndex { get; set; } = -1;
 
@@ -355,6 +354,11 @@ namespace Nikse.SubtitleEdit.Controls
                         Columns.Add(new ColumnHeader { Width = 300 });
                         break;
                 }
+            }
+
+            if (Configuration.Settings != null && !Configuration.Settings.Tools.ListViewShowColumnStartTime)
+            {
+                HideColumn(SubtitleColumn.Start);
             }
 
             if (Configuration.Settings != null && !Configuration.Settings.Tools.ListViewShowColumnEndTime)
@@ -773,6 +777,41 @@ namespace Nikse.SubtitleEdit.Controls
             Columns[ColumnIndexText].Width = lengthAvailable;
             Columns[ColumnIndexText].Width = lengthAvailable;
             SubtitleListViewLastColumnFill(this, null);
+        }
+
+        public void ShowStartColumn(string title)
+        {
+            if (GetColumnIndex(SubtitleColumn.Start) == -1)
+            {
+                var ch = new ColumnHeader { Text = title };
+                if (ColumnIndexNumber >= 0)
+                {
+                    SubtitleColumns.Insert(ColumnIndexNumber + 1, SubtitleColumn.Start);
+                    Columns.Insert(ColumnIndexNumber + 1, ch);
+                }
+                else
+                {
+                    SubtitleColumns.Add(SubtitleColumn.Start);
+                    Columns.Insert(0, ch);
+                }
+                UpdateColumnIndexes();
+
+                try
+                {
+                    using (var graphics = Parent.CreateGraphics())
+                    {
+                        var timestampSizeF = graphics.MeasureString(new TimeCode(0, 0, 33, 527).ToDisplayString(), Font);
+                        var timestampWidth = (int)(timestampSizeF.Width + 0.5) + 11;
+                        Columns[ColumnIndexStart].Width = timestampWidth;
+                    }
+                }
+                catch
+                {
+                    Columns[ColumnIndexStart].Width = 65;
+                }
+
+                AutoSizeAllColumns(null);
+            }
         }
 
         public void ShowEndColumn(string title)
@@ -1292,12 +1331,13 @@ namespace Nikse.SubtitleEdit.Controls
         private void SyntaxColorLineTimerTick(object sender, EventArgs e)
         {
             var hashSet = new HashSet<int>();
-            lock (_syntaxColorListLock)
+            lock (SyntaxColorListLock)
             {
                 _syntaxColorLineTimer.Stop();
+                
                 for (int i = _syntaxColorList.Count - 1; i >= 0; i--)
                 {
-                    SyntaxColorLineParamter item = _syntaxColorList[i];
+                    var item = _syntaxColorList[i];
                     if (!hashSet.Contains(item.Index))
                     {
                         if (IsValidIndex(item.Index))
@@ -1307,6 +1347,7 @@ namespace Nikse.SubtitleEdit.Controls
                         hashSet.Add(item.Index);
                     }
                 }
+                _syntaxColorList.Clear();
             }
         }
 
@@ -1320,10 +1361,10 @@ namespace Nikse.SubtitleEdit.Controls
                 return;
             }
 
-            lock (_syntaxColorListLock)
+            lock (SyntaxColorListLock)
             {
-                _syntaxColorList.Add(new SyntaxColorLineParamter { Index = i, Paragraphs = paragraphs, Paragraph = paragraph });
                 _syntaxColorLineTimer.Stop();
+                _syntaxColorList.Add(new SyntaxColorLineParamter { Index = i, Paragraphs = paragraphs, Paragraph = paragraph });
                 _syntaxColorLineTimer.Start();
             }
         }
@@ -1384,16 +1425,30 @@ namespace Nikse.SubtitleEdit.Controls
 
             if (_settings.Tools.ListViewSyntaxColorOverlap && i > 0 && i < paragraphs.Count && ColumnIndexEnd >= 0)
             {
-                Paragraph prev = paragraphs[i - 1];
+                var prev = paragraphs[i - 1];
                 if (paragraph.StartTime.TotalMilliseconds < prev.EndTime.TotalMilliseconds && !prev.EndTime.IsMaxTime)
                 {
-                    Items[i - 1].SubItems[ColumnIndexEnd].BackColor = Configuration.Settings.Tools.ListViewSyntaxErrorColor;
-                    item.SubItems[ColumnIndexStart].BackColor = Configuration.Settings.Tools.ListViewSyntaxErrorColor;
+                    if (ColumnIndexEnd >= 0)
+                    {
+                        Items[i - 1].SubItems[ColumnIndexEnd].BackColor = Configuration.Settings.Tools.ListViewSyntaxErrorColor;
+                    }
+
+                    if (ColumnIndexStart >= 0)
+                    {
+                        item.SubItems[ColumnIndexStart].BackColor = Configuration.Settings.Tools.ListViewSyntaxErrorColor;
+                    }
                 }
                 else
                 {
-                    Items[i - 1].SubItems[ColumnIndexEnd].BackColor = BackColor;
-                    item.SubItems[ColumnIndexStart].BackColor = BackColor;
+                    if (ColumnIndexEnd >= 0)
+                    {
+                        Items[i - 1].SubItems[ColumnIndexEnd].BackColor = BackColor;
+                    }
+
+                    if (ColumnIndexStart >= 0)
+                    {
+                        item.SubItems[ColumnIndexStart].BackColor = BackColor;
+                    }
                 }
             }
 

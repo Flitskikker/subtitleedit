@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.Enums;
 using Nikse.SubtitleEdit.Core.Interfaces;
 using Nikse.SubtitleEdit.Core.SpellCheck;
@@ -105,7 +104,7 @@ namespace Nikse.SubtitleEdit.Forms
             buttonAbort.Text = LanguageSettings.Current.SpellCheck.Abort;
             buttonEditWholeText.Text = LanguageSettings.Current.SpellCheck.EditWholeText;
             checkBoxAutoChangeNames.Text = LanguageSettings.Current.SpellCheck.AutoFixNames;
-            checkBoxAutoChangeNames.Checked = Configuration.Settings.Tools.SpellCheckAutoChangeNames;
+            checkBoxAutoChangeNames.Checked = Configuration.Settings.Tools.SpellCheckAutoChangeNameCasing;
             groupBoxEditWholeText.Text = LanguageSettings.Current.SpellCheck.EditWholeText;
             buttonChangeWholeText.Text = LanguageSettings.Current.SpellCheck.Change;
             buttonSkipText.Text = LanguageSettings.Current.SpellCheck.SkipOnce;
@@ -319,7 +318,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void SpellCheck_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Configuration.Settings.Tools.SpellCheckAutoChangeNames = AutoFixNames;
+            Configuration.Settings.Tools.SpellCheckAutoChangeNameCasing = AutoFixNames;
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 DialogResult = DialogResult.Abort;
@@ -377,7 +376,7 @@ namespace Nikse.SubtitleEdit.Forms
             toolStripSeparator1.Visible = showAddItems;
         }
 
-        private void AddXToNamesnoiseListToolStripMenuItemClick(object sender, EventArgs e)
+        private void AddXToNamesNoiseListToolStripMenuItemClick(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(richTextBoxParagraph.SelectedText))
             {
@@ -612,6 +611,10 @@ namespace Nikse.SubtitleEdit.Forms
                     {
                         _noOfCorrectWords++;
                     }
+                    else if (_postfix.Length > 0 && _spellCheckWordLists.HasUserWord(_currentWord + _postfix))
+                    {
+                        _noOfCorrectWords++;
+                    }
                     else if (_changeAllDictionary.ContainsKey(_currentWord))
                     {
                         _noOfChangedWords++;
@@ -731,11 +734,26 @@ namespace Nikse.SubtitleEdit.Forms
                                 }
                                 if (!correct)
                                 {
-                                    correct = _spellCheckWordLists.HasUserWord(wordWithDash);
+                                    correct = _spellCheckWordLists.HasUserWord(wordWithDash.Replace("‑", "-"));
                                 }
+                                if (!correct && _spellCheckWordLists.HasName(wordWithDash.Replace("‑", "-")))
+                                {
+                                    correct = true;
+                                    _noOfNames++;
+                                }
+                            }
+                            if (!correct && _currentWord.EndsWith('\u2014')) // em dash
+                            {
+                                var wordWithoutDash = _currentWord.TrimEnd('\u2014');
+                                correct = DoSpell(wordWithoutDash);
                                 if (!correct)
                                 {
-                                    correct = _spellCheckWordLists.HasUserWord(wordWithDash.Replace("‑", "-"));
+                                    correct = _spellCheckWordLists.HasUserWord(wordWithoutDash);
+                                }
+                                if (!correct && _spellCheckWordLists.HasName(wordWithoutDash))
+                                {
+                                    correct = true;
+                                    _noOfNames++;
                                 }
                             }
                         }
@@ -746,13 +764,32 @@ namespace Nikse.SubtitleEdit.Forms
                             {
                                 correct = true;
                             }
-                            else if (_languageName.StartsWith("en_", StringComparison.Ordinal) && (_currentWord.Equals("a", StringComparison.OrdinalIgnoreCase) || _currentWord == "I"))
+                            else if (_languageName.StartsWith("en", StringComparison.Ordinal) && (_currentWord.Equals("a", StringComparison.OrdinalIgnoreCase) || _currentWord == "I"))
                             {
                                 correct = true;
                             }
-                            else if (_languageName.StartsWith("da_", StringComparison.Ordinal) && _currentWord.Equals("i", StringComparison.OrdinalIgnoreCase))
+                            else if (_languageName.StartsWith("da", StringComparison.Ordinal) && _currentWord.Equals("i", StringComparison.OrdinalIgnoreCase))
                             {
                                 correct = true;
+                            }
+                            else if (_languageName.StartsWith("fr", StringComparison.Ordinal))
+                            {
+                                if (_currentWord.Equals("a", StringComparison.OrdinalIgnoreCase) ||
+                                    _currentWord.Equals("à", StringComparison.OrdinalIgnoreCase) ||
+                                    _currentWord.Equals("y", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    correct = true;
+                                }
+                            }
+                            else if (_languageName.StartsWith("es", StringComparison.Ordinal))
+                            {
+                                if (_currentWord.Equals("a", StringComparison.OrdinalIgnoreCase) ||
+                                    _currentWord.Equals("y", StringComparison.OrdinalIgnoreCase) ||
+                                    _currentWord.Equals("o", StringComparison.OrdinalIgnoreCase) ||
+                                    _currentWord.Equals("u", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    correct = true;
+                                }
                             }
                         }
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Nikse.SubtitleEdit.Core;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.Enums;
 using Nikse.SubtitleEdit.Core.Forms;
@@ -1957,6 +1956,32 @@ namespace Test.Logic.Forms
             target.Settings.OnlyIfInSeparateLine = false;
             string actual = target.RemoveColon("<i>- and many were imm..." + Environment.NewLine + "- WOMAN: We believe" + Environment.NewLine + "the future of food...</i>");
             Assert.AreEqual("<i>- and many were imm..." + Environment.NewLine + "- We believe" + Environment.NewLine + "the future of food...</i>", actual);
+        }
+
+        [TestMethod]
+        public void RemoveTextForHiSecondDialogEmpty()
+        {
+            var target = GetRemoveTextForHiLib();
+            target.Settings.RemoveTextBeforeColon = true;
+            target.Settings.RemoveTextBeforeColonOnlyUppercase = false;
+            target.Settings.RemoveInterjections = false;
+            target.Settings.RemoveTextBetweenBrackets = false;
+            target.Settings.OnlyIfInSeparateLine = false;
+            string actual = target.RemoveTextFromHearImpaired("- Oh. No." + Environment.NewLine + "-");
+            Assert.AreEqual("Oh. No.", actual);
+        }
+
+        [TestMethod]
+        public void RemoveTextForHiFirstDialogEmpty()
+        {
+            var target = GetRemoveTextForHiLib();
+            target.Settings.RemoveTextBeforeColon = true;
+            target.Settings.RemoveTextBeforeColonOnlyUppercase = false;
+            target.Settings.RemoveInterjections = false;
+            target.Settings.RemoveTextBetweenBrackets = false;
+            target.Settings.OnlyIfInSeparateLine = false;
+            string actual = target.RemoveTextFromHearImpaired("-" + Environment.NewLine + "- Oh. No.");
+            Assert.AreEqual("Oh. No.", actual);
         }
 
         [TestMethod]

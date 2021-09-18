@@ -1,13 +1,12 @@
-﻿using Nikse.SubtitleEdit.Core.Common;
-using Nikse.SubtitleEdit.Core.Enums;
-using Nikse.SubtitleEdit.Core.SubtitleFormats;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Nikse.SubtitleEdit.Core.Enums;
+using Nikse.SubtitleEdit.Core.SubtitleFormats;
 
-namespace Nikse.SubtitleEdit.Core
+namespace Nikse.SubtitleEdit.Core.Common
 {
     public class Subtitle
     {
@@ -54,17 +53,22 @@ namespace Nikse.SubtitleEdit.Core
         /// <param name="subtitle">Subtitle to copy</param>
         /// <param name="generateNewId">Generate new ID (guid) for paragraphs</param>
         public Subtitle(Subtitle subtitle, bool generateNewId = true)
-            : this()
         {
+            HistoryItems = new List<HistoryItem>();
+
             if (subtitle == null)
             {
+                FileName = "Untitled";
+                Paragraphs = new List<Paragraph>();
                 return;
             }
 
+            Paragraphs = new List<Paragraph>(subtitle.Paragraphs.Count);
             foreach (var p in subtitle.Paragraphs)
             {
                 Paragraphs.Add(new Paragraph(p, generateNewId));
             }
+
             Header = subtitle.Header;
             Footer = subtitle.Footer;
             FileName = subtitle.FileName;
@@ -94,7 +98,7 @@ namespace Nikse.SubtitleEdit.Core
 
         public Paragraph GetParagraphOrDefaultById(string id)
         {
-            return Paragraphs.FirstOrDefault(p => p.Id == id);
+            return Paragraphs.Find(p => p.Id == id);
         }
 
         public SubtitleFormat ReloadLoadSubtitle(List<string> lines, string fileName, SubtitleFormat format)
@@ -178,7 +182,7 @@ namespace Nikse.SubtitleEdit.Core
         /// Check "OriginalEncoding" to see what text encoding was used.
         /// </summary>
         /// <param name="fileName">File name of subtitle to load.</param>
-        /// <param name="formatsToLookfor">List of subtitle formats to use.</param>
+        /// <param name="formatsToLookFor">List of subtitle formats to use.</param>
         /// <returns>Loaded subtitle, null if file is not matched by any format in formatsToLookFor.</returns>
         public static Subtitle Parse(string fileName, List<SubtitleFormat> formatsToLookFor)
         {
@@ -306,7 +310,7 @@ namespace Nikse.SubtitleEdit.Core
             return subtitleFormat;
         }
 
-        public void MakeHistoryForUndo(string description, SubtitleFormat subtitleFormat, DateTime fileModified, Subtitle original, string originalSubtitleFileName, int lineNumber, int linePosition, int linePositionOriginal)
+        public void MakeHistoryForUndo(string description, string subtitleFormatFriendlyName, DateTime fileModified, Subtitle original, string originalSubtitleFileName, int lineNumber, int linePosition, int linePositionOriginal)
         {
             // don't fill memory with history - use a max rollback points
             if (HistoryItems.Count > MaximumHistoryItems)
@@ -314,7 +318,7 @@ namespace Nikse.SubtitleEdit.Core
                 HistoryItems.RemoveAt(0);
             }
 
-            HistoryItems.Add(new HistoryItem(HistoryItems.Count, this, description, FileName, fileModified, subtitleFormat.FriendlyName, original, originalSubtitleFileName, lineNumber, linePosition, linePositionOriginal));
+            HistoryItems.Add(new HistoryItem(HistoryItems.Count, this, description, FileName, fileModified, subtitleFormatFriendlyName, original, originalSubtitleFileName, lineNumber, linePosition, linePositionOriginal));
         }
 
         public string UndoHistory(int index, out string subtitleFormatFriendlyName, out DateTime fileModified, out Subtitle originalSubtitle, out string originalSubtitleFileName)
@@ -394,7 +398,7 @@ namespace Nikse.SubtitleEdit.Core
 
         public void AdjustDisplayTimeUsingSeconds(double seconds, List<int> selectedIndexes)
         {
-            if (Math.Abs(seconds) < 0.01)
+            if (Math.Abs(seconds) < 0.001)
             {
                 return;
             }
@@ -622,6 +626,30 @@ namespace Nikse.SubtitleEdit.Core
             return null;
         }
 
+        public Paragraph GetNearestAlike(Paragraph p)
+        {
+            foreach (var item in Paragraphs)
+            {
+                if (Math.Abs(p.StartTime.TotalMilliseconds - item.StartTime.TotalMilliseconds) < 0.1 &&
+                    Math.Abs(p.EndTime.TotalMilliseconds - item.EndTime.TotalMilliseconds) < 0.1 &&
+                    p.Text == item.Text)
+                {
+                    return item;
+                }
+            }
+
+            foreach (var item in Paragraphs)
+            {
+                if (Math.Abs(p.StartTime.TotalMilliseconds - item.StartTime.TotalMilliseconds) < 0.1 &&
+                    Math.Abs(p.EndTime.TotalMilliseconds - item.EndTime.TotalMilliseconds) < 0.1)
+                {
+                    return item;
+                }
+            }
+
+            return Paragraphs.OrderBy(s => Math.Abs(s.StartTime.TotalMilliseconds - p.StartTime.TotalMilliseconds)).FirstOrDefault();
+        }
+
         public int RemoveEmptyLines()
         {
             int count = Paragraphs.Count;
@@ -792,6 +820,7 @@ namespace Nikse.SubtitleEdit.Core
                     {
                         hash = hash * 23 + p.Actor.GetHashCode();
                     }
+                    hash = hash * 23 + p.Layer.GetHashCode();
                 }
 
                 return hash;

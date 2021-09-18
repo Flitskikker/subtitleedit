@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.Enums;
 using Nikse.SubtitleEdit.Core.Interfaces;
 using Nikse.SubtitleEdit.Core.SpellCheck;
@@ -267,14 +266,8 @@ namespace Nikse.SubtitleEdit.Controls
 
         public new string SelectedText
         {
-            get
-            {
-                return string.Join(Environment.NewLine, base.SelectedText.SplitToLines());
-            }
-            set
-            {
-                base.SelectedText = value;
-            }
+            get => string.Join(Environment.NewLine, base.SelectedText.SplitToLines());
+            set => base.SelectedText = value;
         }
 
         private int GetIndexWithLineBreak(int index)
@@ -519,12 +512,17 @@ namespace Nikse.SubtitleEdit.Controls
                     colorStart++;
                 }
 
-                int colorEnd = text.IndexOf('&', colorStart + 1);
+                int colorEnd = text.IndexOfAny(new[] { '}', '\\', '&' }, colorStart + 1);
                 if (colorEnd > 0)
                 {
                     var color = text.Substring(colorStart, colorEnd - colorStart);
                     try
                     {
+                        if (color.Length > 0 && color.Length < 6)
+                        {
+                            color = color.PadLeft(6, '0');
+                        }
+
                         if (color.Length == 6)
                         {
                             var rgbColor = string.Concat("#", color[4], color[5], color[2], color[3], color[0], color[1]); var c = ColorTranslator.FromHtml(rgbColor);
@@ -575,7 +573,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public async Task CheckForLanguageChange(Subtitle subtitle)
         {
-            var detectedLanguage = LanguageAutoDetect.AutoDetectGoogleLanguage(subtitle);
+            var detectedLanguage = LanguageAutoDetect.AutoDetectGoogleLanguage(subtitle, 100);
             if (CurrentLanguage != detectedLanguage)
             {
                 DisposeHunspellAndDictionaries();
@@ -592,7 +590,7 @@ namespace Nikse.SubtitleEdit.Controls
 
             if (_spellCheckWordLists is null && _hunspell is null)
             {
-                var detectedLanguage = LanguageAutoDetect.AutoDetectGoogleLanguage(subtitle);
+                var detectedLanguage = LanguageAutoDetect.AutoDetectGoogleLanguage(subtitle, 300);
                 var downloadedDictionaries = Utilities.GetDictionaryLanguagesCultureNeutral();
                 var isDictionaryAvailable = false;
                 foreach (var downloadedDictionary in downloadedDictionaries)
@@ -609,7 +607,7 @@ namespace Nikse.SubtitleEdit.Controls
                     IsDictionaryDownloaded = true;
 
                     var languageName = LanguageAutoDetect.AutoDetectLanguageName(string.Empty, subtitle);
-                    if (languageName.Split(new char[] { '_', '-' })[0] != detectedLanguage)
+                    if (languageName.Split('_', '-')[0] != detectedLanguage)
                     {
                         return;
                     }
@@ -775,10 +773,10 @@ namespace Nikse.SubtitleEdit.Controls
                     }
 
                     if (i > 0 && i < _words.Count && _words.ElementAtOrDefault(i + 1) != null &&
-                        _words[i - 1].Text.ToLowerInvariant() == "www" &&
-                        (_words[i + 1].Text.ToLowerInvariant() == "com" ||
-                         _words[i + 1].Text.ToLowerInvariant() == "org" ||
-                         _words[i + 1].Text.ToLowerInvariant() == "net") &&
+                        string.Equals(_words[i - 1].Text, "www", StringComparison.InvariantCultureIgnoreCase) &&
+                        (string.Equals(_words[i + 1].Text, "com", StringComparison.InvariantCultureIgnoreCase) ||
+                         string.Equals(_words[i + 1].Text, "org", StringComparison.InvariantCultureIgnoreCase) ||
+                         string.Equals(_words[i + 1].Text, "net", StringComparison.InvariantCultureIgnoreCase)) &&
                         Text.IndexOf(_words[i - 1].Text + "." + currentWordText + "." +
                                      _words[i + 1].Text, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
@@ -868,7 +866,7 @@ namespace Nikse.SubtitleEdit.Controls
             if (IsLiveSpellCheckEnabled && e.KeyCode == Keys.Apps && _wrongWords?.Count > 0)
             {
                 var cursorPos = SelectionStart;
-                var wrongWord = _wrongWords.Where(word => cursorPos > word.Index && cursorPos < word.Index + word.Length).FirstOrDefault();
+                var wrongWord = _wrongWords.Find(word => cursorPos > word.Index && cursorPos < word.Index + word.Length);
                 if (wrongWord != null)
                 {
                     IsWrongWord = true;
@@ -902,7 +900,7 @@ namespace Nikse.SubtitleEdit.Controls
             if (IsLiveSpellCheckEnabled && _wrongWords?.Count > 0 && e.Clicks == 1 && e.Button == MouseButtons.Right)
             {
                 int positionToSearch = GetCharIndexFromPosition(new Point(e.X, e.Y));
-                var wrongWord = _wrongWords.Where(word => positionToSearch > GetIndexWithLineBreak(word.Index) && positionToSearch < GetIndexWithLineBreak(word.Index) + word.Length).FirstOrDefault();
+                var wrongWord = _wrongWords.Find(word => positionToSearch > GetIndexWithLineBreak(word.Index) && positionToSearch < GetIndexWithLineBreak(word.Index) + word.Length);
                 if (wrongWord != null)
                 {
                     IsWrongWord = true;

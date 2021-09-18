@@ -66,6 +66,8 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
         private Timer _videoLoadedTimer;
         private double? _pausePosition; // Hack to hold precise seeking when paused
         private string _secondSubtitleFileName;
+        private int _brightness; // -100 to 100
+        private int _contrast; // -100 to 100
 
         public override event EventHandler OnVideoLoaded;
         public override event EventHandler OnVideoEnded;
@@ -496,6 +498,12 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                 if (Configuration.IsRunningOnWindows)
                 {
                     _libMpvDll = NativeMethods.CrossLoadLibrary(GetMpvPath("mpv-1.dll"));
+                    if (_libMpvDll == IntPtr.Zero)
+                    {
+                        // to work with e.g. cyrillic characters!
+                        Directory.SetCurrentDirectory(Configuration.DataDirectory);
+                        _libMpvDll = NativeMethods.CrossLoadLibrary("mpv-1.dll");
+                    }
                 }
                 else
                 {
@@ -727,6 +735,30 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
         protected virtual void Dispose(bool disposing)
         {
             ReleaseUnmanagedResources();
+        }
+
+        public int ToggleBrightness()
+        {
+            _brightness += 25;
+            if (_brightness > 100)
+            {
+                _brightness = -100;
+            }
+
+            _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("brightness"), GetUtf8Bytes(_brightness.ToString(CultureInfo.InvariantCulture)));
+            return _brightness;
+        }
+
+        public int ToggleContrast()
+        {
+            _contrast += 25;
+            if (_contrast > 100)
+            {
+                _contrast = -100;
+            }
+
+            _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("contrast"), GetUtf8Bytes(_contrast.ToString(CultureInfo.InvariantCulture)));
+            return _contrast;
         }
     }
 }

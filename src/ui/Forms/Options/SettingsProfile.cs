@@ -62,7 +62,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
 
             comboBoxMergeShortLineLength.BeginUpdate();
             comboBoxMergeShortLineLength.Items.Clear();
-            for (int i = 10; i < 100; i++)
+            for (int i = 1; i < 100; i++)
             {
                 comboBoxMergeShortLineLength.Items.Add(i.ToString(CultureInfo.InvariantCulture));
             }
@@ -121,7 +121,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
 
         private void SettingsProfile_ResizeEnd(object sender, EventArgs e)
         {
-            listViewProfiles.Columns[listViewProfiles.Columns.Count - 1].Width = -2;
+            listViewProfiles.AutoSizeLastColumn();
         }
 
         private void SettingsProfile_Shown(object sender, EventArgs e)
@@ -204,7 +204,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             RulesProfiles[idx].MaxNumberOfLines = (int)numericUpDownMaxNumberOfLines.Value;
             RulesProfiles[idx].SubtitleMaximumWordsPerMinute = (int)numericUpDownMaxWordsMin.Value;
             RulesProfiles[idx].CpsIncludesSpace = checkBoxCpsIncludeWhiteSpace.Checked;
-            RulesProfiles[idx].MergeLinesShorterThan = comboBoxMergeShortLineLength.SelectedIndex + 10;
+            RulesProfiles[idx].MergeLinesShorterThan = comboBoxMergeShortLineLength.SelectedIndex + 1;
             RulesProfiles[idx].DialogStyle = DialogSplitMerge.GetDialogStyleFromIndex(comboBoxDialogStyle.SelectedIndex);
             RulesProfiles[idx].ContinuationStyle = ContinuationUtilities.GetContinuationStyleFromIndex(comboBoxContinuationStyle.SelectedIndex);
             UpdateRulesProfilesLine(idx);
@@ -262,9 +262,17 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 numericUpDownMaxWordsMin.Value = p.SubtitleMaximumWordsPerMinute;
             }
             checkBoxCpsIncludeWhiteSpace.Checked = RulesProfiles[idx].CpsIncludesSpace;
-            if (RulesProfiles[idx].MergeLinesShorterThan >= 10 && RulesProfiles[idx].MergeLinesShorterThan - 10 < comboBoxMergeShortLineLength.Items.Count)
+            var comboIdx = RulesProfiles[idx].MergeLinesShorterThan - 1;
+            if (comboIdx >= 0 && comboIdx < comboBoxMergeShortLineLength.Items.Count)
             {
-                comboBoxMergeShortLineLength.SelectedIndex = RulesProfiles[idx].MergeLinesShorterThan - 10;
+                try
+                {
+                    comboBoxMergeShortLineLength.SelectedIndex = comboIdx;
+                }
+                catch
+                {
+                    comboBoxMergeShortLineLength.SelectedIndex = 0;
+                }
             }
             else
             {
@@ -305,7 +313,14 @@ namespace Nikse.SubtitleEdit.Forms.Options
             comboBoxContinuationStyle.SelectedIndex = 0;
             toolTipContinuationPreview.RemoveAll();
             toolTipContinuationPreview.SetToolTip(comboBoxContinuationStyle, ContinuationUtilities.GetContinuationStylePreview(RulesProfiles[idx].ContinuationStyle));
-            comboBoxContinuationStyle.SelectedIndex = ContinuationUtilities.GetIndexFromContinuationStyle(RulesProfiles[idx].ContinuationStyle);
+            try
+            {
+                comboBoxContinuationStyle.SelectedIndex = ContinuationUtilities.GetIndexFromContinuationStyle(RulesProfiles[idx].ContinuationStyle);
+            }
+            catch
+            { 
+                // ignore
+            }
 
             _editOn = oldEditOn;
         }

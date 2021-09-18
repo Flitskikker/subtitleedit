@@ -2,7 +2,7 @@
 <Language Name="中文(繁體)">
   <General>
     <Title>Subtitle Edit</Title>
-    <Version>3.6.0</Version>
+    <Version>3.6.2</Version>
     <TranslatedBy>翻譯: BAWAN | 風逸蘭 | Jackie Lam</TranslatedBy>
     <CultureName>zh-TW</CultureName>
     <HelpFile />
@@ -174,9 +174,6 @@ C# 原始碼可從 https://github.com/SubtitleEdit/subtitleedit 取得。
     <Filter>篩選</Filter>
     <FilterContains>包含文字...</FilterContains>
   </BatchConvert>
-  <Beamer>
-    <Title>投影儀</Title>
-  </Beamer>
   <ChangeCasing>
     <Title>變更大小寫</Title>
     <ChangeCasingTo>大小寫變更為</ChangeCasingTo>
@@ -507,7 +504,7 @@ C# 原始碼可從 https://github.com/SubtitleEdit/subtitleedit 取得。
     <BreakLongLines>長行換行</BreakLongLines>
     <RemoveLineBreaks>移除只有一個句子的短文字中的換行字元</RemoveLineBreaks>
     <RemoveLineBreaksAll>移除除對話外所有短文字中的換行字元</RemoveLineBreaksAll>
-    <FixUppercaseIInsindeLowercaseWords>修復小寫單字中的 'i' 為大寫 (OCR 錯誤)</FixUppercaseIInsindeLowercaseWords>
+    <FixUppercaseIInsideLowercaseWords>修復小寫單字中的 'i' 為大寫 (OCR 錯誤)</FixUppercaseIInsideLowercaseWords>
     <FixDoubleApostrophes>修復兩個單引號字元 ('') 為一個雙引號 (")</FixDoubleApostrophes>
     <AddPeriods>在下一個以大寫字母開頭的行後面加入句號</AddPeriods>
     <StartWithUppercaseLetterAfterParagraph>在段落後以大寫字母開頭</StartWithUppercaseLetterAfterParagraph>
@@ -555,7 +552,7 @@ C# 原始碼可從 https://github.com/SubtitleEdit/subtitleedit 取得。
     <RemoveUnneededSpacesExample>Hey   you , there. -&gt; Hey you, there.</RemoveUnneededSpacesExample>
     <RemoveUnneededPeriodsExample>Hey you!. -&gt; Hey you!</RemoveUnneededPeriodsExample>
     <FixMissingSpacesExample>Hey.You. -&gt; Hey. You.</FixMissingSpacesExample>
-    <FixUppercaseIInsindeLowercaseWordsExample>The earth is fIat. -&gt; The earth is flat.</FixUppercaseIInsindeLowercaseWordsExample>
+    <FixUppercaseIInsideLowercaseWordsExample>The earth is fIat. -&gt; The earth is flat.</FixUppercaseIInsideLowercaseWordsExample>
     <FixLowercaseIToUppercaseIExample>What do i care. -&gt; What do I care.</FixLowercaseIToUppercaseIExample>
     <StartTimeLaterThanEndTime>文字編號 {0}: 起始時間晚於結束時間: {4}{1} -&gt; {2} {3}</StartTimeLaterThanEndTime>
     <UnableToFixStartTimeLaterThanEndTime>無法修復文字編號 {0}: 起始時間晚於結束時間: {1}</UnableToFixStartTimeLaterThanEndTime>
@@ -1116,7 +1113,7 @@ C# 原始碼可從 https://github.com/SubtitleEdit/subtitleedit 取得。
       <SetEndTimeAndGoToNext>設定結束時間並移至下一行(&amp;E)</SetEndTimeAndGoToNext>
       <AdjustedViaEndTime>已透過結束時間 {0} 調整</AdjustedViaEndTime>
       <SetEndTime>設定結束時間(&amp;N)</SetEndTime>
-      <SetstartTimeAndOffsetOfRest>設定起始時間並偏移其餘部份(&amp;R)</SetstartTimeAndOffsetOfRest>
+      <SetStartTimeAndOffsetTheRest>設定起始時間並偏移其餘部份(&amp;R)</SetStartTimeAndOffsetTheRest>
       <SearchTextOnline>在網上搜尋文字</SearchTextOnline>
       <GoogleTranslate>谷歌翻譯</GoogleTranslate>
       <GoogleIt>谷歌翻譯該行</GoogleIt>
@@ -1242,8 +1239,8 @@ C# 原始碼可從 https://github.com/SubtitleEdit/subtitleedit 取得。
     <SpellCheck>拼寫檢查</SpellCheck>
     <BeforeSpellCheck>拼寫檢查之前</BeforeSpellCheck>
     <SpellCheckChangedXToY>拼寫檢查: '{0}' 已變更為 '{1}'</SpellCheckChangedXToY>
-    <BeforeAddingTagX>加入 &lt;{0}&gt; 標籤之前</BeforeAddingTagX>
-    <TagXAdded>&lt;{0}&gt; 標籤已加入</TagXAdded>
+    <BeforeAddingTagX>加入 '{0}' 標籤之前</BeforeAddingTagX>
+    <TagXAdded>'{0}' 標籤已加入</TagXAdded>
     <LineXOfY>行 {0}/{1}</LineXOfY>
     <XLinesSavedAsY>{0} 行已另存為 {1}</XLinesSavedAsY>
     <XLinesDeleted>{0} 行已刪除</XLinesDeleted>
@@ -1838,7 +1835,6 @@ C# 原始碼可從 https://github.com/SubtitleEdit/subtitleedit 取得。
     <ListViewColumnInsert>行、插入文字</ListViewColumnInsert>
     <ListViewColumnPaste>行、貼上</ListViewColumnPaste>
     <ListViewGoToNextError>移至下一處錯誤</ListViewGoToNextError>
-    <ShowBeamer>啟動字幕全螢幕投影儀</ShowBeamer>
     <MainTextBoxMoveLastWordDown>將上一行的最後一個單字移至下一行</MainTextBoxMoveLastWordDown>
     <MainTextBoxMoveFirstWordFromNextUp>將下一行的第一個單字移至上一行</MainTextBoxMoveFirstWordFromNextUp>
     <MainTextBoxSelectionToLower>選擇部份變更為小寫</MainTextBoxSelectionToLower>

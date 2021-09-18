@@ -1,5 +1,4 @@
-﻿using Nikse.SubtitleEdit.Core;
-using Nikse.SubtitleEdit.Core.Common;
+﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
@@ -134,11 +133,15 @@ namespace Nikse.SubtitleEdit.Forms
 
             foreach (var group in Configuration.Settings.MultipleSearchAndReplaceGroups)
             {
-                var oldGroup = new MultipleSearchAndReplaceGroup { Name = group.Name, Enabled = group.Enabled, Rules = new List<MultipleSearchAndReplaceSetting>() };
-                foreach (var rule in group.Rules)
+                var oldGroup = new MultipleSearchAndReplaceGroup { Name = group.Name, Enabled = group.Enabled };
+                oldGroup.Rules = group.Rules.ConvertAll(rule => new MultipleSearchAndReplaceSetting()
                 {
-                    oldGroup.Rules.Add(rule);
-                }
+                    Enabled = rule.Enabled,
+                    FindWhat = rule.FindWhat,
+                    ReplaceWith = rule.ReplaceWith,
+                    SearchType = rule.SearchType,
+                    Description = rule.Description
+                });
                 _oldMultipleSearchAndReplaceGroups.Add(oldGroup);
             }
 
@@ -1136,8 +1139,8 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void ResizeListViewLastColumn()
         {
-            listViewRules.Columns[listViewRules.Columns.Count - 1].Width = -2;
-            listViewFixes.Columns[listViewFixes.Columns.Count - 1].Width = -2;
+            listViewRules.AutoSizeLastColumn();
+            listViewFixes.AutoSizeLastColumn();
         }
 
         private void MultipleReplace_ResizeEnd(object sender, EventArgs e)
@@ -1267,9 +1270,9 @@ namespace Nikse.SubtitleEdit.Forms
             }
         }
 
-        private static string FixDuplicateName(string newGroupName, List<MultipleSearchAndReplaceGroup> existinGroups)
+        private static string FixDuplicateName(string newGroupName, List<MultipleSearchAndReplaceGroup> existingGroups)
         {
-            if (existinGroups.All(p => p.Name != newGroupName))
+            if (existingGroups.All(p => p.Name != newGroupName))
             {
                 return newGroupName;
             }
@@ -1277,7 +1280,7 @@ namespace Nikse.SubtitleEdit.Forms
             for (int i = 1; i < int.MaxValue; i++)
             {
                 var name = $"{newGroupName}_{i}";
-                if (existinGroups.All(p => p.Name != name))
+                if (existingGroups.All(p => p.Name != name))
                 {
                     return name;
                 }

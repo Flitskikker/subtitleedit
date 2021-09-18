@@ -1,6 +1,7 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.Dictionaries;
 using Nikse.SubtitleEdit.Core.Enums;
+using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Core.Translate.Service;
 using Nikse.SubtitleEdit.Logic;
 using Nikse.SubtitleEdit.Logic.VideoPlayers;
@@ -22,15 +23,16 @@ namespace Nikse.SubtitleEdit.Forms.Options
     public sealed partial class Settings : PositionAndSizeForm
     {
         private const int GeneralSection = 0;
-        private const int ShortcutsSection = 1;
-        private const int SyntaxColoringSection = 2;
-        private const int VideoPlayerSection = 3;
-        private const int WaveformAndSpectrogramSection = 4;
-        private const int ToolsSection = 5;
-        private const int WordListsSection = 6;
-        private const int ToolbarSection = 7;
-        private const int AppearanceSection = 8;
-        private const int NetworkSection = 9;
+        private const int SubtitleFormatsSection = 1;
+        private const int ShortcutsSection = 2;
+        private const int SyntaxColoringSection = 3;
+        private const int VideoPlayerSection = 4;
+        private const int WaveformAndSpectrogramSection = 5;
+        private const int ToolsSection = 6;
+        private const int WordListsSection = 7;
+        private const int ToolbarSection = 8;
+        private const int AppearanceSection = 9;
+        private const int NetworkSection = 10;
 
         private string _listBoxSearchString = string.Empty;
         private DateTime _listBoxSearchStringLastUsed = DateTime.UtcNow;
@@ -43,6 +45,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
         private bool _oldListViewShowWpm;
         private readonly Dictionary<ShortcutHelper, string> _newShortcuts = new Dictionary<ShortcutHelper, string>();
         private List<RulesProfile> _rulesProfiles;
+        private List<PluginShortcut> _pluginShortcuts;
 
         private class ComboBoxLanguage
         {
@@ -74,14 +77,16 @@ namespace Nikse.SubtitleEdit.Forms.Options
 
         public class ShortcutHelper
         {
-            public ShortcutHelper(PropertyInfo shortcut, bool isMenuItem)
+            public ShortcutHelper(PropertyInfo shortcut, bool isMenuItem, bool isPlugin = false)
             {
                 Shortcut = shortcut;
                 IsMenuItem = isMenuItem;
+                IsPlugin = isPlugin;
             }
 
             public PropertyInfo Shortcut { get; set; }
             public bool IsMenuItem { get; set; }
+            public bool IsPlugin { get; set; }
         }
 
         private static string GetRelativePath(string fileName)
@@ -196,7 +201,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             {
                 radioButtonVideoPlayerMPV.Checked = true;
             }
-            else if (gs.VideoPlayer.Trim().Equals("MPC-HC", StringComparison.OrdinalIgnoreCase) && UiUtil.IsMpcHcInstalled)
+            else if (gs.VideoPlayer.Trim().Equals("MPC-HC", StringComparison.OrdinalIgnoreCase) && UiUtil.IsMpcInstalled)
             {
                 radioButtonVideoPlayerMpcHc.Checked = true;
             }
@@ -223,7 +228,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 radioButtonVideoPlayerDirectShow.Enabled = false;
             }
 
-            if (Logic.VideoPlayers.MpcHC.MpcHc.GetMpcHcFileName() == null)
+            if (Logic.VideoPlayers.MpcHC.MpcHc.GetMpcFileName() == null)
             {
                 radioButtonVideoPlayerMpcHc.Enabled = false;
             }
@@ -326,9 +331,10 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxSyntaxColorGapTooSmall.Checked = Configuration.Settings.Tools.ListViewSyntaxColorGap;
             panelListViewSyntaxColorError.BackColor = Configuration.Settings.Tools.ListViewSyntaxErrorColor;
 
-            // Language
+            // Language and controls initialization
             var language = LanguageSettings.Current.Settings;
             listBoxSection.Items[GeneralSection] = language.General;
+            listBoxSection.Items[SubtitleFormatsSection] = language.SubtitleFormats;
             listBoxSection.Items[ShortcutsSection] = language.Shortcuts;
             listBoxSection.Items[SyntaxColoringSection] = language.SyntaxColoring;
             listBoxSection.Items[VideoPlayerSection] = language.VideoPlayer;
@@ -341,6 +347,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
 
             Text = language.Title;
             panelGeneral.Text = language.General;
+            panelSubtitleFormats.Text = language.SubtitleFormats;
             panelVideoPlayer.Text = language.VideoPlayer;
             panelWaveform.Text = language.WaveformAndSpectrogram;
             panelWordLists.Text = language.WordLists;
@@ -379,6 +386,82 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxBeautifyTimeCodes.Text = LanguageSettings.Current.General.Visible;
             checkBoxSettings.Text = LanguageSettings.Current.General.Visible;
             checkBoxHelp.Text = LanguageSettings.Current.General.Visible;
+            if (labelTBNew.Right > labelTBOpen.Left)
+            {
+                labelTBOpen.Left = labelTBNew.Right + 15;
+                pictureBoxOpen.Left = labelTBOpen.Left;
+                checkBoxToolbarOpen.Left = labelTBOpen.Left;
+            }
+
+            if (labelTBOpen.Right > labelTBSave.Left)
+            {
+                labelTBSave.Left = labelTBOpen.Right + 15;
+                pictureBoxSave.Left = labelTBSave.Left;
+                checkBoxToolbarSave.Left = labelTBSave.Left;
+            }
+
+            if (labelTBSave.Right > labelTBSaveAs.Left)
+            {
+                labelTBSaveAs.Left = labelTBSave.Right + 15;
+                pictureBoxSaveAs.Left = labelTBSaveAs.Left;
+                checkBoxToolbarSaveAs.Left = labelTBSaveAs.Left;
+            }
+
+            if (labelTBSaveAs.Right > labelTBFind.Left)
+            {
+                labelTBFind.Left = labelTBSaveAs.Right + 15;
+                pictureBoxFind.Left = labelTBFind.Left;
+                checkBoxToolbarFind.Left = labelTBFind.Left;
+            }
+
+            if (labelTBFind.Right > labelTBReplace.Left)
+            {
+                labelTBReplace.Left = labelTBFind.Right + 15;
+                pictureBoxReplace.Left = labelTBReplace.Left;
+                checkBoxReplace.Left = labelTBReplace.Left;
+            }
+
+            if (labelTBFixCommonErrors.Right > labelTBRemoveTextForHi.Left)
+            {
+                labelTBRemoveTextForHi.Left = labelTBFixCommonErrors.Right + 15;
+                pictureBoxTBRemoveTextForHi.Left = labelTBRemoveTextForHi.Left;
+                checkBoxTBRemoveTextForHi.Left = labelTBRemoveTextForHi.Left;
+            }
+
+            if (labelTBRemoveTextForHi.Right > labelTBVisualSync.Left)
+            {
+                labelTBVisualSync.Left = labelTBRemoveTextForHi.Right + 15;
+                pictureBoxVisualSync.Left = labelTBVisualSync.Left;
+                checkBoxVisualSync.Left = labelTBVisualSync.Left;
+            }
+
+            if (labelTBVisualSync.Right > labelTBSpellCheck.Left)
+            {
+                labelTBSpellCheck.Left = labelTBVisualSync.Right + 15;
+                pictureBoxSpellCheck.Left = labelTBSpellCheck.Left;
+                checkBoxSpellCheck.Left = labelTBSpellCheck.Left;
+            }
+
+            if (labelTBSpellCheck.Right > labelTBSettings.Left)
+            {
+                labelTBSettings.Left = labelTBSpellCheck.Right + 15;
+                pictureBoxSettings.Left = labelTBSettings.Left;
+                checkBoxSettings.Left = labelTBSettings.Left;
+            }
+
+            if (labelTBSettings.Right > labelTBHelp.Left)
+            {
+                labelTBHelp.Left = labelTBSettings.Right + 15;
+                pictureBoxHelp.Left = labelTBHelp.Left;
+                checkBoxHelp.Left = labelTBHelp.Left;
+            }
+
+            if (labelTBHelp.Right > labelTBNetflixQualityCheck.Left)
+            {
+                labelTBNetflixQualityCheck.Left = labelTBHelp.Right + 15;
+                pictureBoxNetflixQualityCheck.Left = labelTBNetflixQualityCheck.Left;
+                checkBoxNetflixQualityCheck.Left = labelTBNetflixQualityCheck.Left;
+            }
 
             groupBoxMiscellaneous.Text = language.General;
             groupBoxGeneralRules.Text = language.Rules;
@@ -401,7 +484,6 @@ namespace Nikse.SubtitleEdit.Forms.Options
             labelMinDuration.Text = language.DurationMinimumMilliseconds;
             labelMaxDuration.Text = language.DurationMaximumMilliseconds;
             labelMinGapMs.Text = language.MinimumGapMilliseconds;
-            buttonGapChoose.Left = numericUpDownMinGapMs.Left + numericUpDownMinGapMs.Width + 5;
             labelMaxLines.Text = language.MaximumLines;
             if (labelSubMaxLen.Left + labelSubMaxLen.Width > numericUpDownSubtitleLineMaximumLength.Left)
             {
@@ -431,6 +513,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             if (labelMinGapMs.Left + labelMinGapMs.Width > numericUpDownMinGapMs.Left)
             {
                 numericUpDownMinGapMs.Left = labelMinGapMs.Left + labelMinGapMs.Width + 3;
+                buttonGapChoose.Left = numericUpDownMinGapMs.Left + numericUpDownMinGapMs.Width + 5;
             }
 
             if (labelMergeShortLines.Left + labelMergeShortLines.Width > comboBoxMergeShortLineLength.Left)
@@ -464,11 +547,11 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxRemoveBlankLinesWhenOpening.Text = language.RemoveBlankLinesWhenOpening;
             checkBoxRememberWindowPosition.Text = language.RememberPositionAndSize;
 
-            var apperanceSubFontLeft = labelSubtitleFont.Left+ 9 + 
+            var appearanceSubFontLeft = labelSubtitleFont.Left + 9 +
                 Math.Max(Math.Max(labelSubtitleFont.Width, labelSubtitleFontColor.Width), labelSubtitleFontBackgroundColor.Width);
-            comboBoxSubtitleFont.Left = apperanceSubFontLeft;
-            panelSubtitleFontColor.Left = apperanceSubFontLeft;
-            panelSubtitleBackgroundColor.Left = apperanceSubFontLeft;
+            comboBoxSubtitleFont.Left = appearanceSubFontLeft;
+            panelSubtitleFontColor.Left = appearanceSubFontLeft;
+            panelSubtitleBackgroundColor.Left = appearanceSubFontLeft;
 
             labelShowLineBreaksAs.Text = language.ShowLineBreaksAs;
             textBoxShowLineBreaksAs.Left = labelShowLineBreaksAs.Left + labelShowLineBreaksAs.Width;
@@ -709,6 +792,14 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxCpsIncludeWhiteSpace.Text = language.CpsIncludesSpace;
             buttonEditDoNotBreakAfterList.Text = LanguageSettings.Current.VobSubOcr.Edit;
 
+            groupBoxMiscellaneous.Text = language.Miscellaneous;
+            labelBDOpensIn.Text = language.BDOpensIn;
+            comboBoxBDOpensIn.Left = labelBDOpensIn.Left + labelBDOpensIn.Width + 5;
+            comboBoxBDOpensIn.Items.Clear();
+            comboBoxBDOpensIn.Items.Add(language.BDOpensInOcr);
+            comboBoxBDOpensIn.Items.Add(language.BDOpensInEdit);
+            comboBoxBDOpensIn.SelectedIndex = Configuration.Settings.Tools.BDOpenIn == "EDIT" ? 1 : 0;
+
             groupBoxGoogleTranslate.Text = language.GoogleTranslate;
             labelGoogleTranslateApiKey.Text = language.GoogleTranslateApiKey;
             linkLabelGoogleTranslateSignUp.Text = language.HowToSignUp;
@@ -820,14 +911,16 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 comboBoxMergeShortLineLengthList.Add(i.ToString(CultureInfo.InvariantCulture));
             }
             comboBoxMergeShortLineLength.Items.AddRange(comboBoxMergeShortLineLengthList.ToArray<object>());
-
-            if (gs.MergeLinesShorterThan >= 1 && gs.MergeLinesShorterThan < comboBoxMergeShortLineLength.Items.Count)
+            comboBoxMergeShortLineLength.SelectedIndex = 0;
+            var selMatch = gs.MergeLinesShorterThan.ToString();
+            for (int i = 0; i < comboBoxMergeShortLineLength.Items.Count; i++)
             {
-                comboBoxMergeShortLineLength.SelectedIndex = gs.MergeLinesShorterThan;
-            }
-            else
-            {
-                comboBoxMergeShortLineLength.SelectedIndex = 0;
+                object item = comboBoxMergeShortLineLength.Items[i];
+                if (item.ToString() == selMatch)
+                {
+                    comboBoxMergeShortLineLength.SelectedIndex = i;
+                    break;
+                }
             }
 
             SetDialogStyle(Configuration.Settings.General.DialogStyle);
@@ -871,7 +964,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxFixCommonOcrErrorsUsingHardcodedRules.Checked = toolsSettings.OcrFixUseHardcodedRules;
             checkBoxFixShortDisplayTimesAllowMoveStartTime.Checked = toolsSettings.FixShortDisplayTimesAllowMoveStartTime;
             checkBoxFceSkipStep1.Checked = toolsSettings.FixCommonErrorsSkipStepOne;
-            checkBoxSpellCheckAutoChangeNames.Checked = toolsSettings.SpellCheckAutoChangeNames;
+            checkBoxSpellCheckAutoChangeNames.Checked = toolsSettings.SpellCheckAutoChangeNameCasing;
             checkBoxSpellCheckAutoChangeNamesViaSuggestions.Checked = toolsSettings.SpellCheckAutoChangeNamesUseSuggestions;
             checkBoxSpellCheckOneLetterWords.Checked = toolsSettings.CheckOneLetterWords;
             checkBoxTreatINQuoteAsING.Checked = toolsSettings.SpellCheckEnglishAllowInQuoteAsIng;
@@ -945,6 +1038,75 @@ namespace Nikse.SubtitleEdit.Forms.Options
             textBoxShortcutSearch.Left = labelShortcutsSearch.Left + labelShortcutsSearch.Width + 5;
             buttonShortcutsClear.Left = textBoxShortcutSearch.Left + textBoxShortcutSearch.Width + 5;
 
+            // Subtitle formats
+            groupBoxSubtitleFormats.Text = language.SubtitleFormats;
+            labelDefaultSubtitleFormat.Text = language.DefaultFormat;
+            labelDefaultSaveAsFormat.Text = language.DefaultSaveAsFormat;
+            groupBoxFavoriteSubtitleFormats.Text = language.Favorites;
+            labelFavoriteFormats.Text = language.FavoriteFormats;
+            buttonRemoveFromFavoriteFormats.Text = LanguageSettings.Current.MultipleReplace.Remove;
+            labelFormats.Text = LanguageSettings.Current.ExportCustomText.Formats;
+            labelFormatsSearch.Text = LanguageSettings.Current.General.Search;
+            buttonFormatsSearchClear.Text = LanguageSettings.Current.DvdSubRip.Clear;
+            labelFavoriteSubtitleFormatsNote.Text = language.FavoriteSubtitleFormatsNote;
+
+            deleteToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.Remove;
+            deleteAllToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.RemoveAll;
+            moveUpToolStripMenuItem.Text = LanguageSettings.Current.DvdSubRip.MoveUp;
+            moveDownToolStripMenuItem.Text = LanguageSettings.Current.DvdSubRip.MoveDown;
+            moveToTopToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.MoveToTop;
+            moveToBottomToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.MoveToBottom;
+
+            var cmoboBoxLeft = labelDefaultSubtitleFormat.Right > labelDefaultSaveAsFormat.Right ? labelDefaultSubtitleFormat.Right + 5 : labelDefaultSaveAsFormat.Right + 5;
+            comboBoxSubtitleFormats.Left = cmoboBoxLeft;
+            comboBoxSubtitleSaveAsFormats.Left = cmoboBoxLeft;
+            labelFavoriteFormats.Left = listBoxFavoriteSubtitleFormats.Left;
+            labelFormats.Left = listBoxSubtitleFormats.Left;
+            if (labelFormatsSearch.Right > textBoxFormatsSearch.Left)
+            {
+                textBoxFormatsSearch.Left = labelFormatsSearch.Right + 4;
+                buttonFormatsSearchClear.Left = textBoxFormatsSearch.Right + 4;
+                buttonFormatsSearchClear.Width = listBoxFavoriteSubtitleFormats.Width - labelFormatsSearch.Width - textBoxFormatsSearch.Width - 9;
+            }
+
+            UiUtil.InitializeSubtitleFormatComboBox(comboBoxSubtitleFormats, Configuration.Settings.General.DefaultSubtitleFormat);
+
+            var formatNamesForSave = SubtitleFormat.AllSubtitleFormats.Where(format => !format.IsVobSubIndexFile).Select(format => format.FriendlyName).ToList();
+            formatNamesForSave.Insert(0, LanguageSettings.Current.Settings.DefaultSaveAsFormatAuto);
+            UiUtil.InitializeSubtitleFormatComboBox(comboBoxSubtitleSaveAsFormats, formatNamesForSave, Configuration.Settings.General.DefaultSaveAsFormat);
+            if (string.IsNullOrEmpty(Configuration.Settings.General.DefaultSaveAsFormat) || comboBoxSubtitleSaveAsFormats.SelectedIndex == -1)
+            {
+                comboBoxSubtitleSaveAsFormats.SelectedIndex = 0;
+            }
+
+            var formatNames = GetSubtitleFormats();
+            listBoxSubtitleFormats.Items.AddRange(formatNames.ToArray<object>());
+
+            if (!string.IsNullOrEmpty(Configuration.Settings.General.FavoriteSubtitleFormats))
+            {
+                var favoriteFormats = Configuration.Settings.General.FavoriteSubtitleFormats.Split(';');
+                if (favoriteFormats.Length > 0)
+                {
+                    listBoxFavoriteSubtitleFormats.Items.AddRange(favoriteFormats.ToArray<object>());
+                }
+            }
+
+            using (var graphics = Graphics.FromHwnd(IntPtr.Zero))
+            {
+                var comboBoxSubtitleFormatsTextWidth = graphics.MeasureString(comboBoxSubtitleFormats.Text, comboBoxSubtitleFormats.Font);
+                if (comboBoxSubtitleFormatsTextWidth.Width > comboBoxSubtitleFormats.Width)
+                {
+                    comboBoxSubtitleFormats.Width = (int)Math.Round(comboBoxSubtitleFormatsTextWidth.Width + 17.5);
+                }
+
+                var comboBoxSubtitleSaveFormatsTextWidth = graphics.MeasureString(comboBoxSubtitleSaveAsFormats.Text, comboBoxSubtitleSaveAsFormats.Font);
+                if (comboBoxSubtitleSaveFormatsTextWidth.Width > comboBoxSubtitleSaveAsFormats.Width)
+                {
+                    comboBoxSubtitleSaveAsFormats.Width = (int)Math.Round(comboBoxSubtitleSaveFormatsTextWidth.Width + 17.5);
+                }
+            }
+
+            // Shortcuts
             groupBoxShortcuts.Text = language.Shortcuts;
             labelShortcut.Text = language.Shortcut;
             checkBoxShortcutsControl.Text = language.Control;
@@ -1023,6 +1185,8 @@ namespace Nikse.SubtitleEdit.Forms.Options
             comboBoxContinuationStyle.Items.Add(LanguageSettings.Current.Settings.ContinuationStyleLeadingTrailingDots);
             comboBoxContinuationStyle.Items.Add(LanguageSettings.Current.Settings.ContinuationStyleLeadingTrailingDash);
             comboBoxContinuationStyle.Items.Add(LanguageSettings.Current.Settings.ContinuationStyleLeadingTrailingDashDots);
+            comboBoxContinuationStyle.Items.Add(LanguageSettings.Current.Settings.ContinuationStyleLeadingTrailingEllipsis);
+            comboBoxContinuationStyle.Items.Add(LanguageSettings.Current.Settings.ContinuationStyleNoneTrailingEllipsis);
             comboBoxContinuationStyle.SelectedIndex = 0;
             toolTipContinuationPreview.RemoveAll();
             toolTipContinuationPreview.SetToolTip(comboBoxContinuationStyle, ContinuationUtilities.GetContinuationStylePreview(continuationStyle));
@@ -1092,8 +1256,10 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(generalNode, language.GoToFirstSelectedLine, nameof(Configuration.Settings.Shortcuts.GeneralGoToFirstSelectedLine));
             AddNode(generalNode, language.GoToNextEmptyLine, nameof(Configuration.Settings.Shortcuts.GeneralGoToNextEmptyLine));
             AddNode(generalNode, language.GoToNext, nameof(Configuration.Settings.Shortcuts.GeneralGoToNextSubtitle));
+            AddNode(generalNode, language.GoToNextPlayTranslate, nameof(Configuration.Settings.Shortcuts.GeneralGoToNextSubtitlePlayTranslate));
             AddNode(generalNode, language.GoToNextCursorAtEnd, nameof(Configuration.Settings.Shortcuts.GeneralGoToNextSubtitleCursorAtEnd));
             AddNode(generalNode, language.GoToPrevious, nameof(Configuration.Settings.Shortcuts.GeneralGoToPrevSubtitle));
+            AddNode(generalNode, language.GoToPreviousPlayTranslate, nameof(Configuration.Settings.Shortcuts.GeneralGoToPrevSubtitlePlayTranslate));
             AddNode(generalNode, language.GoToCurrentSubtitleStart, nameof(Configuration.Settings.Shortcuts.GeneralGoToStartOfCurrentSubtitle));
             AddNode(generalNode, language.GoToCurrentSubtitleEnd, nameof(Configuration.Settings.Shortcuts.GeneralGoToEndOfCurrentSubtitle));
             AddNode(generalNode, language.GoToPreviousSubtitleAndFocusVideo, nameof(Configuration.Settings.Shortcuts.GeneralGoToPreviousSubtitleAndFocusVideo));
@@ -1108,14 +1274,16 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(generalNode, language.GoToNextBookmark, nameof(Configuration.Settings.Shortcuts.GeneralGoToNextBookmark));
             AddNode(generalNode, language.ChooseProfile, nameof(Configuration.Settings.Shortcuts.GeneralChooseProfile));
             AddNode(generalNode, language.DuplicateLine, nameof(Configuration.Settings.Shortcuts.GeneralDuplicateLine));
+            AddNode(generalNode, language.OpenDataFolder, nameof(Configuration.Settings.Shortcuts.OpenDataFolder));
             AddNode(generalNode, language.ToggleView, nameof(Configuration.Settings.Shortcuts.GeneralToggleView));
             AddNode(generalNode, language.ToggleMode, nameof(Configuration.Settings.Shortcuts.GeneralToggleMode));
             AddNode(generalNode, language.TogglePreviewOnVideo, nameof(Configuration.Settings.Shortcuts.GeneralTogglePreviewOnVideo));
+            AddNode(generalNode, language.RemoveBlankLines, nameof(Configuration.Settings.Shortcuts.MainListViewRemoveBlankLines));
+            AddNode(generalNode, language.ApplyAssaOverrideTags, nameof(Configuration.Settings.Shortcuts.ApplyAssaOverrideTags), true);
+            AddNode(generalNode, language.SetAssaPosition, nameof(Configuration.Settings.Shortcuts.SetAssaPosition), true);
+            AddNode(generalNode, language.SetAssaResolution, nameof(Configuration.Settings.Shortcuts.SetAssaResolution));
             AddNode(generalNode, language.Help, nameof(Configuration.Settings.Shortcuts.GeneralHelp), true);
-            if (generalNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(generalNode);
-            }
+            _shortcuts.Nodes.Add(generalNode);
 
             var fileNode = new ShortcutNode(LanguageSettings.Current.Main.Menu.File.Title);
             AddNode(fileNode, LanguageSettings.Current.Main.Menu.File.New, nameof(Configuration.Settings.Shortcuts.MainFileNew), true);
@@ -1134,11 +1302,9 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(fileNode, LanguageSettings.Current.Main.Menu.File.Import + " -> " + LanguageSettings.Current.Main.Menu.File.ImportTimecodes, nameof(Configuration.Settings.Shortcuts.MainFileImportTimeCodes), true);
             AddNode(fileNode, LanguageSettings.Current.Main.Menu.File.Export + " -> " + LanguageSettings.Current.Main.Menu.File.ExportEbu, nameof(Configuration.Settings.Shortcuts.MainFileExportEbu), true);
             AddNode(fileNode, LanguageSettings.Current.Main.Menu.File.Export + " -> " + LanguageSettings.Current.Main.Menu.File.ExportPac, nameof(Configuration.Settings.Shortcuts.MainFileExportPac), true);
+            AddNode(fileNode, LanguageSettings.Current.Main.Menu.File.Export + " -> EDL/CLIPNAME", nameof(Configuration.Settings.Shortcuts.MainFileExportEdlClip), true);
             AddNode(fileNode, LanguageSettings.Current.Main.Menu.File.Export + " -> " + LanguageSettings.Current.Main.Menu.File.ExportPlainText, nameof(Configuration.Settings.Shortcuts.MainFileExportPlainText), true);
-            if (fileNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(fileNode);
-            }
+            _shortcuts.Nodes.Add(fileNode);
 
             var editNode = new ShortcutNode(LanguageSettings.Current.Main.Menu.Edit.Title);
             AddNode(editNode, LanguageSettings.Current.Main.Menu.Edit.Undo, nameof(Configuration.Settings.Shortcuts.MainEditUndo), true);
@@ -1154,10 +1320,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(editNode, language.RemoveRTLUnicodeChars, nameof(Configuration.Settings.Shortcuts.MainEditRemoveRTLUnicodeChars), true);
             AddNode(editNode, language.ReverseStartAndEndingForRtl, nameof(Configuration.Settings.Shortcuts.MainEditReverseStartAndEndingForRTL), true);
             AddNode(editNode, language.ToggleTranslationAndOriginalInPreviews, nameof(Configuration.Settings.Shortcuts.MainEditToggleTranslationOriginalInPreviews), true);
-            if (editNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(editNode);
-            }
+            _shortcuts.Nodes.Add(editNode);
 
             var toolsNode = new ShortcutNode(LanguageSettings.Current.Main.Menu.Tools.Title);
             AddNode(toolsNode, LanguageSettings.Current.Main.Menu.Tools.SubtitlesBridgeGaps, nameof(Configuration.Settings.Shortcuts.MainToolsDurationsBridgeGap), true);
@@ -1177,12 +1340,8 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(toolsNode, LanguageSettings.Current.Main.Menu.Tools.AppendSubtitle, nameof(Configuration.Settings.Shortcuts.MainToolsAppend), true);
             AddNode(toolsNode, LanguageSettings.Current.Main.Menu.Tools.JoinSubtitles, nameof(Configuration.Settings.Shortcuts.MainToolsJoin), true);
             AddNode(toolsNode, LanguageSettings.Current.Main.Menu.ContextMenu.AutoDurationCurrentLine, nameof(Configuration.Settings.Shortcuts.MainToolsAutoDuration));
-            AddNode(toolsNode, language.ShowBeamer, nameof(Configuration.Settings.Shortcuts.MainToolsBeamer), true);
             AddNode(toolsNode, language.ShowStyleManager, nameof(Configuration.Settings.Shortcuts.MainToolsStyleManager));
-            if (toolsNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(toolsNode);
-            }
+            _shortcuts.Nodes.Add(toolsNode);
 
             var videoNode = new ShortcutNode(LanguageSettings.Current.Main.Menu.Video.Title);
             AddNode(videoNode, LanguageSettings.Current.Main.Menu.Video.OpenVideo, nameof(Configuration.Settings.Shortcuts.MainVideoOpen), true);
@@ -1193,6 +1352,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(videoNode, LanguageSettings.Current.Main.VideoControls.PlayFromJustBeforeText, nameof(Configuration.Settings.Shortcuts.MainVideoPlayFromJustBefore));
             AddNode(videoNode, LanguageSettings.Current.Main.VideoControls.PlayFromBeginning, nameof(Configuration.Settings.Shortcuts.MainVideoPlayFromBeginning));
             AddNode(videoNode, LanguageSettings.Current.Main.Menu.Video.ShowHideVideo, nameof(Configuration.Settings.Shortcuts.MainVideoShowHideVideo), true);
+            AddNode(videoNode, LanguageSettings.Current.Main.Menu.Video.ShowHideWaveform, nameof(Configuration.Settings.Shortcuts.MainVideoShowWaveform), true);
             AddNode(videoNode, language.FoucsSetVideoPosition, nameof(Configuration.Settings.Shortcuts.MainVideoFoucsSetVideoPosition));
             AddNode(videoNode, language.ToggleDockUndockOfVideoControls, nameof(Configuration.Settings.Shortcuts.MainVideoToggleVideoControls), true);
             AddNode(videoNode, language.GoBack1Frame, nameof(Configuration.Settings.Shortcuts.MainVideo1FrameLeft));
@@ -1214,7 +1374,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(videoNode, language.GoBack3Second, nameof(Configuration.Settings.Shortcuts.MainVideo3000MsLeft));
             AddNode(videoNode, language.GoToStartCurrent, nameof(Configuration.Settings.Shortcuts.MainVideoGoToStartCurrent));
             AddNode(videoNode, language.ToggleStartEndCurrent, nameof(Configuration.Settings.Shortcuts.MainVideoToggleStartEndCurrent));
-            AddNode(videoNode, language.PlayCurrent, nameof(Configuration.Settings.Shortcuts.MainVideoPlayCurrent));
+            AddNode(videoNode, language.PlaySelectedLines, nameof(Configuration.Settings.Shortcuts.MainVideoPlaySelectedLines));
             AddNode(videoNode, language.WaveformGoToPrevSubtitle, nameof(Configuration.Settings.Shortcuts.MainVideoGoToPrevSubtitle));
             AddNode(videoNode, language.WaveformGoToNextSubtitle, nameof(Configuration.Settings.Shortcuts.MainVideoGoToNextSubtitle));
             AddNode(videoNode, language.WaveformGoToPrevChapter, nameof(Configuration.Settings.Shortcuts.MainVideoGoToPrevChapter));
@@ -1225,19 +1385,15 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(videoNode, language.PlayRateFaster, nameof(Configuration.Settings.Shortcuts.MainVideoFaster));
             AddNode(videoNode, language.VideoResetSpeedAndZoom, nameof(Configuration.Settings.Shortcuts.MainVideoReset));
             AddNode(videoNode, language.MainToggleVideoControls, nameof(Configuration.Settings.Shortcuts.MainToggleVideoControls));
-            if (videoNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(videoNode);
-            }
+            AddNode(videoNode, language.VideoToggleContrast, nameof(Configuration.Settings.Shortcuts.MainVideoToggleContrast));
+            AddNode(videoNode, language.VideoToggleBrightness, nameof(Configuration.Settings.Shortcuts.MainVideoToggleBrightness));
+            _shortcuts.Nodes.Add(videoNode);
 
             var spellCheckNode = new ShortcutNode(LanguageSettings.Current.Main.Menu.SpellCheck.Title);
             AddNode(spellCheckNode, LanguageSettings.Current.Main.Menu.SpellCheck.Title, nameof(Configuration.Settings.Shortcuts.MainSpellCheck), true);
             AddNode(spellCheckNode, LanguageSettings.Current.Main.Menu.SpellCheck.FindDoubleWords, nameof(Configuration.Settings.Shortcuts.MainSpellCheckFindDoubleWords), true);
             AddNode(spellCheckNode, LanguageSettings.Current.Main.Menu.SpellCheck.AddToNameList, nameof(Configuration.Settings.Shortcuts.MainSpellCheckAddWordToNames), true);
-            if (spellCheckNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(spellCheckNode);
-            }
+            _shortcuts.Nodes.Add(spellCheckNode);
 
             var syncNode = new ShortcutNode(LanguageSettings.Current.Main.Menu.Synchronization.Title);
             AddNode(syncNode, LanguageSettings.Current.Main.Menu.Synchronization.AdjustAllTimes, nameof(Configuration.Settings.Shortcuts.MainSynchronizationAdjustTimes), true);
@@ -1245,10 +1401,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(syncNode, LanguageSettings.Current.Main.Menu.Synchronization.PointSync, nameof(Configuration.Settings.Shortcuts.MainSynchronizationPointSync), true);
             AddNode(syncNode, LanguageSettings.Current.Main.Menu.Synchronization.PointSyncViaOtherSubtitle, nameof(Configuration.Settings.Shortcuts.MainSynchronizationPointSyncViaFile), true);
             AddNode(syncNode, LanguageSettings.Current.Main.Menu.Tools.ChangeFrameRate, nameof(Configuration.Settings.Shortcuts.MainSynchronizationChangeFrameRate), true);
-            if (syncNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(syncNode);
-            }
+            _shortcuts.Nodes.Add(syncNode);
 
             var listViewAndTextBoxNode = new ShortcutNode(language.ListViewAndTextBox);
             AddNode(listViewAndTextBoxNode, LanguageSettings.Current.Main.Menu.ContextMenu.InsertAfter, nameof(Configuration.Settings.Shortcuts.MainInsertAfter));
@@ -1257,6 +1410,8 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(listViewAndTextBoxNode, LanguageSettings.Current.General.Bold, nameof(Configuration.Settings.Shortcuts.MainListViewBold), true);
             AddNode(listViewAndTextBoxNode, LanguageSettings.Current.General.Underline, nameof(Configuration.Settings.Shortcuts.MainListViewUnderline), true);
             AddNode(listViewAndTextBoxNode, LanguageSettings.Current.Main.Menu.ContextMenu.Box, nameof(Configuration.Settings.Shortcuts.MainListViewBox), true);
+            AddNode(listViewAndTextBoxNode, language.ToggleQuotes, nameof(Configuration.Settings.Shortcuts.MainListViewToggleQuotes), true);
+            AddNode(listViewAndTextBoxNode, language.ToggleHiTags, nameof(Configuration.Settings.Shortcuts.MainListViewToggleHiTags), true);
             AddNode(listViewAndTextBoxNode, LanguageSettings.Current.General.SplitLine.Replace("!", string.Empty), nameof(Configuration.Settings.Shortcuts.MainListViewSplit), true);
             AddNode(listViewAndTextBoxNode, language.ToggleMusicSymbols, nameof(Configuration.Settings.Shortcuts.MainListViewToggleMusicSymbols), true);
             AddNode(listViewAndTextBoxNode, language.AlignmentN1, nameof(Configuration.Settings.Shortcuts.MainListViewAlignmentN1));
@@ -1276,10 +1431,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(listViewAndTextBoxNode, language.RemoveTimeCodes, nameof(Configuration.Settings.Shortcuts.MainListViewRemoveTimeCodes));
             AddNode(listViewAndTextBoxNode, language.MainTextBoxUnbreak, nameof(Configuration.Settings.Shortcuts.MainTextBoxUnbreak));
             AddNode(listViewAndTextBoxNode, language.MainTextBoxUnbreakNoSpace, nameof(Configuration.Settings.Shortcuts.MainTextBoxUnbreakNoSpace));
-            if (listViewAndTextBoxNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(listViewAndTextBoxNode);
-            }
+            _shortcuts.Nodes.Add(listViewAndTextBoxNode);
 
             var listViewNode = new ShortcutNode(language.ListView);
             AddNode(listViewNode, language.MergeDialog, nameof(Configuration.Settings.Shortcuts.MainMergeDialog));
@@ -1297,10 +1449,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(listViewNode, language.ListViewColumnTextUp, nameof(Configuration.Settings.Shortcuts.MainListViewColumnTextUp), true);
             AddNode(listViewNode, language.ListViewColumnTextDown, nameof(Configuration.Settings.Shortcuts.MainListViewColumnTextDown), true);
             AddNode(listViewNode, language.ListViewGoToNextError, nameof(Configuration.Settings.Shortcuts.MainListViewGoToNextError));
-            if (listViewNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(listViewNode);
-            }
+            _shortcuts.Nodes.Add(listViewNode);
 
             var textBoxNode = new ShortcutNode(language.TextBox);
             AddNode(textBoxNode, LanguageSettings.Current.Main.Menu.ContextMenu.SplitLineAtCursorPosition, nameof(Configuration.Settings.Shortcuts.MainTextBoxSplitAtCursor));
@@ -1310,6 +1459,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(textBoxNode, language.MainTextBoxMoveFirstWordFromNextUp, nameof(Configuration.Settings.Shortcuts.MainTextBoxMoveFirstWordFromNextUp));
             AddNode(textBoxNode, language.MainTextBoxMoveLastWordDownCurrent, nameof(Configuration.Settings.Shortcuts.MainTextBoxMoveLastWordDownCurrent));
             AddNode(textBoxNode, language.MainTextBoxMoveFirstWordUpCurrent, nameof(Configuration.Settings.Shortcuts.MainTextBoxMoveFirstWordUpCurrent));
+            AddNode(textBoxNode, language.MainTextBoxMoveFromCursorToNext, nameof(Configuration.Settings.Shortcuts.MainTextBoxMoveFromCursorToNextAndGoToNext));
             AddNode(textBoxNode, language.MainTextBoxSelectionToLower, nameof(Configuration.Settings.Shortcuts.MainTextBoxSelectionToLower));
             AddNode(textBoxNode, language.MainTextBoxSelectionToUpper, nameof(Configuration.Settings.Shortcuts.MainTextBoxSelectionToUpper));
             AddNode(textBoxNode, language.MainTextBoxSelectionToggleCasing, nameof(Configuration.Settings.Shortcuts.MainTextBoxSelectionToggleCasing));
@@ -1318,23 +1468,20 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(textBoxNode, language.MainTextBoxAutoBreak, nameof(Configuration.Settings.Shortcuts.MainTextBoxAutoBreak));
             AddNode(textBoxNode, language.MainTextBoxAutoBreakFromPos, nameof(Configuration.Settings.Shortcuts.MainTextBoxBreakAtPosition));
             AddNode(textBoxNode, language.MainTextBoxAutoBreakFromPosAndGoToNext, nameof(Configuration.Settings.Shortcuts.MainTextBoxBreakAtPositionAndGoToNext));
-            if (textBoxNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(textBoxNode);
-            }
+            AddNode(textBoxNode, language.MainTextBoxAssaIntellisense, nameof(Configuration.Settings.Shortcuts.MainTextBoxAssaIntellisense));
+            AddNode(textBoxNode, language.MainTextBoxAssaRemoveTag, nameof(Configuration.Settings.Shortcuts.MainTextBoxAssaRemoveTag));
+            _shortcuts.Nodes.Add(textBoxNode);
 
             var translateNode = new ShortcutNode(LanguageSettings.Current.Main.VideoControls.Translate);
             AddNode(translateNode, LanguageSettings.Current.Main.VideoControls.GoogleIt, nameof(Configuration.Settings.Shortcuts.MainTranslateGoogleIt));
-            AddNode(translateNode, LanguageSettings.Current.Main.VideoControls.GoogleTranslate, nameof(Configuration.Settings.Shortcuts.MainTranslateGoogleTranslate), true);
+            AddNode(translateNode, LanguageSettings.Current.Main.VideoControls.GoogleTranslate, nameof(Configuration.Settings.Shortcuts.MainTranslateGoogleTranslateIt));
+            AddNode(translateNode, LanguageSettings.Current.Main.VideoControls.AutoTranslate, nameof(Configuration.Settings.Shortcuts.MainAutoTranslate), true);
             AddNode(translateNode, language.CustomSearch1, nameof(Configuration.Settings.Shortcuts.MainTranslateCustomSearch1));
             AddNode(translateNode, language.CustomSearch2, nameof(Configuration.Settings.Shortcuts.MainTranslateCustomSearch2));
             AddNode(translateNode, language.CustomSearch3, nameof(Configuration.Settings.Shortcuts.MainTranslateCustomSearch3));
             AddNode(translateNode, language.CustomSearch4, nameof(Configuration.Settings.Shortcuts.MainTranslateCustomSearch4));
             AddNode(translateNode, language.CustomSearch5, nameof(Configuration.Settings.Shortcuts.MainTranslateCustomSearch5));
-            if (translateNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(translateNode);
-            }
+            _shortcuts.Nodes.Add(translateNode);
 
             var createAndAdjustNode = new ShortcutNode(LanguageSettings.Current.Main.VideoControls.CreateAndAdjust);
             AddNode(createAndAdjustNode, LanguageSettings.Current.Main.VideoControls.InsertNewSubtitleAtVideoPosition, nameof(Configuration.Settings.Shortcuts.MainCreateInsertSubAtVideoPos));
@@ -1342,8 +1489,11 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(createAndAdjustNode, language.MainCreateStartDownEndUp, nameof(Configuration.Settings.Shortcuts.MainCreateStartDownEndUp));
             AddNode(createAndAdjustNode, LanguageSettings.Current.Main.VideoControls.SetStartTime, nameof(Configuration.Settings.Shortcuts.MainCreateSetStart));
             AddNode(createAndAdjustNode, language.AdjustSetStartTimeKeepDuration, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartKeepDuration));
-            AddNode(createAndAdjustNode, LanguageSettings.Current.Main.VideoControls.SetstartTimeAndOffsetOfRest, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartAndOffsetTheRest));
-            AddNode(createAndAdjustNode, LanguageSettings.Current.Main.VideoControls.SetstartTimeAndOffsetOfRest, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartAndOffsetTheRest2));
+            AddNode(createAndAdjustNode, language.AdjustVideoSetStartForAppropriateLine, nameof(Configuration.Settings.Shortcuts.MainAdjustVideoSetStartForAppropriateLine));
+            AddNode(createAndAdjustNode, language.AdjustVideoSetEndForAppropriateLine, nameof(Configuration.Settings.Shortcuts.MainAdjustVideoSetEndForAppropriateLine));
+            AddNode(createAndAdjustNode, LanguageSettings.Current.Main.VideoControls.SetStartTimeAndOffsetTheRest, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartAndOffsetTheRest));
+            AddNode(createAndAdjustNode, LanguageSettings.Current.Main.VideoControls.SetStartTimeAndOffsetTheRest, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartAndOffsetTheRest2));
+            AddNode(createAndAdjustNode, language.AdjustSetStartAndOffsetTheWholeSubtitle, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartAndOffsetTheWholeSubtitle));
             AddNode(createAndAdjustNode, language.AdjustSetStartAutoDurationAndGoToNext, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartAutoDurationAndGoToNext));
             AddNode(createAndAdjustNode, language.AdjustStartDownEndUpAndGoToNext, nameof(Configuration.Settings.Shortcuts.MainAdjustStartDownEndUpAndGoToNext));
             AddNode(createAndAdjustNode, language.AdjustSetStartAndEndOfPrevious, nameof(Configuration.Settings.Shortcuts.MainAdjustSetStartAndEndOfPrevious));
@@ -1386,10 +1536,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(createAndAdjustNode, language.AdjustExtendCurrentSubtitle, nameof(Configuration.Settings.Shortcuts.MainAdjustExtendCurrentSubtitle));
             AddNode(createAndAdjustNode, language.AdjustExtendPreviousLineEndToCurrentStart, nameof(Configuration.Settings.Shortcuts.MainAdjustExtendPreviousLineEndToCurrentStart));
             AddNode(createAndAdjustNode, language.AdjustExtendNextLineStartToCurrentEnd, nameof(Configuration.Settings.Shortcuts.MainAdjustExtendNextLineStartToCurrentEnd));
-            if (createAndAdjustNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(createAndAdjustNode);
-            }
+            _shortcuts.Nodes.Add(createAndAdjustNode);
 
             var audioVisualizerNode = new ShortcutNode(language.WaveformAndSpectrogram);
             AddNode(audioVisualizerNode, LanguageSettings.Current.Waveform.AddWaveformAndSpectrogram, nameof(Configuration.Settings.Shortcuts.WaveformAdd));
@@ -1414,10 +1561,9 @@ namespace Nikse.SubtitleEdit.Forms.Options
             AddNode(audioVisualizerNode, language.GoForward100Milliseconds, nameof(Configuration.Settings.Shortcuts.Waveform100MsRight));
             AddNode(audioVisualizerNode, language.GoBack1Second, nameof(Configuration.Settings.Shortcuts.Waveform1000MsLeft));
             AddNode(audioVisualizerNode, language.GoForward1Second, nameof(Configuration.Settings.Shortcuts.Waveform1000MsRight));
-            if (audioVisualizerNode.Nodes.Count > 0)
-            {
-                _shortcuts.Nodes.Add(audioVisualizerNode);
-            }
+            _shortcuts.Nodes.Add(audioVisualizerNode);
+
+            LoadPluginsShortcuts();
         }
 
         private void ShowShortcutsTreeView()
@@ -1760,7 +1906,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             {
                 gs.VideoPlayer = "VLC";
             }
-            else
+            else if (!string.IsNullOrEmpty(gs.VideoPlayer))
             {
                 gs.VideoPlayer = "DirectShow";
             }
@@ -1816,11 +1962,38 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 gs.SubtitleFontName = comboBoxSubtitleFont.SelectedItem.ToString();
             }
 
+            gs.DefaultSubtitleFormat = comboBoxSubtitleFormats.Text;
+            gs.DefaultSaveAsFormat = comboBoxSubtitleSaveAsFormats.Text == LanguageSettings.Current.Settings.DefaultSaveAsFormatAuto ? string.Empty : comboBoxSubtitleSaveAsFormats.Text;
+            if (listBoxFavoriteSubtitleFormats.Items.Count >= 0)
+            {
+                var sb = new StringBuilder();
+                for (int i = 0; i < listBoxFavoriteSubtitleFormats.Items.Count; i++)
+                {
+                    sb.Append(listBoxFavoriteSubtitleFormats.Items[i]);
+                    if (i < listBoxFavoriteSubtitleFormats.Items.Count - 1)
+                    {
+                        sb.Append(";");
+                    }
+                }
+
+                var favorites = sb.ToString();
+                if (favorites != Configuration.Settings.General.FavoriteSubtitleFormats)
+                {
+                    gs.FavoriteSubtitleFormats = favorites;
+                    SubtitleFormat.SubtitleFormatsOrderChanged = true;
+                }
+            }
+
+
             var toolsSettings = Configuration.Settings.Tools;
             toolsSettings.VerifyPlaySeconds = comboBoxToolsVerifySeconds.SelectedIndex + 2;
             toolsSettings.StartSceneIndex = comboBoxToolsStartSceneIndex.SelectedIndex;
             toolsSettings.EndSceneIndex = comboBoxToolsEndSceneIndex.SelectedIndex;
-            gs.MergeLinesShorterThan = comboBoxMergeShortLineLength.SelectedIndex;
+            if (comboBoxMergeShortLineLength.SelectedIndex >= 0 && !string.IsNullOrEmpty(comboBoxMergeShortLineLength.Text))
+            {
+                gs.MergeLinesShorterThan = int.Parse(comboBoxMergeShortLineLength.Text, CultureInfo.InvariantCulture);
+            }
+
             if (gs.MergeLinesShorterThan > gs.SubtitleLineMaximumLength + 1)
             {
                 gs.MergeLinesShorterThan = gs.SubtitleLineMaximumLength;
@@ -1831,7 +2004,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
 
             toolsSettings.MusicSymbol = comboBoxToolsMusicSymbol.SelectedItem.ToString();
             toolsSettings.MusicSymbolReplace = textBoxMusicSymbolsToReplace.Text;
-            toolsSettings.SpellCheckAutoChangeNames = checkBoxSpellCheckAutoChangeNames.Checked;
+            toolsSettings.SpellCheckAutoChangeNameCasing = checkBoxSpellCheckAutoChangeNames.Checked;
             toolsSettings.SpellCheckAutoChangeNamesUseSuggestions = checkBoxSpellCheckAutoChangeNamesViaSuggestions.Checked;
             toolsSettings.CheckOneLetterWords = checkBoxSpellCheckOneLetterWords.Checked;
             toolsSettings.SpellCheckEnglishAllowInQuoteAsIng = checkBoxTreatINQuoteAsING.Checked;
@@ -1844,6 +2017,8 @@ namespace Nikse.SubtitleEdit.Forms.Options
             toolsSettings.AutoBreakPreferBottomHeavy = checkBoxToolsBreakPreferBottomHeavy.Checked;
             toolsSettings.AutoBreakPreferBottomPercent = (double)numericUpDownToolsBreakPreferBottomHeavy.Value;
             toolsSettings.AutoBreakDashEarly = checkBoxToolsBreakEarlyDash.Checked;
+
+            Configuration.Settings.Tools.BDOpenIn = comboBoxBDOpensIn.SelectedIndex == 0 ? "OCR" : "EDIT";
 
             Configuration.Settings.General.CharactersPerSecondsIgnoreWhiteSpace = !checkBoxCpsIncludeWhiteSpace.Checked;
             toolsSettings.OcrFixUseHardcodedRules = checkBoxFixCommonOcrErrorsUsingHardcodedRules.Checked;
@@ -1915,9 +2090,13 @@ namespace Nikse.SubtitleEdit.Forms.Options
             gs.FFmpegLocation = textBoxFFmpegPath.Text;
 
             // save shortcuts
+            Configuration.Settings.Shortcuts.PluginShortcuts = _pluginShortcuts;
             foreach (var kvp in _newShortcuts)
             {
-                kvp.Key.Shortcut.SetValue(Configuration.Settings.Shortcuts, kvp.Value, null);
+                if (!kvp.Key.IsPlugin)
+                {
+                    kvp.Key.Shortcut.SetValue(Configuration.Settings.Shortcuts, kvp.Value, null);
+                }
             }
 
             Configuration.Settings.Save();
@@ -2433,6 +2612,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             labelStatus.Text = string.Empty;
 
             panelGeneral.Visible = false;
+            panelSubtitleFormats.Visible = false;
             panelShortcuts.Visible = false;
             panelSyntaxColoring.Visible = false;
             panelVideoPlayer.Visible = false;
@@ -2446,6 +2626,9 @@ namespace Nikse.SubtitleEdit.Forms.Options
             var section = panelGeneral;
             switch (listBoxSection.SelectedIndex)
             {
+                case SubtitleFormatsSection:
+                    section = panelSubtitleFormats;
+                    break;
                 case ShortcutsSection:
                     section = panelShortcuts;
                     break;
@@ -2476,6 +2659,47 @@ namespace Nikse.SubtitleEdit.Forms.Options
             }
 
             section.Visible = true;
+        }
+
+        private void LoadPluginsShortcuts()
+        {
+            if (_pluginShortcuts == null)
+            {
+                _pluginShortcuts = Configuration.Settings.Shortcuts.PluginShortcuts.Select(p => new PluginShortcut { Name = p.Name, Shortcut = p.Shortcut }).ToList();
+            }
+
+            if (!Directory.Exists(Configuration.PluginsDirectory))
+            {
+                return;
+            }
+
+            var pluginsNode = new ShortcutNode(LanguageSettings.Current.PluginsGet.Title);
+            foreach (var pluginFileName in Directory.GetFiles(Configuration.PluginsDirectory, "*.DLL"))
+            {
+                Main.GetPropertiesAndDoAction(pluginFileName, out var name, out _, out var version, out var description, out var actionType, out _, out var mi);
+                if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(actionType) && mi != null)
+                {
+                    var text = GetPluginShortcutText(name);
+                    var shortcutNode = new ShortcutNode(text)
+                    {
+                        Text = text,
+                        ShortcutText = name,
+                        Shortcut = new ShortcutHelper(null, true, true),
+                    };
+                    pluginsNode.Nodes.Add(shortcutNode);
+                }
+            }
+
+            if (pluginsNode.Nodes.Count > 0)
+            {
+                _shortcuts.Nodes.Add(pluginsNode);
+            }
+        }
+
+        private string GetPluginShortcutText(string name)
+        {
+            var shortcut = _pluginShortcuts.FirstOrDefault(p => p.Name == name);
+            return shortcut == null ? $"{name} [{LanguageSettings.Current.General.None}]" : $"{name} [{shortcut.Shortcut}]";
         }
 
         private void ListBoxKeyDownSearch(object sender, KeyEventArgs e)
@@ -2848,11 +3072,26 @@ namespace Nikse.SubtitleEdit.Forms.Options
             var shortcutText = GetCurrentShortcutText();
             var existsIn = new StringBuilder();
             var sh = (ShortcutHelper)treeViewShortcuts.SelectedNode.Tag;
+
+            if (sh.IsPlugin)
+            {
+                var cleanShortcut = shortcutText.RemoveChar('[').RemoveChar(']');
+                var existingShortCut = _pluginShortcuts.FirstOrDefault(p => p.Name == text);
+                if (existingShortCut == null)
+                {
+                    _pluginShortcuts.Add(new PluginShortcut { Name = text, Shortcut = cleanShortcut });
+                }
+                else
+                {
+                    existingShortCut.Shortcut = cleanShortcut;
+                }
+            }
+
             foreach (ShortcutNode parent in _shortcuts.Nodes)
             {
                 foreach (ShortcutNode subNode in parent.Nodes)
                 {
-                    if (sh != null && subNode.Shortcut.Shortcut.Name == sh.Shortcut.Name)
+                    if (sh != null && !sh.IsPlugin && !subNode.Shortcut.IsPlugin && subNode.Shortcut.Shortcut.Name == sh.Shortcut.Name)
                     {
                         subNode.Text = text + " " + shortcutText;
                     }
@@ -2876,14 +3115,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
 
         private void AddToSaveList(ShortcutHelper helper, string shortcutText)
         {
-            if (_newShortcuts.ContainsKey(helper))
-            {
-                _newShortcuts[helper] = GetShortcut(shortcutText);
-            }
-            else
-            {
-                _newShortcuts.Add(helper, GetShortcut(shortcutText));
-            }
+            _newShortcuts[helper] = GetShortcut(shortcutText);
         }
 
         private void buttonListViewSyntaxColorError_Click(object sender, EventArgs e)
@@ -3128,20 +3360,20 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 if (form.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(form.FFmpegPath))
                 {
                     textBoxFFmpegPath.Text = form.FFmpegPath;
+                    checkBoxUseFFmpeg.Checked = true;
                 }
             }
         }
 
         private void textBoxShortcutSearch_TextChanged(object sender, EventArgs e)
         {
-            var selected = treeViewShortcuts.SelectedNode?.Tag as ShortcutHelper;
             var oldControl = checkBoxShortcutsControl.Checked;
             var oldAlt = checkBoxShortcutsAlt.Checked;
             var oldShift = checkBoxShortcutsShift.Checked;
             var oldKeyIndex = comboBoxShortcutKey.SelectedIndex;
             ShowShortcutsTreeView();
             buttonShortcutsClear.Enabled = textBoxShortcutSearch.Text.Length > 0;
-            if (selected != null)
+            if (treeViewShortcuts.SelectedNode?.Tag is ShortcutHelper selected)
             {
                 foreach (TreeNode parentNode in treeViewShortcuts.Nodes)
                 {
@@ -3214,7 +3446,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
 
             if (profile.MergeLinesShorterThan >= 1 && profile.MergeLinesShorterThan < comboBoxMergeShortLineLength.Items.Count)
             {
-                comboBoxMergeShortLineLength.SelectedIndex = profile.MergeLinesShorterThan;
+                comboBoxMergeShortLineLength.SelectedIndex = profile.MergeLinesShorterThan - 1;
             }
             else
             {
@@ -3245,7 +3477,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             _rulesProfiles[idx].MaxNumberOfLines = (int)numericUpDownMaxNumberOfLines.Value;
             _rulesProfiles[idx].SubtitleMaximumWordsPerMinute = (int)numericUpDownMaxWordsMin.Value;
             _rulesProfiles[idx].CpsIncludesSpace = checkBoxCpsIncludeWhiteSpace.Checked;
-            _rulesProfiles[idx].MergeLinesShorterThan = comboBoxMergeShortLineLength.SelectedIndex;
+            _rulesProfiles[idx].MergeLinesShorterThan = int.Parse(comboBoxMergeShortLineLength.Text, CultureInfo.InvariantCulture);
             _rulesProfiles[idx].DialogStyle = DialogSplitMerge.GetDialogStyleFromIndex(comboBoxDialogStyle.SelectedIndex);
             _rulesProfiles[idx].ContinuationStyle = ContinuationUtilities.GetContinuationStyleFromIndex(comboBoxContinuationStyle.SelectedIndex);
 
@@ -3285,7 +3517,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             var idx = listViewNames.SelectedItems[0].Index;
             if (idx >= 0)
             {
-                textBoxNameEtc.Text = (string)listViewNames.Items[idx].Text;
+                textBoxNameEtc.Text = listViewNames.Items[idx].Text;
             }
         }
 
@@ -3519,5 +3751,198 @@ namespace Nikse.SubtitleEdit.Forms.Options
             panelDarkThemeBackColor.Enabled = enabled;
             checkBoxDarkThemeShowListViewGridLines.Enabled = enabled;
         }
+
+        private void listBoxFavoriteSubtitleFormats_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            buttonRemoveFromFavoriteFormats.Enabled = listBoxFavoriteSubtitleFormats.SelectedItems.Count > 0;
+        }
+
+        private void listBoxFavoriteSubtitleFormats_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.Control | Keys.A))
+            {
+                listBoxFavoriteSubtitleFormats.SelectAll();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyData == (Keys.Control | Keys.Shift | Keys.I))
+            {
+                listBoxFavoriteSubtitleFormats.InverseSelection();
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void listBoxFavoriteSubtitleFormats_LostFocus(object sender, EventArgs e)
+        {
+            // avoid flickering when losing focus
+            listBoxFavoriteSubtitleFormats.Update();
+        }
+
+        private void buttonMoveToFavorites_Click(object sender, EventArgs e)
+        {
+            foreach (var selectedItem in listBoxSubtitleFormats.SelectedItems)
+            {
+                if (!listBoxFavoriteSubtitleFormats.Items.Contains(selectedItem))
+                {
+                    listBoxFavoriteSubtitleFormats.Items.Add(selectedItem);
+                }
+            }
+        }
+
+        private void buttonRemoveFromFavoriteFormats_Click(object sender, EventArgs e)
+        {
+            if (listBoxFavoriteSubtitleFormats.SelectedIndices.Count < 1)
+            {
+                return;
+            }
+
+            for (int i = listBoxFavoriteSubtitleFormats.SelectedIndices.Count - 1; i >= 0; i--)
+            {
+                listBoxFavoriteSubtitleFormats.Items.RemoveAt(listBoxFavoriteSubtitleFormats.SelectedIndices[i]);
+            }
+        }
+
+        private void textBoxFormatsSearch_TextChanged(object sender, EventArgs e)
+        {
+            listBoxSubtitleFormats.BeginUpdate();
+            listBoxSubtitleFormats.Items.Clear();
+            if (textBoxFormatsSearch.Text.Length > 0)
+            {
+                buttonFormatsSearchClear.Enabled = true;
+                var results = SubtitleFormat.AllSubtitleFormats.Where(format => !format.IsVobSubIndexFile && format.FriendlyName.Contains(textBoxFormatsSearch.Text, StringComparison.OrdinalIgnoreCase)).Select(format => format.FriendlyName);
+                listBoxSubtitleFormats.Items.AddRange(results.ToArray<object>());
+            }
+            else
+            {
+                var formatNames = GetSubtitleFormats();
+                listBoxSubtitleFormats.Items.AddRange(formatNames.ToArray<object>());
+                buttonFormatsSearchClear.Enabled = false;
+            }
+            listBoxSubtitleFormats.EndUpdate();
+
+            buttonMoveToFavoriteFormats.Enabled = listBoxSubtitleFormats.SelectedItems.Count > 0;
+        }
+
+        private void buttonFormatsSearchClear_Click(object sender, EventArgs e)
+        {
+            textBoxFormatsSearch.Text = string.Empty;
+            labelFormatsSearch.Focus();
+        }
+
+        private void listBoxSubtitleFormats_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            buttonMoveToFavoriteFormats.Enabled = listBoxSubtitleFormats.SelectedItems.Count > 0;
+        }
+
+        private void listBoxSubtitleFormats_LostFocus(object sender, EventArgs e)
+        {
+            // avoid flickering when losing focus
+            listBoxSubtitleFormats.Update();
+        }
+
+        private void contextMenuStripFavoriteFormats_Opening(object sender, CancelEventArgs e)
+        {
+            var oneOrMoreSelected = listBoxFavoriteSubtitleFormats.SelectedItems.Count > 0;
+            deleteToolStripMenuItem.Enabled = oneOrMoreSelected;
+
+            var oneOrMoreExist = listBoxFavoriteSubtitleFormats.Items.Count > 0;
+            deleteAllToolStripMenuItem.Enabled = oneOrMoreExist;
+
+            var onlyOneSelected = listBoxFavoriteSubtitleFormats.SelectedItems.Count == 1;
+            var moreThanOneExist = listBoxFavoriteSubtitleFormats.Items.Count > 1;
+            moveUpToolStripMenuItem.Enabled = onlyOneSelected && moreThanOneExist;
+            moveDownToolStripMenuItem.Enabled = onlyOneSelected && moreThanOneExist;
+            moveToTopToolStripMenuItem.Enabled = onlyOneSelected && moreThanOneExist;
+            moveToBottomToolStripMenuItem.Enabled = onlyOneSelected && moreThanOneExist;
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            buttonRemoveFromFavoriteFormats_Click(sender, e);
+        }
+
+        private void deleteAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listBoxFavoriteSubtitleFormats.Items.Clear();
+        }
+
+        private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBoxFavoriteSubtitleFormats.SelectedItems.Count != 1 || listBoxFavoriteSubtitleFormats.Items.Count < 2)
+            {
+                return;
+            }
+
+            var idx = listBoxFavoriteSubtitleFormats.SelectedIndex;
+            if (idx <= 0)
+            {
+                return;
+            }
+
+            var item = listBoxFavoriteSubtitleFormats.SelectedItem;
+            listBoxFavoriteSubtitleFormats.Items.RemoveAt(idx);
+            idx--;
+            listBoxFavoriteSubtitleFormats.Items.Insert(idx, item);
+            listBoxFavoriteSubtitleFormats.SetSelected(idx, true);
+        }
+
+        private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBoxFavoriteSubtitleFormats.SelectedItems.Count != 1 || listBoxFavoriteSubtitleFormats.Items.Count < 2)
+            {
+                return;
+            }
+
+            var idx = listBoxFavoriteSubtitleFormats.SelectedIndex;
+            if (idx >= listBoxFavoriteSubtitleFormats.Items.Count - 1)
+            {
+                return;
+            }
+
+            var item = listBoxFavoriteSubtitleFormats.SelectedItem;
+            listBoxFavoriteSubtitleFormats.Items.RemoveAt(idx);
+            idx++;
+            listBoxFavoriteSubtitleFormats.Items.Insert(idx, item);
+            listBoxFavoriteSubtitleFormats.SetSelected(idx, true);
+        }
+
+        private void moveToTopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBoxFavoriteSubtitleFormats.SelectedItems.Count != 1 || listBoxFavoriteSubtitleFormats.Items.Count < 2)
+            {
+                return;
+            }
+
+            var idx = listBoxFavoriteSubtitleFormats.SelectedIndex;
+            if (idx == 0)
+            {
+                return;
+            }
+
+            var item = listBoxFavoriteSubtitleFormats.SelectedItem;
+            listBoxFavoriteSubtitleFormats.Items.RemoveAt(idx);
+            listBoxFavoriteSubtitleFormats.Items.Insert(0, item);
+            listBoxFavoriteSubtitleFormats.SetSelected(0, true);
+        }
+
+        private void moveToBottomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBoxFavoriteSubtitleFormats.SelectedItems.Count != 1 || listBoxFavoriteSubtitleFormats.Items.Count < 2)
+            {
+                return;
+            }
+
+            var idx = listBoxFavoriteSubtitleFormats.SelectedIndex;
+            if (idx == listBoxFavoriteSubtitleFormats.Items.Count - 1)
+            {
+                return;
+            }
+
+            var item = listBoxFavoriteSubtitleFormats.SelectedItem;
+            listBoxFavoriteSubtitleFormats.Items.RemoveAt(idx);
+            listBoxFavoriteSubtitleFormats.Items.Insert(listBoxFavoriteSubtitleFormats.Items.Count, item);
+            listBoxFavoriteSubtitleFormats.SetSelected(listBoxFavoriteSubtitleFormats.Items.Count - 1, true);
+        }
+
+        private IEnumerable<string> GetSubtitleFormats() => SubtitleFormat.AllSubtitleFormats.Where(format => !format.IsVobSubIndexFile).Select(format => format.FriendlyName);
     }
 }

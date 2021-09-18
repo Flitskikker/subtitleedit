@@ -291,16 +291,18 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 buffer[3] = ExtensionBlockNumber;
                 buffer[4] = CumulativeStatus;
 
-                buffer[5] = (byte)TimeCodeInHours;
-                buffer[6] = (byte)TimeCodeInMinutes;
                 var frames = GetFrameFromMilliseconds(TimeCodeInMilliseconds, header.FrameRate, out var extraSeconds);
-                buffer[7] = (byte)(TimeCodeInSeconds + extraSeconds);
+                var tc = new TimeCode(TimeCodeInHours, TimeCodeInMinutes, TimeCodeInSeconds + extraSeconds, 0);
+                buffer[5] = (byte)tc.Hours;
+                buffer[6] = (byte)tc.Minutes;
+                buffer[7] = (byte)tc.Seconds;
                 buffer[8] = frames;
 
-                buffer[9] = (byte)TimeCodeOutHours;
-                buffer[10] = (byte)TimeCodeOutMinutes;
                 frames = GetFrameFromMilliseconds(TimeCodeOutMilliseconds, header.FrameRate, out extraSeconds);
-                buffer[11] = (byte)(TimeCodeOutSeconds + extraSeconds);
+                tc = new TimeCode(TimeCodeOutHours, TimeCodeOutMinutes, TimeCodeOutSeconds + extraSeconds, 0);
+                buffer[9] = (byte)tc.Hours;
+                buffer[10] = (byte)tc.Minutes;
+                buffer[11] = (byte)tc.Seconds;
                 buffer[12] = frames;
 
                 buffer[13] = VerticalPosition;
@@ -873,6 +875,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
             header.TotalNumberOfSubtitles = subtitle.Paragraphs.Count.ToString("D5"); // seems to be 1 higher than actual number of subtitles
             header.TotalNumberOfTextAndTimingInformationBlocks = header.TotalNumberOfSubtitles;
+            header.TotalNumberOfSubtitleGroups = "001";
 
             var today = $"{DateTime.Now:yyMMdd}";
             if (today.Length == 6)
@@ -886,7 +889,8 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             {
                 var tc = firstParagraph.StartTime;
                 var frames = EbuTextTimingInformation.GetFrameFromMilliseconds(tc.Milliseconds, header.FrameRate, out var extraSeconds);
-                var firstTimeCode = $"{tc.Hours:00}{tc.Minutes:00}{tc.Seconds + extraSeconds:00}{frames:00}";
+                tc = new TimeCode(tc.Hours, tc.Minutes, tc.Seconds + extraSeconds, 0);
+                var firstTimeCode = $"{tc.Hours:00}{tc.Minutes:00}{tc.Seconds:00}{frames:00}";
                 if (firstTimeCode.Length == 8)
                 {
                     header.TimeCodeFirstInCue = firstTimeCode;
