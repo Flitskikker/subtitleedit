@@ -166,11 +166,13 @@
             public string Fixed { get; set; }
             public string Milliseconds { get; set; }
             public string ExtendOnly { get; set; }
+            public string CheckShotChanges { get; set; }
         }
 
         public class ApplyDurationLimits
         {
             public string Title { get; set; }
+            public string CheckShotChanges { get; set; }
             public string FixesAvailable { get; set; }
             public string UnableToFix { get; set; }
         }

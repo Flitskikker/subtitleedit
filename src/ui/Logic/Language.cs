@@ -310,11 +310,13 @@ namespace Nikse.SubtitleEdit.Logic
                 Fixed = "Fixed",
                 Milliseconds = "Milliseconds",
                 ExtendOnly = "Extend only",
+                CheckShotChanges = "Don't extend past shot changes",
             };
 
             ApplyDurationLimits = new LanguageStructure.ApplyDurationLimits
             {
                 Title = "Apply duration limits",
+                CheckShotChanges = "Don't extend past shot changes",
                 FixesAvailable = "Fixes available: {0}",
                 UnableToFix = "Unable to fix: {0}",
             };

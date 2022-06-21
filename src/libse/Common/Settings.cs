@@ -329,6 +329,7 @@ namespace Nikse.SubtitleEdit.Core.Common
         public int AdjustDurationPercent { get; set; }
         public string AdjustDurationLast { get; set; }
         public bool AdjustDurationExtendOnly { get; set; }
+        public bool AdjustDurationExtendCheckShotChanges { get; set; }
         public bool AutoBreakCommaBreakEarly { get; set; }
         public bool AutoBreakDashEarly { get; set; }
         public bool AutoBreakLineEndingEarly { get; set; }
@@ -336,6 +337,7 @@ namespace Nikse.SubtitleEdit.Core.Common
         public bool AutoBreakPreferBottomHeavy { get; set; }
         public double AutoBreakPreferBottomPercent { get; set; }
         public bool ApplyMinimumDurationLimit { get; set; }
+        public bool ApplyMinimumDurationLimitCheckShotChanges { get; set; }
         public bool ApplyMaximumDurationLimit { get; set; }
         public int MergeShortLinesMaxGap { get; set; }
         public int MergeShortLinesMaxChars { get; set; }
@@ -528,6 +530,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             AdjustDurationSeconds = 0.1m;
             AdjustDurationPercent = 120;
             AdjustDurationExtendOnly = true;
+            AdjustDurationExtendCheckShotChanges = true;
             AutoBreakCommaBreakEarly = false;
             AutoBreakDashEarly = true;
             AutoBreakLineEndingEarly = false;
@@ -535,6 +538,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             AutoBreakPreferBottomHeavy = true;
             AutoBreakPreferBottomPercent = 5;
             ApplyMinimumDurationLimit = true;
+            ApplyMinimumDurationLimitCheckShotChanges = true;
             ApplyMaximumDurationLimit = true;
             MergeShortLinesMaxGap = 250;
             MergeShortLinesMaxChars = 55;
@@ -5667,6 +5671,12 @@ $HorzAlign          =   Center
                 settings.Tools.AdjustDurationExtendOnly = Convert.ToBoolean(subNode.InnerText, CultureInfo.InvariantCulture);
             }
 
+            subNode = node.SelectSingleNode("AdjustDurationExtendCheckShotChanges");
+            if (subNode != null)
+            {
+                settings.Tools.AdjustDurationExtendCheckShotChanges = Convert.ToBoolean(subNode.InnerText, CultureInfo.InvariantCulture);
+            }
+
             subNode = node.SelectSingleNode("AutoBreakCommaBreakEarly");
             if (subNode != null)
             {
@@ -5707,6 +5717,12 @@ $HorzAlign          =   Center
             if (subNode != null)
             {
                 settings.Tools.ApplyMinimumDurationLimit = Convert.ToBoolean(subNode.InnerText, CultureInfo.InvariantCulture);
+            }
+
+            subNode = node.SelectSingleNode("ApplyMinimumDurationLimitCheckShotChanges");
+            if (subNode != null)
+            {
+                settings.Tools.ApplyMinimumDurationLimitCheckShotChanges = Convert.ToBoolean(subNode.InnerText, CultureInfo.InvariantCulture);
             }
 
             subNode = node.SelectSingleNode("ApplyMaximumDurationLimit");
@@ -10308,6 +10324,7 @@ $HorzAlign          =   Center
                 textWriter.WriteElementString("AdjustDurationPercent", settings.Tools.AdjustDurationPercent.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("AdjustDurationLast", settings.Tools.AdjustDurationLast);
                 textWriter.WriteElementString("AdjustDurationExtendOnly", settings.Tools.AdjustDurationExtendOnly.ToString(CultureInfo.InvariantCulture));
+                textWriter.WriteElementString("AdjustDurationExtendCheckShotChanges", settings.Tools.AdjustDurationExtendCheckShotChanges.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("AutoBreakCommaBreakEarly", settings.Tools.AutoBreakCommaBreakEarly.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("AutoBreakDashEarly", settings.Tools.AutoBreakDashEarly.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("AutoBreakLineEndingEarly", settings.Tools.AutoBreakLineEndingEarly.ToString(CultureInfo.InvariantCulture));
@@ -10315,6 +10332,7 @@ $HorzAlign          =   Center
                 textWriter.WriteElementString("AutoBreakPreferBottomHeavy", settings.Tools.AutoBreakPreferBottomHeavy.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("AutoBreakPreferBottomPercent", settings.Tools.AutoBreakPreferBottomPercent.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("ApplyMinimumDurationLimit", settings.Tools.ApplyMinimumDurationLimit.ToString(CultureInfo.InvariantCulture));
+                textWriter.WriteElementString("ApplyMinimumDurationLimitCheckShotChanges", settings.Tools.ApplyMinimumDurationLimitCheckShotChanges.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("ApplyMaximumDurationLimit", settings.Tools.ApplyMaximumDurationLimit.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("MergeShortLinesMaxGap", settings.Tools.MergeShortLinesMaxGap.ToString(CultureInfo.InvariantCulture));
                 textWriter.WriteElementString("MergeShortLinesMaxChars", settings.Tools.MergeShortLinesMaxChars.ToString(CultureInfo.InvariantCulture));

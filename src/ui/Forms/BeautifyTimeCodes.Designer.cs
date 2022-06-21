@@ -47,6 +47,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.buttonImportShotChanges = new System.Windows.Forms.Button();
             this.labelShotChangesStatus = new System.Windows.Forms.Label();
             this.buttonEditProfile = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.groupBoxTimeCodes.SuspendLayout();
             this.panelTimeCodes.SuspendLayout();
             this.panelExtractTimeCodes.SuspendLayout();
@@ -57,7 +58,7 @@ namespace Nikse.SubtitleEdit.Forms
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(414, 321);
+            this.buttonOK.Location = new System.Drawing.Point(414, 354);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 3;
@@ -69,7 +70,7 @@ namespace Nikse.SubtitleEdit.Forms
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(495, 321);
+            this.buttonCancel.Location = new System.Drawing.Point(495, 354);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 4;
@@ -253,13 +254,23 @@ namespace Nikse.SubtitleEdit.Forms
             this.buttonEditProfile.UseVisualStyleBackColor = true;
             this.buttonEditProfile.Click += new System.EventHandler(this.buttonEditProfile_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point(12, 320);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(558, 23);
+            this.progressBar.TabIndex = 5;
+            // 
             // BeautifyTimeCodes
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(582, 356);
+            this.ClientSize = new System.Drawing.Size(582, 389);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.groupBoxShotChanges);
             this.Controls.Add(this.groupBoxTimeCodes);
             this.Controls.Add(this.buttonCancel);
@@ -306,5 +317,6 @@ namespace Nikse.SubtitleEdit.Forms
         private System.Windows.Forms.Label labelShotChangesStatus;
         private System.Windows.Forms.Button buttonEditProfile;
         private System.Windows.Forms.Button buttonCancelTimeCodes;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
