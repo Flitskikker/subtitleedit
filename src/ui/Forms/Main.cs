@@ -1692,6 +1692,8 @@ namespace Nikse.SubtitleEdit.Forms
             listErrorsToolStripMenuItem.Text = _language.Menu.Tools.ListErrors;
             netflixQualityCheckToolStripMenuItem.Text = _language.Menu.Tools.NetflixQualityCheck;
             toolStripButtonNetflixQualityCheck.Text = _language.Menu.Tools.NetflixQualityCheck;
+            toolStripMenuItemBeautifyTimeCodes.Text = _language.Menu.Tools.BeautifyTimeCodes;
+            toolStripButtonBeautifyTimeCodes.Text = _language.Menu.Tools.BeautifyTimeCodes;
 
             sortNumberToolStripMenuItem.Text = _language.Menu.Tools.Number;
             sortStartTimeToolStripMenuItem.Text = _language.Menu.Tools.StartTime;
@@ -5523,7 +5525,7 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 settings.Initialize(Icon, toolStripButtonFileNew.Image, toolStripButtonFileOpen.Image, toolStripButtonSave.Image, toolStripButtonSaveAs.Image, toolStripButtonFind.Image,
                     toolStripButtonReplace.Image, toolStripButtonFixCommonErrors.Image, toolStripButtonRemoveTextForHi.Image, toolStripButtonVisualSync.Image, toolStripButtonBurnIn.Image,
-                    toolStripButtonSpellCheck.Image, toolStripButtonNetflixQualityCheck.Image, toolStripButtonSettings.Image, toolStripButtonHelp.Image);
+                    toolStripButtonSpellCheck.Image, toolStripButtonNetflixQualityCheck.Image, toolStripButtonBeautifyTimeCodes.Image, toolStripButtonSettings.Image, toolStripButtonHelp.Image);
 
                 if (settings.ShowDialog(this) == DialogResult.Cancel)
                 {
@@ -5985,6 +5987,7 @@ namespace Nikse.SubtitleEdit.Forms
                 TryLoadIcon(toolStripButtonBurnIn, "BurnIn");
                 TryLoadIcon(toolStripButtonSpellCheck, "SpellCheck");
                 TryLoadIcon(toolStripButtonNetflixQualityCheck, "Netflix");
+                TryLoadIcon(toolStripButtonBeautifyTimeCodes, "BeautifyTimeCodes");
                 TryLoadIcon(toolStripButtonAssStyleManager, "AssaStyle");
                 TryLoadIcon(toolStripButtonAssProperties, "AssaProperties");
                 TryLoadIcon(toolStripButtonAssAttachments, "AssaAttachments");
@@ -6008,6 +6011,7 @@ namespace Nikse.SubtitleEdit.Forms
             toolStripButtonBurnIn.Visible = gs.ShowToolbarBurnIn;
             toolStripButtonSpellCheck.Visible = gs.ShowToolbarSpellCheck;
             toolStripButtonNetflixQualityCheck.Visible = gs.ShowToolbarNetflixGlyphCheck;
+            toolStripButtonBeautifyTimeCodes.Visible = gs.ShowToolbarBeautifyTimeCodes;
             toolStripButtonSettings.Visible = gs.ShowToolbarSettings;
             toolStripButtonHelp.Visible = gs.ShowToolbarHelp;
 
@@ -6022,7 +6026,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             toolStrip1.Visible = gs.ShowToolbarNew || gs.ShowToolbarOpen || gs.ShowToolbarSave || gs.ShowToolbarSaveAs || gs.ShowToolbarFind || gs.ShowToolbarReplace ||
                                  gs.ShowToolbarFixCommonErrors || gs.ShowToolbarVisualSync || gs.ShowToolbarSpellCheck || gs.ShowToolbarNetflixGlyphCheck ||
-                                 gs.ShowToolbarSettings || gs.ShowToolbarHelp;
+                                 gs.ShowToolbarBeautifyTimeCodes || gs.ShowToolbarSettings || gs.ShowToolbarHelp;
 
             UpdateToolbarButtonsToCurrentFormat(GetCurrentSubtitleFormat());
         }
@@ -33403,6 +33407,46 @@ namespace Nikse.SubtitleEdit.Forms
                     _subtitle.Footer = form.NewFooter;
                 }
             }
+        }
+
+        private void toolStripMenuItemBeautifyTimeCodes_Click(object sender, EventArgs e)
+        {
+            if (!IsSubtitleLoaded)
+            {
+                DisplaySubtitleNotLoadedMessage();
+                return;
+            }
+
+            using (var form = new BeautifyTimeCodes(_subtitle, _videoInfo, _videoFileName, audioVisualizer.ShotChanges))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK && form.FixedCount > 0)
+                {
+                    int index = FirstSelectedIndex;
+                    if (index < 0)
+                    {
+                        index = 0;
+                    }
+
+                    if (form.ShotChangesInSeconds.Count > 0)
+                    {
+                        audioVisualizer.ShotChanges = form.ShotChangesInSeconds;
+                    }
+
+                    MakeHistoryForUndo(_language.BeforeBeautifyTimeCodes);
+                    SaveSubtitleListviewIndices();
+                    _subtitle.Paragraphs.Clear();
+                    _subtitle.Paragraphs.AddRange(form.FixedSubtitle.Paragraphs);
+
+                    SubtitleListview1.Fill(_subtitle, _subtitleOriginal);
+                    SubtitleListview1.SelectIndexAndEnsureVisible(index, true);
+                    RestoreSubtitleListviewIndices();
+                }
+            }
+        }
+
+        private void toolStripButtonBeautifyTimeCodes_Click(object sender, EventArgs e)
+        {
+            toolStripMenuItemBeautifyTimeCodes_Click(sender, e);
         }
 
         public bool ProcessCmdKeyFromChildForm(ref Message msg, Keys keyData)

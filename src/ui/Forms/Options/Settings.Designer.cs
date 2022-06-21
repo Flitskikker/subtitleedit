@@ -420,6 +420,9 @@
             this.buttonReset = new System.Windows.Forms.Button();
             this.toolTipContinuationPreview = new System.Windows.Forms.ToolTip(this.components);
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.labelTBBeautifyTimeCodes = new System.Windows.Forms.Label();
+            this.pictureBoxBeautifyTimeCodes = new System.Windows.Forms.PictureBox();
+            this.checkBoxBeautifyTimeCodes = new System.Windows.Forms.CheckBox();
             this.panelFileTypeAssociations = new System.Windows.Forms.Panel();
             this.buttonUpdateFileTypeAssociations = new System.Windows.Forms.Button();
             this.listViewFileTypeAssociations = new System.Windows.Forms.ListView();
@@ -500,6 +503,7 @@
             this.groupBoxNetworkSession.SuspendLayout();
             this.groupBoxProxySettings.SuspendLayout();
             this.groupBoxProxyAuthentication.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBeautifyTimeCodes)).BeginInit();
             this.panelFileTypeAssociations.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -4049,6 +4053,9 @@
             this.groupBoxShowToolBarButtons.Controls.Add(this.labelTBBurnIn);
             this.groupBoxShowToolBarButtons.Controls.Add(this.pictureBoxTBBurnIn);
             this.groupBoxShowToolBarButtons.Controls.Add(this.checkBoxTBBurnIn);
+            this.groupBoxShowToolBarButtons.Controls.Add(this.labelTBBeautifyTimeCodes);
+            this.groupBoxShowToolBarButtons.Controls.Add(this.pictureBoxBeautifyTimeCodes);
+            this.groupBoxShowToolBarButtons.Controls.Add(this.checkBoxBeautifyTimeCodes);
             this.groupBoxShowToolBarButtons.Controls.Add(this.labelTBNetflixQualityCheck);
             this.groupBoxShowToolBarButtons.Controls.Add(this.pictureBoxNetflixQualityCheck);
             this.groupBoxShowToolBarButtons.Controls.Add(this.checkBoxNetflixQualityCheck);
@@ -5075,6 +5082,33 @@
             this.toolTipContinuationPreview.InitialDelay = 500;
             this.toolTipContinuationPreview.ReshowDelay = 100;
             // 
+            // labelTBBeautifyTimeCodes
+            // 
+            this.labelTBBeautifyTimeCodes.AutoSize = true;
+            this.labelTBBeautifyTimeCodes.Location = new System.Drawing.Point(742, 136);
+            this.labelTBBeautifyTimeCodes.Name = "labelTBBeautifyTimeCodes";
+            this.labelTBBeautifyTimeCodes.Size = new System.Drawing.Size(101, 13);
+            this.labelTBBeautifyTimeCodes.TabIndex = 45;
+            this.labelTBBeautifyTimeCodes.Text = "Beautify time codes";
+            // 
+            // pictureBoxBeautifyTimeCodes
+            // 
+            this.pictureBoxBeautifyTimeCodes.Location = new System.Drawing.Point(751, 155);
+            this.pictureBoxBeautifyTimeCodes.Name = "pictureBoxBeautifyTimeCodes";
+            this.pictureBoxBeautifyTimeCodes.Size = new System.Drawing.Size(32, 32);
+            this.pictureBoxBeautifyTimeCodes.TabIndex = 44;
+            this.pictureBoxBeautifyTimeCodes.TabStop = false;
+            // 
+            // checkBoxBeautifyTimeCodes
+            // 
+            this.checkBoxBeautifyTimeCodes.AutoSize = true;
+            this.checkBoxBeautifyTimeCodes.Location = new System.Drawing.Point(754, 195);
+            this.checkBoxBeautifyTimeCodes.Name = "checkBoxBeautifyTimeCodes";
+            this.checkBoxBeautifyTimeCodes.Size = new System.Drawing.Size(55, 17);
+            this.checkBoxBeautifyTimeCodes.TabIndex = 43;
+            this.checkBoxBeautifyTimeCodes.Text = "Visible";
+            this.checkBoxBeautifyTimeCodes.UseVisualStyleBackColor = true;
+            // 
             // panelFileTypeAssociations
             // 
             this.panelFileTypeAssociations.Controls.Add(this.buttonUpdateFileTypeAssociations);
@@ -5246,6 +5280,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSave)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOpen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxNew)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBeautifyTimeCodes)).EndInit();
             this.panelFont.ResumeLayout(false);
             this.groupBoxAppearance.ResumeLayout(false);
             this.groupBoxAppearance.PerformLayout();
@@ -5653,6 +5688,9 @@
         private System.Windows.Forms.Panel panelVideoPlayerPreviewFontColor;
         private System.Windows.Forms.CheckBox checkBoxDarkThemeShowListViewGridLines;
         private System.Windows.Forms.GroupBox groupBoxFontInUI;
+        private System.Windows.Forms.Label labelTBBeautifyTimeCodes;
+        private System.Windows.Forms.PictureBox pictureBoxBeautifyTimeCodes;
+        private System.Windows.Forms.CheckBox checkBoxBeautifyTimeCodes;
         private System.Windows.Forms.GroupBox groupBoxToolsMisc;
         private System.Windows.Forms.ComboBox comboBoxBDOpensIn;
         private System.Windows.Forms.Label labelBDOpensIn;

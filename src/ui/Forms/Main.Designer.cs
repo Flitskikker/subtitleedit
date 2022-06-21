@@ -68,6 +68,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripButtonAssAttachments = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonAssaDraw = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonNetflixQualityCheck = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonBeautifyTimeCodes = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonSettings = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparatorHelp = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonHelp = new System.Windows.Forms.ToolStripButton();
@@ -203,6 +204,8 @@ namespace Nikse.SubtitleEdit.Forms
             this.descendingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.netflixQualityCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator27 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItemBeautifyTimeCodes = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemMakeEmptyFromCurrent = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemBatchConvert = new System.Windows.Forms.ToolStripMenuItem();
@@ -255,6 +258,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
             this.mergeSentencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.breaksplitLongLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exporImportTofromWordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeLanguageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -563,7 +567,6 @@ namespace Nikse.SubtitleEdit.Forms
             this.timerOriginalTextUndo = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripShowVideoControls = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemShowVideoControls = new System.Windows.Forms.ToolStripMenuItem();
-            this.exporImportTofromWordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -682,6 +685,7 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripButtonAssAttachments,
             this.toolStripButtonAssaDraw,
             this.toolStripButtonNetflixQualityCheck,
+            this.toolStripButtonBeautifyTimeCodes,
             this.toolStripButtonSettings,
             this.toolStripSeparatorHelp,
             this.toolStripButtonHelp,
@@ -924,6 +928,17 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripButtonNetflixQualityCheck.Size = new System.Drawing.Size(36, 37);
             this.toolStripButtonNetflixQualityCheck.Text = "Netflix quality check";
             this.toolStripButtonNetflixQualityCheck.Click += new System.EventHandler(this.toolStripButtonNetflixGlyphCheck_Click);
+            // 
+            // toolStripButtonBeautifyTimeCodes
+            // 
+            this.toolStripButtonBeautifyTimeCodes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonBeautifyTimeCodes.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonBeautifyTimeCodes.Image")));
+            this.toolStripButtonBeautifyTimeCodes.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButtonBeautifyTimeCodes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonBeautifyTimeCodes.Name = "toolStripButtonBeautifyTimeCodes";
+            this.toolStripButtonBeautifyTimeCodes.Size = new System.Drawing.Size(36, 37);
+            this.toolStripButtonBeautifyTimeCodes.Text = "Beautify time codes...";
+            this.toolStripButtonBeautifyTimeCodes.Click += new System.EventHandler(this.toolStripButtonBeautifyTimeCodes_Click);
             // 
             // toolStripButtonSettings
             // 
@@ -1784,6 +1799,8 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripMenuItemSortBy,
             this.listErrorsToolStripMenuItem,
             this.netflixQualityCheckToolStripMenuItem,
+            this.toolStripSeparator27,
+            this.toolStripMenuItemBeautifyTimeCodes,
             this.toolStripSeparator22,
             this.toolStripMenuItemMakeEmptyFromCurrent,
             this.toolStripMenuItemBatchConvert,
@@ -2038,6 +2055,18 @@ namespace Nikse.SubtitleEdit.Forms
             this.netflixQualityCheckToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.netflixQualityCheckToolStripMenuItem.Text = "Netflix quality check";
             this.netflixQualityCheckToolStripMenuItem.Click += new System.EventHandler(this.netflixGlyphCheckToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator27
+            // 
+            this.toolStripSeparator27.Name = "toolStripSeparator27";
+            this.toolStripSeparator27.Size = new System.Drawing.Size(335, 6);
+            // 
+            // toolStripMenuItemBeautifyTimeCodes
+            // 
+            this.toolStripMenuItemBeautifyTimeCodes.Name = "toolStripMenuItemBeautifyTimeCodes";
+            this.toolStripMenuItemBeautifyTimeCodes.Size = new System.Drawing.Size(338, 22);
+            this.toolStripMenuItemBeautifyTimeCodes.Text = "Beautify time codes...";
+            this.toolStripMenuItemBeautifyTimeCodes.Click += new System.EventHandler(this.toolStripMenuItemBeautifyTimeCodes_Click);
             // 
             // toolStripSeparator22
             // 
@@ -2416,35 +2445,42 @@ namespace Nikse.SubtitleEdit.Forms
             // translateToolStripMenuItem
             // 
             this.translateToolStripMenuItem.Name = "translateToolStripMenuItem";
-            this.translateToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.translateToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.translateToolStripMenuItem.Text = "Auto-translate...";
             this.translateToolStripMenuItem.Click += new System.EventHandler(this.TranslateToolStripMenuItemClick);
             // 
             // autotranslateViaCopypasteToolStripMenuItem
             // 
             this.autotranslateViaCopypasteToolStripMenuItem.Name = "autotranslateViaCopypasteToolStripMenuItem";
-            this.autotranslateViaCopypasteToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.autotranslateViaCopypasteToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.autotranslateViaCopypasteToolStripMenuItem.Text = "Auto-translate via copy-paste...";
             this.autotranslateViaCopypasteToolStripMenuItem.Click += new System.EventHandler(this.autotranslateViaCopypasteToolStripMenuItem_Click);
             // 
             // toolStripSeparator26
             // 
             this.toolStripSeparator26.Name = "toolStripSeparator26";
-            this.toolStripSeparator26.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator26.Size = new System.Drawing.Size(261, 6);
             // 
             // mergeSentencesToolStripMenuItem
             // 
             this.mergeSentencesToolStripMenuItem.Name = "mergeSentencesToolStripMenuItem";
-            this.mergeSentencesToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.mergeSentencesToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.mergeSentencesToolStripMenuItem.Text = "Merge sentences...";
             this.mergeSentencesToolStripMenuItem.Click += new System.EventHandler(this.mergeSentencesToolStripMenuItem_Click);
             // 
             // breaksplitLongLinesToolStripMenuItem
             // 
             this.breaksplitLongLinesToolStripMenuItem.Name = "breaksplitLongLinesToolStripMenuItem";
-            this.breaksplitLongLinesToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.breaksplitLongLinesToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
             this.breaksplitLongLinesToolStripMenuItem.Text = "Break/split long lines...";
             this.breaksplitLongLinesToolStripMenuItem.Click += new System.EventHandler(this.breaksplitLongLinesToolStripMenuItem_Click);
+            // 
+            // exporImportTofromWordToolStripMenuItem
+            // 
+            this.exporImportTofromWordToolStripMenuItem.Name = "exporImportTofromWordToolStripMenuItem";
+            this.exporImportTofromWordToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
+            this.exporImportTofromWordToolStripMenuItem.Text = "Export to / import from Word docx...";
+            this.exporImportTofromWordToolStripMenuItem.Click += new System.EventHandler(this.exporImportTofromWordToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -5492,13 +5528,6 @@ namespace Nikse.SubtitleEdit.Forms
             this.toolStripMenuItemShowVideoControls.Text = "Show video controls";
             this.toolStripMenuItemShowVideoControls.Click += new System.EventHandler(this.toolStripMenuItemShowVideoControls_Click);
             // 
-            // exporImportTofromWordToolStripMenuItem
-            // 
-            this.exporImportTofromWordToolStripMenuItem.Name = "exporImportTofromWordToolStripMenuItem";
-            this.exporImportTofromWordToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.exporImportTofromWordToolStripMenuItem.Text = "Export to / import from Word docx...";
-            this.exporImportTofromWordToolStripMenuItem.Click += new System.EventHandler(this.exporImportTofromWordToolStripMenuItem_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -6068,8 +6097,11 @@ namespace Nikse.SubtitleEdit.Forms
         private System.Windows.Forms.ToolStripButton toolStripButtonAssStyleManager;
         private System.Windows.Forms.ToolStripButton toolStripButtonAssProperties;
         private System.Windows.Forms.ToolStripButton toolStripButtonAssAttachments;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemBeautifyTimeCodes;
+        private System.Windows.Forms.ToolStripButton toolStripButtonBeautifyTimeCodes;
         private System.Windows.Forms.ToolStripMenuItem mergeSentencesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator27;
         private System.Windows.Forms.ToolStripMenuItem breaksplitLongLinesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSelectedLines;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemAutoBreakLines;

@@ -27,6 +27,8 @@ namespace Nikse.SubtitleEdit.Logic
         public LanguageStructure.AssaSetPosition AssaSetPosition;
         public LanguageStructure.AutoBreakUnbreakLines AutoBreakUnbreakLines;
         public LanguageStructure.BatchConvert BatchConvert;
+        public LanguageStructure.BeautifyTimeCodes BeautifyTimeCodes;
+        public LanguageStructure.BeautifyTimeCodesProfile BeautifyTimeCodesProfile;
         public LanguageStructure.BinEdit BinEdit;
         public LanguageStructure.Bookmarks Bookmarks;
         public LanguageStructure.ChangeCasing ChangeCasing;
@@ -223,6 +225,7 @@ namespace Nikse.SubtitleEdit.Logic
                 ShortcutX = "Shortcut: {0}",
                 ExampleX = "Example: {0}",
                 Reset = "Reset",
+                Error = "Error",
             };
 
             About = new LanguageStructure.About
@@ -493,6 +496,31 @@ namespace Nikse.SubtitleEdit.Logic
                 MkvLanguageStyleTwoLetter = "Two letter language code",
                 MkvLanguageStyleThreeLetter = "Three letter language code",
                 MkvLanguageStyleEmpty = "No language code",
+            };
+
+            BeautifyTimeCodes = new LanguageStructure.BeautifyTimeCodes
+            {
+                Title = "Beautify time codes",
+                GroupTimeCodes = "Time codes",
+                AlignTimeCodes = "Align time codes to frame time codes",
+                ExtractExactTimeCodes = "Use ffprobe to extract exact frame time codes",
+                ExtractTimeCodes = "Extract time codes",
+                CancelTimeCodes = "Cancel",
+                GroupShotChanges = "Shot changes",
+                SnapToShotChanges = "Snap cues to shot changes according to profile",
+                ImportShotChanges = "Generate / import shot changes...",
+                EditProfile = "Edit profile...",
+                NoTimeCodesLoaded = "No time codes loaded",
+                XTimeCodesLoaded = "{0} time codes loaded",
+                NoTimeCodesLoadedError = "You've selected to extract exact frame time codes, but there are no time codes loaded.\n\nPlease click \"{0}\" to extract the time codes first, or disable this option.",
+                NoShotChangesLoaded = "No shot changes loaded",
+                XShotChangesLoaded = "{0} shot changes loaded",
+                NoShotChangesLoadedError = "You've selected to snap cues to shot changes, but there are no shot changes loaded.\n\nPlease click \"{0}\" to generate or import shot changes first, or disable this option.",
+            };
+
+            BeautifyTimeCodesProfile = new LanguageStructure.BeautifyTimeCodesProfile
+            {
+                Title = "Edit profile",
             };
 
             BinEdit = new LanguageStructure.BinEdit
@@ -1435,6 +1463,8 @@ namespace Nikse.SubtitleEdit.Logic
                 CommonErrorsFixed = "Common errors fixed",
                 BeforeRenumbering = "Before renumbering",
                 RenumberedStartingFromX = "Renumbered starting from: {0}",
+                BeforeBeautifyTimeCodes = "Before beautifying time codes",
+                BeautifiedTimeCodes = "Time codes beautified",
                 BeforeRemovalOfTextingForHearingImpaired = "Before removal of texting for hearing impaired",
                 TextingForHearingImpairedRemovedOneLine = "Texting for hearing impaired removed: One line",
                 TextingForHearingImpairedRemovedXLines = "Texting for hearing impaired removed: {0} lines",
@@ -1740,6 +1770,7 @@ namespace Nikse.SubtitleEdit.Logic
                         SplitLongLines = "Break/split long lines...",
                         MinimumDisplayTimeBetweenParagraphs = "Apply minimum gap between subtitles...",
                         NetflixQualityCheck = "Netflix quality check...",
+                        BeautifyTimeCodes = "Beautify time codes...",
                         SortBy = "Sort by",
                         Number = "Number",
                         StartTime = "Start time",
@@ -1855,6 +1886,7 @@ namespace Nikse.SubtitleEdit.Logic
                         VisualSync = "Visual sync",
                         SpellCheck = "Spell check",
                         NetflixQualityCheck = "Netflix quality check",
+                        BeautifyTimeCodes = "Beautify time codes",
                         Settings = "Settings",
                         Help = "Help",
                         ShowHideWaveform = "Show/hide waveform",

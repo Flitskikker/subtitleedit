@@ -99,6 +99,7 @@
             public string ShortcutX { get; set; }
             public string ExampleX { get; set; }
             public string Reset { get; set; }
+            public string Error { get; set; }
         }
 
         public class About
@@ -351,6 +352,31 @@
             public string MkvLanguageStyleTwoLetter { get; set; }
             public string MkvLanguageStyleThreeLetter { get; set; }
             public string MkvLanguageStyleEmpty { get; set; }
+        }
+
+        public class BeautifyTimeCodes
+        {
+            public string Title { get; set; }
+            public string GroupTimeCodes { get; set; }
+            public string AlignTimeCodes { get; set; }
+            public string ExtractExactTimeCodes { get; set; }
+            public string ExtractTimeCodes { get; set; }
+            public string CancelTimeCodes { get; set; }
+            public string GroupShotChanges { get; set; }
+            public string SnapToShotChanges { get; set; }
+            public string ImportShotChanges { get; set; }
+            public string EditProfile { get; set; }
+            public string NoTimeCodesLoaded { get; set; }
+            public string XTimeCodesLoaded { get; set; }
+            public string NoTimeCodesLoadedError { get; set; }
+            public string NoShotChangesLoaded { get; set; }
+            public string XShotChangesLoaded { get; set; }
+            public string NoShotChangesLoadedError { get; set; }
+        }
+
+        public class BeautifyTimeCodesProfile
+        {
+            public string Title { get; set; }
         }
 
         public class BinEdit
@@ -1291,6 +1317,8 @@
             public string CommonErrorsFixed { get; set; }
             public string BeforeRenumbering { get; set; }
             public string RenumberedStartingFromX { get; set; }
+            public string BeforeBeautifyTimeCodes { get; set; }
+            public string BeautifiedTimeCodes { get; set; }
             public string BeforeRemovalOfTextingForHearingImpaired { get; set; }
             public string TextingForHearingImpairedRemovedOneLine { get; set; }
             public string TextingForHearingImpairedRemovedXLines { get; set; }
@@ -1596,6 +1624,7 @@
                     public string Duration { get; set; }
                     public string ListErrors { get; set; }
                     public string NetflixQualityCheck { get; set; }
+                    public string BeautifyTimeCodes { get; set; }
                     public string TextAlphabetically { get; set; }
                     public string TextSingleLineMaximumLength { get; set; }
                     public string TextTotalLength { get; set; }
@@ -1700,6 +1729,7 @@
                     public string VisualSync { get; set; }
                     public string SpellCheck { get; set; }
                     public string NetflixQualityCheck { get; set; }
+                    public string BeautifyTimeCodes { get; set; }
                     public string Settings { get; set; }
                     public string Help { get; set; }
                     public string ShowHideWaveform { get; set; }
@@ -2267,6 +2297,7 @@
             public string BurnIn { get; set; }
             public string SpellCheck { get; set; }
             public string NetflixQualityCheck { get; set; }
+            public string BeautifyTimeCodes { get; set; }
             public string SettingsName { get; set; }
             public string ToggleBookmarks { get; set; }
             public string ToggleBookmarksWithComment { get; set; }
