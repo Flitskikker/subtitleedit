@@ -12,7 +12,24 @@ namespace Nikse.SubtitleEdit.Core.Common
 
         public static string GenerateHash(string videoFileName)
         {
+            if (videoFileName != null && (videoFileName.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                                          videoFileName.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+            {
+                return MovieHasher.GenerateHashFromString(videoFileName);
+            }
+
             return ToHexadecimal(ComputeMovieHash(videoFileName));
+        }
+
+        public static string GenerateHashFromString(string s)
+        {
+            byte[] result;
+            using (Stream input = new MemoryStream(Encoding.UTF8.GetBytes(s)))
+            {
+                result = ComputeMovieHash(input);
+            }
+
+            return ToHexadecimal(result);
         }
 
         private static byte[] ComputeMovieHash(string videoFileName)

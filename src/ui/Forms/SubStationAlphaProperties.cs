@@ -15,6 +15,7 @@ namespace Nikse.SubtitleEdit.Forms
         private readonly bool _isSubStationAlpha;
         private readonly string _videoFileName;
         private readonly VideoInfo _currentVideoInfo;
+        private readonly int _height;
 
         public SubStationAlphaProperties(Subtitle subtitle, SubtitleFormat format, string videoFileName, VideoInfo currentVideoInfo, string subtitleFileName)
         {
@@ -27,13 +28,14 @@ namespace Nikse.SubtitleEdit.Forms
             _currentVideoInfo = currentVideoInfo;
 
             var l = LanguageSettings.Current.SubStationAlphaProperties;
+            _height = 500;
             if (_isSubStationAlpha)
             {
                 Text = l.TitleSubstationAlpha;
                 labelWrapStyle.Visible = false;
                 comboBoxWrapStyle.Visible = false;
                 checkBoxScaleBorderAndShadow.Visible = false;
-                Height = Height - (comboBoxWrapStyle.Height + checkBoxScaleBorderAndShadow.Height + 8);
+                _height -= (comboBoxWrapStyle.Height + checkBoxScaleBorderAndShadow.Height + 8);
             }
             else
             {
@@ -70,64 +72,64 @@ namespace Nikse.SubtitleEdit.Forms
                     string s = line.ToLowerInvariant().Trim();
                     if (s.StartsWith("title:", StringComparison.Ordinal))
                     {
-                        textBoxTitle.Text = s.Remove(0, 6).Trim();
+                        textBoxTitle.Text = line.Trim().Remove(0, 6).Trim();
                     }
                     else if (s.StartsWith("original script:", StringComparison.Ordinal))
                     {
-                        textBoxOriginalScript.Text = s.Remove(0, 16).Trim();
+                        textBoxOriginalScript.Text = line.Trim().Remove(0, 16).Trim();
                     }
                     else if (s.StartsWith("original translation:", StringComparison.Ordinal))
                     {
-                        textBoxTranslation.Text = s.Remove(0, 21).Trim();
+                        textBoxTranslation.Text = line.Trim().Remove(0, 21).Trim();
                     }
                     else if (s.StartsWith("original editing:", StringComparison.Ordinal))
                     {
-                        textBoxEditing.Text = s.Remove(0, 17).Trim();
+                        textBoxEditing.Text = line.Trim().Remove(0, 17).Trim();
                     }
                     else if (s.StartsWith("original timing:", StringComparison.Ordinal))
                     {
-                        textBoxTiming.Text = s.Remove(0, 16).Trim();
+                        textBoxTiming.Text = line.Trim().Remove(0, 16).Trim();
                     }
                     else if (s.StartsWith("synch point:", StringComparison.Ordinal))
                     {
-                        textBoxSyncPoint.Text = s.Remove(0, 12).Trim();
+                        textBoxSyncPoint.Text = line.Trim().Remove(0, 12).Trim();
                     }
                     else if (s.StartsWith("script updated by:", StringComparison.Ordinal))
                     {
-                        textBoxUpdatedBy.Text = s.Remove(0, 18).Trim();
+                        textBoxUpdatedBy.Text = line.Trim().Remove(0, 18).Trim();
                     }
                     else if (s.StartsWith("update details:", StringComparison.Ordinal))
                     {
-                        textBoxUpdateDetails.Text = s.Remove(0, 15).Trim();
+                        textBoxUpdateDetails.Text = line.Trim().Remove(0, 15).Trim();
                     }
                     else if (s.StartsWith("collisions:", StringComparison.Ordinal))
                     {
-                        if (s.Remove(0, 11).Trim() == "reverse")
+                        if (line.Trim().Remove(0, 11).Trim() == "reverse")
                         {
                             comboBoxCollision.SelectedIndex = 1;
                         }
                     }
                     else if (s.StartsWith("playresx:", StringComparison.Ordinal))
                     {
-                        if (int.TryParse(s.Remove(0, 9).Trim(), out var number))
+                        if (int.TryParse(line.Trim().Remove(0, 9).Trim(), out var number))
                         {
                             numericUpDownVideoWidth.Value = number;
                         }
                     }
                     else if (s.StartsWith("playresy:", StringComparison.Ordinal))
                     {
-                        if (int.TryParse(s.Remove(0, 9).Trim(), out var number))
+                        if (int.TryParse(line.Trim().Remove(0, 9).Trim(), out var number))
                         {
                             numericUpDownVideoHeight.Value = number;
                         }
                     }
                     else if (s.StartsWith("scaledborderandshadow:", StringComparison.Ordinal))
                     {
-                        checkBoxScaleBorderAndShadow.Checked = s.Remove(0, 22).Trim().ToLowerInvariant().Equals("yes");
+                        checkBoxScaleBorderAndShadow.Checked = line.Trim().Remove(0, 22).Trim().ToLowerInvariant().Equals("yes");
                     }
                     else if (s.StartsWith("wrapstyle:", StringComparison.Ordinal))
                     {
-                        var wrapStyle = s.Remove(0, 10).Trim();
+                        var wrapStyle = line.Trim().Remove(0, 10).Trim();
                         for (int i = 0; i < comboBoxWrapStyle.Items.Count; i++)
                         {
                             if (i.ToString(CultureInfo.InvariantCulture) == wrapStyle)
@@ -162,6 +164,7 @@ namespace Nikse.SubtitleEdit.Forms
             UiUtil.FixLargeFonts(this, buttonCancel);
 
             buttonGetResolutionFromCurrentVideo.Enabled = !string.IsNullOrEmpty(videoFileName);
+            Height = _height;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -318,6 +321,11 @@ namespace Nikse.SubtitleEdit.Forms
 
             numericUpDownVideoWidth.Value = _currentVideoInfo.Width;
             numericUpDownVideoHeight.Value = _currentVideoInfo.Height;
+        }
+
+        private void SubStationAlphaProperties_Shown(object sender, EventArgs e)
+        {
+            Height = _height;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -192,7 +193,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             "           <region tts:extent=\"80% 40%\" tts:origin=\"10% 10%\" tts:displayAlign=\"before\" tts:textAlign=\"start\" xml:id=\"topLeft\" />" + Environment.NewLine +
             "           <region tts:extent=\"80% 40%\" tts:origin=\"10% 30%\" tts:displayAlign=\"center\" tts:textAlign=\"start\" xml:id=\"centerLeft\" />" + Environment.NewLine +
             "           <region tts:extent=\"80% 40%\" tts:origin=\"10% 50%\" tts:displayAlign=\"after\" tts:textAlign=\"start\" xml:id=\"bottomLeft\" />" + Environment.NewLine +
-            // Midle column
+            // Middle column
             "           <region tts:extent=\"80% 40%\" tts:origin=\"10% 10%\" tts:displayAlign=\"before\" tts:textAlign=\"center\" xml:id=\"topCenter\" />" + Environment.NewLine +
             "           <region tts:extent=\"80% 40%\" tts:origin=\"10% 30%\" tts:displayAlign=\"center\" tts:textAlign=\"center\" xml:id=\"centerСenter\" />" + Environment.NewLine +
             "           <region tts:extent=\"80% 40%\" tts:origin=\"10% 50%\" tts:displayAlign=\"after\" tts:textAlign=\"center\" xml:id=\"bottomCenter\" />" + Environment.NewLine +
@@ -228,7 +229,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 if (divNode != null)
                 {
                     // Remove all but first div
-                    int innerNodeCount = 0;
+                    var innerNodeCount = 0;
                     var innerNodeList = new List<XmlNode>();
                     foreach (XmlNode innerNode in bodyNode.SelectNodes("ttml:div", nsmgr))
                     {
@@ -286,15 +287,14 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 body.AppendChild(div);
             }
 
-            int no = 0;
+            var no = 0;
             var headerStyles = GetStylesFromHeader(ToUtf8XmlString(xml));
             var regions = GetRegionsFromHeader(ToUtf8XmlString(xml));
             var languages = GetUsedLanguages(subtitle);
             if (languages.Count > 0)
             {
                 var divParentNode = div.ParentNode;
-
-                foreach (Paragraph p in subtitle.Paragraphs)
+                foreach (var p in subtitle.Paragraphs)
                 {
                     if (p.Language == null)
                     {
@@ -309,15 +309,15 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     }
                 }
 
-                foreach (string language in languages)
+                foreach (var language in languages)
                 {
                     div = xml.CreateElement("div", TtmlNamespace);
                     XmlAttribute attr = xml.CreateAttribute("xml:lang", "http://www.w3.org/XML/1998/namespace");
                     attr.Value = language;
                     div.Attributes.Append(attr);
                     divParentNode.AppendChild(div);
-                    bool firstParagraph = true;
-                    foreach (Paragraph p in subtitle.Paragraphs)
+                    var firstParagraph = true;
+                    foreach (var p in subtitle.Paragraphs)
                     {
                         if (p.Language != null && p.Language.Equals(language, StringComparison.OrdinalIgnoreCase))
                         {
@@ -345,8 +345,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             else
             {
                 var divParentNode = div.ParentNode;
-
-                foreach (Paragraph p in subtitle.Paragraphs)
+                foreach (var p in subtitle.Paragraphs)
                 {
                     if (p.NewSection)
                     {
@@ -468,6 +467,43 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     region = "topRight";
                 }
             }
+            else
+            {
+                if (text.StartsWith("{\\an8}", StringComparison.Ordinal))
+                {
+                    var topRegions = GetRegionsTopFromHeader(xml.OuterXml);
+                    if (topRegions.Count == 1)
+                    {
+                        region = topRegions[0];
+                    }
+                    else
+                    {
+                        var topStyle = topRegions.FirstOrDefault(r => r.ToLowerInvariant() == "top");
+                        if (topStyle != null)
+                        {
+                            region = topStyle;
+                        }
+                    }
+
+                }
+                else if (text.StartsWith("{\\an2}", StringComparison.Ordinal) || !text.Contains("{\\an"))
+                {
+                    var bottomRegions = GetRegionsBottomFromHeader(xml.OuterXml);
+                    if (bottomRegions.Count == 1)
+                    {
+                        region = bottomRegions[0];
+                    }
+                    else
+                    {
+                        var bottomStyle = bottomRegions.FirstOrDefault(r => r.ToLowerInvariant() == "bottom");
+                        if (bottomStyle != null)
+                        {
+                            region = bottomStyle;
+                        }
+                    }
+                }
+            }
+
             text = Utilities.RemoveSsaTags(text);
             text = HtmlUtil.FixInvalidItalicTags(text);
 
@@ -820,10 +856,9 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                         "tts:textAlign"
                     };
 
-                    foreach (string effect in effectsToSave)
+                    foreach (var effect in effectsToSave)
                     {
-                        string value = LookupForAttribute(effect, node, nsmgr);
-
+                        var value = LookupForAttribute(effect, node, nsmgr);
                         if (!string.IsNullOrWhiteSpace(value))
                         {
                             SetEffect(p, effect, value);
@@ -831,11 +866,10 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     }
 
                     // Convert region to {\an} tag or add it to effects
-                    string region = LookupForAttribute("region", node, nsmgr);
+                    var region = LookupForAttribute("region", node, nsmgr);
                     if (!string.IsNullOrEmpty(region))
                     {
-                        bool regionCorrespondToTag = false;
-
+                        var regionCorrespondToTag = false;
                         var regionTags = new List<KeyValuePair<string, string>>
                         {
                             new KeyValuePair<string, string>("bottomLeft", "{\\an1}"),
@@ -1033,6 +1067,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             return string.Empty;
         }
 
+        private static readonly Regex _endsWithTreeDigits = new Regex(@"\d\d\d$");
         private static bool IsFrames(string timeCode)
         {
             if (timeCode.Length == 12 && (timeCode[8] == '.' || timeCode[8] == ',')) // 00:00:08.292 or 00:00:08,292
@@ -1041,6 +1076,11 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             }
 
             if (timeCode.Length == 11 && timeCode[8] == '.') // 00:00:08.12 (last part is milliseconds / 10)
+            {
+                return false;
+            }
+
+            if (_endsWithTreeDigits.IsMatch(timeCode))
             {
                 return false;
             }
@@ -1083,9 +1123,9 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 }
                 else if (child.Name == "span" || child.Name == "tt:span")
                 {
-                    bool isItalic = false;
-                    bool isBold = false;
-                    bool isUnderlined = false;
+                    var isItalic = false;
+                    var isBold = false;
+                    var isUnderlined = false;
                     string fontFamily = null;
                     string color = null;
 
@@ -1093,7 +1133,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
                     if (child.Attributes["style"] != null)
                     {
-                        string styleName = child.Attributes["style"].Value;
+                        var styleName = child.Attributes["style"].Value;
                         if (styles.Contains(styleName))
                         {
                             try
@@ -1287,7 +1327,14 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 Configuration.Settings.SubtitleSettings.TimedText10TimeCodeFormatSource = "frames";
                 return new TimeCode(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]), FramesToMillisecondsMax999(int.Parse(parts[3])));
             }
-            return new TimeCode(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]), parts.Length > 3 ? int.Parse(parts[3]) : 0);
+
+            var hours = int.Parse(parts[0]);
+            if (hours > 99)
+            {
+                hours = 0;
+            }
+
+            return new TimeCode(hours, int.Parse(parts[1]), int.Parse(parts[2]), parts.Length > 3 ? int.Parse(parts[3]) : 0);
         }
 
         public override List<string> AlternateExtensions => new List<string> { ".itt", ".dfxp", ".ttml" };
@@ -1304,6 +1351,16 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 var nsmgr = new XmlNamespaceManager(xml.NameTable);
                 nsmgr.AddNamespace("ttml", "http://www.w3.org/ns/ttml");
                 XmlNode head = xml.DocumentElement.SelectSingleNode("ttml:head", nsmgr);
+                if (head == null)
+                {
+                    head = xml.DocumentElement.SelectSingleNode("head", nsmgr);
+                }
+
+                if (head == null)
+                {
+                    return list;
+                }
+
                 foreach (XmlNode node in head.SelectNodes("//ttml:style", nsmgr))
                 {
                     if (node.Attributes["xml:id"] != null)
@@ -1318,7 +1375,9 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             }
             catch
             {
+                // Ignore
             }
+
             return list;
         }
 
@@ -1398,6 +1457,54 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             return list;
         }
 
+        public static List<string> GetRegionsBottomFromHeader(string xmlAsString)
+        {
+            var list = new List<string>();
+            var xml = new XmlDocument();
+            try
+            {
+                xml.LoadXml(xmlAsString);
+                var nsmgr = new XmlNamespaceManager(xml.NameTable);
+                nsmgr.AddNamespace("ttml", "http://www.w3.org/ns/ttml");
+                XmlNode head = xml.DocumentElement.SelectSingleNode("ttml:head", nsmgr);
+                foreach (XmlNode node in head.SelectNodes("//ttml:region", nsmgr))
+                {
+                    bool top = false;
+                    foreach (XmlNode styleNode in node.ChildNodes)
+                    {
+                        top = GetIfBottomAligned(styleNode);
+                        if (top)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!top && node.Attributes != null)
+                    {
+                        top = GetIfBottomAligned(node);
+                    }
+
+                    if (top)
+                    {
+                        if (node.Attributes["xml:id"] != null)
+                        {
+                            list.Add(node.Attributes["xml:id"].Value);
+                        }
+                        else if (node.Attributes["id"] != null)
+                        {
+                            list.Add(node.Attributes["id"].Value);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return list;
+        }
+
         private static bool GetIfTopAligned(XmlNode styleNode)
         {
             if (styleNode?.Attributes == null)
@@ -1450,6 +1557,60 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     return true;
                 }
                 else if (yPos <= 25 && displayAlign == "before") // before = top align
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool GetIfBottomAligned(XmlNode styleNode)
+        {
+            if (styleNode?.Attributes == null)
+            {
+                return false;
+            }
+
+            var origin = string.Empty;
+            if (styleNode.Attributes["tts:origin"] != null)
+            {
+                origin = styleNode.Attributes["tts:origin"].Value;
+            }
+            else if (styleNode.Attributes["origin"] != null)
+            {
+                origin = styleNode.Attributes["origin"].Value;
+            }
+
+            var originArr = origin.Split(' ');
+
+            var extent = string.Empty;
+            if (styleNode.Attributes["tts:extent"] != null)
+            {
+                extent = styleNode.Attributes["tts:extent"].Value;
+            }
+            else if (styleNode.Attributes["extent"] != null)
+            {
+                extent = styleNode.Attributes["extent"].Value;
+            }
+
+            var extentArr = extent.Split(' ');
+
+            var displayAlign = string.Empty;
+            if (styleNode.Attributes["tts:displayAlign"] != null)
+            {
+                displayAlign = styleNode.Attributes["tts:displayAlign"].Value;
+            }
+            else if (styleNode.Attributes["displayAlign"] != null)
+            {
+                displayAlign = styleNode.Attributes["displayAlign"].Value;
+            }
+
+            if (originArr.Length == 2 && originArr[0].EndsWith("%", StringComparison.Ordinal) && originArr[1].EndsWith("%", StringComparison.Ordinal) &&
+                extentArr.Length == 2 && extentArr[0].EndsWith("%", StringComparison.Ordinal) && extentArr[1].EndsWith("%", StringComparison.Ordinal) &&
+                !string.IsNullOrEmpty(displayAlign))
+            {
+                var yPos = Convert.ToDouble(originArr[1].TrimEnd('%'), CultureInfo.InvariantCulture);
+                if (yPos > 40 && displayAlign == "after")
                 {
                     return true;
                 }

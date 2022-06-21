@@ -25,7 +25,6 @@ namespace Nikse.SubtitleEdit.Forms
             columnHeaderStartTime.Text = LanguageSettings.Current.General.StartTime;
             columnHeaderText.Text = LanguageSettings.Current.General.Text;
 
-
             _subtitle = subtitle;
             foreach (var p in subtitle.Paragraphs)
             {
@@ -37,6 +36,8 @@ namespace Nikse.SubtitleEdit.Forms
                     listViewBookmarks.Items.Add(item);
                 }
             }
+
+            labelCount.Text = $"{LanguageSettings.Current.FindDialog.Count}: {listViewBookmarks.Items.Count}";
         }
 
         public int BookmarkIndex { get; private set; }
@@ -109,13 +110,13 @@ namespace Nikse.SubtitleEdit.Forms
                     sb.AppendLine(MakeParagraphCsvLine(p));
                 }
 
-                File.WriteAllText(saveDialog.FileName, sb.ToString());
+                File.WriteAllText(saveDialog.FileName, sb.ToString(), Encoding.UTF8);
             }
         }
 
         private static string MakeParagraphCsvLine(Paragraph paragraph)
         {
-            const string separator = ";";
+            const string separator = ",";
             var sb = new StringBuilder();
             sb.Append(paragraph.Number + separator);
             sb.Append(ToCsvText(paragraph.StartTime.ToDisplayString()) + separator);

@@ -15,7 +15,9 @@ using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using Nikse.SubtitleEdit.Logic.ColorChooser;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.Forms
@@ -60,6 +62,14 @@ namespace Nikse.SubtitleEdit.Forms
         private TrackBar _tbValue;
         private bool _showAlpha = true;
         private readonly Timer _hexCodeEditTimer;
+        private Panel panelC0;
+        private Panel panelC1;
+        private Panel panelC2;
+        private Panel panelC3;
+        private Panel panelC7;
+        private Panel panelC6;
+        private Panel panelC5;
+        private Panel panelC4;
         private bool _hexEditOn;
 
         public ColorChooser()
@@ -83,6 +93,15 @@ namespace Nikse.SubtitleEdit.Forms
                     CheckValidHexInput();
                 }
             };
+
+            panelC0.BackColor = Configuration.Settings.General.LastColorPickerColor;
+            panelC1.BackColor = Configuration.Settings.General.LastColorPickerColor1;
+            panelC2.BackColor = Configuration.Settings.General.LastColorPickerColor2;
+            panelC3.BackColor = Configuration.Settings.General.LastColorPickerColor3;
+            panelC4.BackColor = Configuration.Settings.General.LastColorPickerColor4;
+            panelC5.BackColor = Configuration.Settings.General.LastColorPickerColor5;
+            panelC6.BackColor = Configuration.Settings.General.LastColorPickerColor6;
+            panelC7.BackColor = Configuration.Settings.General.LastColorPickerColor7;
         }
 
         public bool ShowAlpha
@@ -185,13 +204,17 @@ namespace Nikse.SubtitleEdit.Forms
             RefreshText(_lblBlue, argb.Blue);
             RefreshText(_lblGreen, argb.Green);
             RefreshText(_lblAlpha2, argb.Alpha);
-            if (_showAlpha)
+
+            if (!_hexEditOn)
             {
-                _tbHexCode.Text = $"{argb.Alpha:X2}{argb.Red:X2}{argb.Green:X2}{argb.Blue:X2}";
-            }
-            else
-            {
-                _tbHexCode.Text = $"{argb.Red:X2}{argb.Green:X2}{argb.Blue:X2}";
+                if (_showAlpha)
+                {
+                    _tbHexCode.Text = $"{argb.Alpha:X2}{argb.Red:X2}{argb.Green:X2}{argb.Blue:X2}";
+                }
+                else
+                {
+                    _tbHexCode.Text = $"{argb.Red:X2}{argb.Green:X2}{argb.Blue:X2}";
+                }
             }
         }
 
@@ -337,6 +360,14 @@ namespace Nikse.SubtitleEdit.Forms
             this._pnlSelectedColor = new System.Windows.Forms.Panel();
             this._buttonCancel = new System.Windows.Forms.Button();
             this._buttonOk = new System.Windows.Forms.Button();
+            this.panelC0 = new System.Windows.Forms.Panel();
+            this.panelC1 = new System.Windows.Forms.Panel();
+            this.panelC2 = new System.Windows.Forms.Panel();
+            this.panelC3 = new System.Windows.Forms.Panel();
+            this.panelC7 = new System.Windows.Forms.Panel();
+            this.panelC6 = new System.Windows.Forms.Panel();
+            this.panelC5 = new System.Windows.Forms.Panel();
+            this.panelC4 = new System.Windows.Forms.Panel();
             this._flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._tbRed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._tbGreen)).BeginInit();
@@ -454,7 +485,7 @@ namespace Nikse.SubtitleEdit.Forms
             this._tbHexCode.BackColor = System.Drawing.Color.White;
             this._tbHexCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._tbHexCode.Location = new System.Drawing.Point(295, 50);
-            this._tbHexCode.MaxLength = 8;
+            this._tbHexCode.MaxLength = 9;
             this._tbHexCode.Name = "_tbHexCode";
             this._tbHexCode.ReadOnly = true;
             this._tbHexCode.Size = new System.Drawing.Size(96, 22);
@@ -463,6 +494,7 @@ namespace Nikse.SubtitleEdit.Forms
             this._tbHexCode.Enter += new System.EventHandler(this._tbHexCode_Enter);
             this._tbHexCode.Leave += new System.EventHandler(this._tbHexCode_Leave);
             this._tbHexCode.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbHexCodeMouseDown);
+            this._tbHexCode.MouseUp += new System.Windows.Forms.MouseEventHandler(this._tbHexCode_MouseUp);
             // 
             // _flowLayoutPanel1
             // 
@@ -679,10 +711,90 @@ namespace Nikse.SubtitleEdit.Forms
             this._buttonOk.UseVisualStyleBackColor = true;
             this._buttonOk.Click += new System.EventHandler(this.buttonOK_Click);
             // 
+            // panelC0
+            // 
+            this.panelC0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC0.Location = new System.Drawing.Point(295, 97);
+            this.panelC0.Name = "panelC0";
+            this.panelC0.Size = new System.Drawing.Size(21, 20);
+            this.panelC0.TabIndex = 62;
+            this.panelC0.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC0_MouseClick);
+            // 
+            // panelC1
+            // 
+            this.panelC1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC1.Location = new System.Drawing.Point(322, 97);
+            this.panelC1.Name = "panelC1";
+            this.panelC1.Size = new System.Drawing.Size(21, 20);
+            this.panelC1.TabIndex = 63;
+            this.panelC1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC1_MouseClick);
+            // 
+            // panelC2
+            // 
+            this.panelC2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC2.Location = new System.Drawing.Point(349, 97);
+            this.panelC2.Name = "panelC2";
+            this.panelC2.Size = new System.Drawing.Size(21, 20);
+            this.panelC2.TabIndex = 63;
+            this.panelC2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC2_MouseClick);
+            // 
+            // panelC3
+            // 
+            this.panelC3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC3.Location = new System.Drawing.Point(376, 97);
+            this.panelC3.Name = "panelC3";
+            this.panelC3.Size = new System.Drawing.Size(21, 20);
+            this.panelC3.TabIndex = 64;
+            this.panelC3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC3_MouseClick);
+            // 
+            // panelC7
+            // 
+            this.panelC7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC7.Location = new System.Drawing.Point(376, 124);
+            this.panelC7.Name = "panelC7";
+            this.panelC7.Size = new System.Drawing.Size(21, 20);
+            this.panelC7.TabIndex = 68;
+            this.panelC7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC7_MouseClick);
+            // 
+            // panelC6
+            // 
+            this.panelC6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC6.Location = new System.Drawing.Point(349, 124);
+            this.panelC6.Name = "panelC6";
+            this.panelC6.Size = new System.Drawing.Size(21, 20);
+            this.panelC6.TabIndex = 66;
+            this.panelC6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC6_MouseClick);
+            // 
+            // panelC5
+            // 
+            this.panelC5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC5.Location = new System.Drawing.Point(322, 124);
+            this.panelC5.Name = "panelC5";
+            this.panelC5.Size = new System.Drawing.Size(21, 20);
+            this.panelC5.TabIndex = 67;
+            this.panelC5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC5_MouseClick);
+            // 
+            // panelC4
+            // 
+            this.panelC4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelC4.Location = new System.Drawing.Point(295, 124);
+            this.panelC4.Name = "panelC4";
+            this.panelC4.Size = new System.Drawing.Size(21, 20);
+            this.panelC4.TabIndex = 65;
+            this.panelC4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelC4_MouseClick);
+            // 
             // ColorChooser
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(413, 441);
+            this.Controls.Add(this.panelC7);
+            this.Controls.Add(this.panelC3);
+            this.Controls.Add(this.panelC6);
+            this.Controls.Add(this.panelC2);
+            this.Controls.Add(this.panelC5);
+            this.Controls.Add(this.panelC4);
+            this.Controls.Add(this.panelC1);
+            this.Controls.Add(this.panelC0);
             this.Controls.Add(this._buttonCancel);
             this.Controls.Add(this._buttonOk);
             this.Controls.Add(this._label5);
@@ -724,7 +836,6 @@ namespace Nikse.SubtitleEdit.Forms
             ((System.ComponentModel.ISupportInitialize)(this._tbValue)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion Windows Form Designer generated code
@@ -739,6 +850,34 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            var colorList = new List<Color>
+            {
+                Configuration.Settings.General.LastColorPickerColor,
+                Configuration.Settings.General.LastColorPickerColor1,
+                Configuration.Settings.General.LastColorPickerColor2,
+                Configuration.Settings.General.LastColorPickerColor3,
+                Configuration.Settings.General.LastColorPickerColor4,
+                Configuration.Settings.General.LastColorPickerColor5,
+                Configuration.Settings.General.LastColorPickerColor6,
+                Configuration.Settings.General.LastColorPickerColor7,
+            };
+
+            colorList = colorList.Where(c => c != Color).ToList();
+            var random = new Random();
+            while (colorList.Count < 7)
+            {
+                colorList.Add(Color.FromArgb(random.Next(byte.MaxValue), random.Next(byte.MaxValue), random.Next(byte.MaxValue)));
+            }
+
+            Configuration.Settings.General.LastColorPickerColor = Color;
+            Configuration.Settings.General.LastColorPickerColor1 = colorList[0];
+            Configuration.Settings.General.LastColorPickerColor2 = colorList[1];
+            Configuration.Settings.General.LastColorPickerColor3 = colorList[2];
+            Configuration.Settings.General.LastColorPickerColor4 = colorList[3];
+            Configuration.Settings.General.LastColorPickerColor5 = colorList[4];
+            Configuration.Settings.General.LastColorPickerColor6 = colorList[5];
+            Configuration.Settings.General.LastColorPickerColor7 = colorList[6];
+
             DialogResult = DialogResult.OK;
         }
 
@@ -791,14 +930,18 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void CheckValidHexInput()
         {
-            var hexString = _tbHexCode.Text.Trim();
-            if (hexString.Length == 6 && !_showAlpha && IsValidHexString(hexString))
+            var hexString = _tbHexCode.Text.Trim().TrimStart('#');
+            if (hexString.Length == 6 && IsValidHexString(hexString))
             {
                 UpdateRgb("ff" + hexString);
             }
             else if (hexString.Length == 8 && _showAlpha && IsValidHexString(hexString))
             {
                 UpdateRgb(hexString);
+            }
+            else if (hexString.Length == 8 && IsValidHexString(hexString))
+            {
+                UpdateRgb("ff" + hexString.Remove(0, 2));
             }
             else
             {
@@ -816,7 +959,7 @@ namespace Nikse.SubtitleEdit.Forms
             HandleRgbScroll(null, null);
         }
 
-        private bool IsValidHexString(string hexString)
+        private static bool IsValidHexString(string hexString)
         {
             if (hexString.Length % 2 != 0)
             {
@@ -832,6 +975,62 @@ namespace Nikse.SubtitleEdit.Forms
             }
 
             return true;
+        }
+
+        private void panelC0_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC0.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void panelC1_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC1.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void panelC2_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC2.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void panelC3_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC3.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void panelC4_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC4.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void panelC5_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC5.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void panelC6_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC6.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void panelC7_MouseClick(object sender, MouseEventArgs e)
+        {
+            var c = panelC7.BackColor;
+            UpdateRgb($"{c.A:x2}{c.R:x2}{c.G:x2}{c.B:x2}");
+        }
+
+        private void _tbHexCode_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (_hexEditOn)
+            {
+                CheckValidHexInput();
+            }
         }
     }
 }

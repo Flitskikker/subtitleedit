@@ -11,13 +11,14 @@ namespace Nikse.SubtitleEdit.Forms
     public sealed partial class DownloadFfmpeg : Form
     {
         public string FFmpegPath { get; internal set; }
+        public bool AutoClose { get; internal set; }
 
         public DownloadFfmpeg()
         {
             UiUtil.PreInitialize(this);
             InitializeComponent();
             UiUtil.FixFonts(this);
-            Text = LanguageSettings.Current.SettingsFfmpeg.Title;
+            Text = string.Format(LanguageSettings.Current.Settings.DownloadX, "FFmpeg");
             buttonOK.Text = LanguageSettings.Current.General.Ok;
             buttonCancel.Text = LanguageSettings.Current.General.Cancel;
             UiUtil.FixLargeFonts(this, buttonOK);
@@ -106,6 +107,13 @@ namespace Nikse.SubtitleEdit.Forms
 
             Cursor = Cursors.Default;
             labelPleaseWait.Text = string.Empty;
+
+            if (AutoClose)
+            {
+                DialogResult = DialogResult.OK;
+                return;
+            }
+
             buttonOK.Enabled = true;
             labelPleaseWait.Text = string.Format(LanguageSettings.Current.SettingsFfmpeg.XDownloadOk, "ffmpeg");
         }

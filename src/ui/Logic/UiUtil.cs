@@ -47,6 +47,12 @@ namespace Nikse.SubtitleEdit.Logic
                 return info;
             }
 
+            info = TryReadVideoInfoViaLibMpv(fileName);
+            if (info.Success)
+            {
+                return info;
+            }
+
             return new VideoInfo { VideoCodec = "Unknown" };
         }
 
@@ -55,10 +61,15 @@ namespace Nikse.SubtitleEdit.Logic
             return QuartsPlayer.GetVideoInfo(fileName);
         }
 
+        private static VideoInfo TryReadVideoInfoViaLibMpv(string fileName)
+        {
+            return LibMpvDynamic.GetVideoInfo(fileName);
+        }
+
         private static long _lastShowSubTicks = DateTime.UtcNow.Ticks;
         private static int _lastShowSubHash;
 
-        public static int ShowSubtitle(Subtitle subtitle, VideoPlayerContainer videoPlayerContainer)
+        public static int ShowSubtitle(Subtitle subtitle, VideoPlayerContainer videoPlayerContainer, SubtitleFormat format)
         {
             if (videoPlayerContainer.VideoPlayer == null)
             {
@@ -78,13 +89,13 @@ namespace Nikse.SubtitleEdit.Logic
                     {
                         if (videoPlayerContainer.LastParagraph != p)
                         {
-                            videoPlayerContainer.SetSubtitleText(text, p, subtitle);
+                            videoPlayerContainer.SetSubtitleText(text, p, subtitle, format);
                         }
                         else if (videoPlayerContainer.SubtitleText != text)
                         {
-                            videoPlayerContainer.SetSubtitleText(text, p, subtitle);
+                            videoPlayerContainer.SetSubtitleText(text, p, subtitle, format);
                         }
-                        TimeOutRefresh(subtitle, videoPlayerContainer, p);
+                        TimeOutRefresh(subtitle, videoPlayerContainer, format, p);
                         return i;
                     }
                 }
@@ -92,23 +103,23 @@ namespace Nikse.SubtitleEdit.Logic
 
             if (!string.IsNullOrEmpty(videoPlayerContainer.SubtitleText))
             {
-                videoPlayerContainer.SetSubtitleText(string.Empty, null, subtitle);
+                videoPlayerContainer.SetSubtitleText(string.Empty, null, subtitle, format);
             }
             else
             {
-                TimeOutRefresh(subtitle, videoPlayerContainer);
+                TimeOutRefresh(subtitle, videoPlayerContainer, format);
             }
             return -1;
         }
 
-        private static void TimeOutRefresh(Subtitle subtitle, VideoPlayerContainer videoPlayerContainer, Paragraph p = null)
+        private static void TimeOutRefresh(Subtitle subtitle, VideoPlayerContainer videoPlayerContainer, SubtitleFormat format, Paragraph p = null)
         {
             if (DateTime.UtcNow.Ticks - _lastShowSubTicks > 10000 * 1000) // more than 1+ seconds ago
             {
                 var newHash = subtitle.GetFastHashCode(string.Empty);
                 if (newHash != _lastShowSubHash)
                 {
-                    videoPlayerContainer.SetSubtitleText(p == null ? string.Empty : p.Text, p, subtitle);
+                    videoPlayerContainer.SetSubtitleText(p == null ? string.Empty : p.Text, p, subtitle, format);
                     _lastShowSubHash = newHash;
                 }
 
@@ -116,7 +127,7 @@ namespace Nikse.SubtitleEdit.Logic
             }
         }
 
-        public static int ShowSubtitle(Subtitle subtitle, Subtitle original, VideoPlayerContainer videoPlayerContainer)
+        public static int ShowSubtitle(Subtitle subtitle, Subtitle original, VideoPlayerContainer videoPlayerContainer, SubtitleFormat format)
         {
             if (videoPlayerContainer.VideoPlayer == null)
             {
@@ -142,7 +153,7 @@ namespace Nikse.SubtitleEdit.Logic
                     {
                         if (videoPlayerContainer.LastParagraph != p || videoPlayerContainer.SubtitleText != text)
                         {
-                            videoPlayerContainer.SetSubtitleText(text, p, subtitle);
+                            videoPlayerContainer.SetSubtitleText(text, p, subtitle, format);
                         }
                         return i;
                     }
@@ -150,7 +161,7 @@ namespace Nikse.SubtitleEdit.Logic
             }
             if (!string.IsNullOrEmpty(videoPlayerContainer.SubtitleText))
             {
-                videoPlayerContainer.SetSubtitleText(string.Empty, null, subtitle);
+                videoPlayerContainer.SetSubtitleText(string.Empty, null, subtitle, format);
             }
             return -1;
         }
@@ -493,7 +504,11 @@ namespace Nikse.SubtitleEdit.Logic
                         control.Font = new Font(gs.SubtitleFontName, gs.SubtitleListViewFontSize);
                     }
                 }
-                else if (control is SETextBox || control is TextBox)
+                else if (control is SETextBox seTextBox)
+                {
+                    seTextBox.UpdateFontAndColors(seTextBox);
+                }
+                else if (control is TextBox)
                 {
                     if (gs.SubtitleTextBoxFontBold)
                     {
@@ -670,9 +685,9 @@ namespace Nikse.SubtitleEdit.Logic
 
         public static void FixLargeFonts(Control mainCtrl, Control ctrl)
         {
-            using (Graphics graphics = mainCtrl.CreateGraphics())
+            using (var graphics = mainCtrl.CreateGraphics())
             {
-                SizeF textSize = graphics.MeasureString(ctrl.Text, ctrl.Font);
+                var textSize = graphics.MeasureString(ctrl.Text, ctrl.Font);
                 if (textSize.Height > ctrl.Height - 4)
                 {
                     SetButtonHeight(mainCtrl, (int)Math.Round(textSize.Height + 7.5), 1);
@@ -683,7 +698,7 @@ namespace Nikse.SubtitleEdit.Logic
         public static void SetSaveDialogFilter(SaveFileDialog saveFileDialog, SubtitleFormat currentFormat)
         {
             var sb = new StringBuilder();
-            int index = 0;
+            var index = 0;
             foreach (SubtitleFormat format in SubtitleFormat.AllSubtitleFormats)
             {
                 sb.Append(format.Name + "|*" + format.Extension + "|");
@@ -702,9 +717,9 @@ namespace Nikse.SubtitleEdit.Logic
             var lines = text.SplitToLines();
             const int max = 3;
             var sb = new StringBuilder();
-            for (int i = 0; i < lines.Count; i++)
+            for (var i = 0; i < lines.Count; i++)
             {
-                string line = lines[i];
+                var line = lines[i];
                 if (i > 0)
                 {
                     sb.Append('/');
@@ -717,8 +732,9 @@ namespace Nikse.SubtitleEdit.Logic
                     return;
                 }
 
-                sb.Append(line.CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics));
-                if (line.CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics) > Configuration.Settings.General.SubtitleLineMaximumLength || i >= Configuration.Settings.General.MaxNumberOfLines)
+                var count = line.CountCharacters(false);
+                sb.Append(count);
+                if (count > Configuration.Settings.General.SubtitleLineMaximumLength || i >= Configuration.Settings.General.MaxNumberOfLines)
                 {
                     label.ForeColor = Color.Red;
                 }
@@ -732,9 +748,9 @@ namespace Nikse.SubtitleEdit.Logic
             var lines = text.SplitToLines();
             const int max = 3;
             var sb = new StringBuilder();
-            for (int i = 0; i < lines.Count; i++)
+            for (var i = 0; i < lines.Count; i++)
             {
-                string line = lines[i];
+                var line = lines[i];
                 if (i > 0)
                 {
                     sb.Append('/');
@@ -747,13 +763,14 @@ namespace Nikse.SubtitleEdit.Logic
                     return;
                 }
 
-                int lineWidth = TextWidth.CalcPixelWidth(line);
+                var lineWidth = TextWidth.CalcPixelWidth(line);
                 sb.Append(lineWidth);
                 if (lineWidth > Configuration.Settings.General.SubtitleLineMaximumPixelWidth)
                 {
                     label.ForeColor = Color.Red;
                 }
             }
+
             label.Text = sb.ToString();
         }
 
@@ -1117,6 +1134,7 @@ namespace Nikse.SubtitleEdit.Logic
             AddExtension(sb, new IsmtDfxp().Extension);
             AddExtension(sb, new PlayCaptionsFreeEditor().Extension);
             AddExtension(sb, ".cdg"); // karaoke
+            AddExtension(sb, ".pns"); // karaoke
 
             if (!string.IsNullOrEmpty(Configuration.Settings.General.OpenSubtitleExtraExtensions))
             {
@@ -1132,6 +1150,8 @@ namespace Nikse.SubtitleEdit.Logic
             AddExtension(sb, ".son");
             AddExtension(sb, ".mts");
             AddExtension(sb, ".m2ts");
+            AddExtension(sb, ".m4s");
+            AddExtension(sb, ".se-job");
 
             sb.Append('|');
             sb.Append(LanguageSettings.Current.General.AllFiles);
@@ -1160,25 +1180,14 @@ namespace Nikse.SubtitleEdit.Logic
 
         public static void SelectFirstSelectedItemOnly(this ListView lv)
         {
-            int itemsCount = lv.SelectedItems.Count - 1;
-            if (itemsCount > 0)
+            if (lv.SelectedIndices.Count > 1)
             {
+                var first = lv.SelectedIndices[0];
                 lv.BeginUpdate();
-                do
-                {
-                    lv.SelectedItems[itemsCount--].Selected = false;
-                }
-                while (itemsCount > 0);
-                if (lv.SelectedItems.Count > 0)
-                {
-                    lv.EnsureVisible(lv.SelectedItems[0].Index);
-                    lv.FocusedItem = lv.SelectedItems[0];
-                }
-                else if (lv.Items.Count > 0)
-                {
-                    lv.EnsureVisible(0);
-                    lv.FocusedItem = lv.Items[0];
-                }
+                lv.SelectedIndices.Clear();
+                lv.EnsureVisible(first);
+                lv.FocusedItem = lv.Items[first];
+                lv.Items[first].Selected = true;
                 lv.EndUpdate();
             }
         }
@@ -1269,7 +1278,12 @@ namespace Nikse.SubtitleEdit.Logic
             {
                 if (Configuration.IsRunningOnWindows || Configuration.IsRunningOnMac)
                 {
-                    Process.Start(item);
+                    var startInfo = new ProcessStartInfo(item)
+                    {
+                        UseShellExecute = true
+                    };
+
+                    Process.Start(startInfo);
                 }
                 else if (Configuration.IsRunningOnLinux)
                 {
@@ -1353,11 +1367,25 @@ namespace Nikse.SubtitleEdit.Logic
                     return LanguageSettings.Current.Settings.ContinuationStyleLeadingTrailingEllipsis;
                 case ContinuationStyle.NoneEllipsisForPauses:
                     return LanguageSettings.Current.Settings.ContinuationStyleNoneTrailingEllipsis;
+                case ContinuationStyle.OnlyTrailingEllipsis:
+                    return LanguageSettings.Current.Settings.ContinuationStyleOnlyTrailingEllipsis;
                 default:
                     return LanguageSettings.Current.Settings.ContinuationStyleNone;
             }
         }
 
         public static string DecimalSeparator => CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+        public static Control FindFocusedControl(Control control)
+        {
+            var container = control as ContainerControl;
+            while (container != null)
+            {
+                control = container.ActiveControl;
+                container = control as ContainerControl;
+            }
+
+            return control;
+        }
     }
 }

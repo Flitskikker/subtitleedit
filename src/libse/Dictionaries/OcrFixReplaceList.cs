@@ -30,6 +30,8 @@ namespace Nikse.SubtitleEdit.Core.Dictionaries
 
         private const string ReplaceListFileNamePostFix = "_OCRFixReplaceList.xml";
 
+        public string ErrorMessage { get; set; }
+
         public OcrFixReplaceList(string replaceListXmlFileName)
         {
             _replaceListXmlFileName = replaceListXmlFileName;
@@ -355,7 +357,7 @@ namespace Nikse.SubtitleEdit.Core.Dictionaries
             return newText;
         }
 
-        private List<Regex> _replaceRegExes = null;
+        private List<Regex> _replaceRegExes;
 
         private static void AddToGuessList(List<string> list, string guess)
         {
@@ -994,9 +996,10 @@ namespace Nikse.SubtitleEdit.Core.Dictionaries
                 {
                     doc.Load(_replaceListXmlFileName);
                 }
-                catch
+                catch (Exception exception)
                 {
                     doc.LoadXml(xmlText);
+                    ErrorMessage = $"Unable to load ocr replace list {_replaceListXmlFileName}: " + exception.Message;
                 }
             }
             else
@@ -1018,9 +1021,10 @@ namespace Nikse.SubtitleEdit.Core.Dictionaries
                 {
                     doc.Load(ReplaceListXmlFileNameUser);
                 }
-                catch
+                catch (Exception exception)
                 {
                     doc.LoadXml(xmlText);
+                    ErrorMessage = $"Unable to load ocr replace list {ReplaceListXmlFileNameUser}: " + exception.Message;
                 }
             }
             else
@@ -1059,35 +1063,24 @@ namespace Nikse.SubtitleEdit.Core.Dictionaries
         {
             const string replaceListName = "WholeWords";
 
-            var doc = LoadXmlReplaceListDocument();
-            var list = LoadReplaceList(doc, replaceListName);
-
             var userDoc = LoadXmlReplaceListUserDocument();
             var userList = LoadReplaceList(userDoc, replaceListName);
 
-            return SaveToList(fromWord, toWord, userDoc, replaceListName, "Word", list, userList);
+            return SaveToList(fromWord, toWord, userDoc, replaceListName, "Word", userList);
         }
 
         private bool SavePartialLineToWordList(string fromWord, string toWord)
         {
             const string replaceListName = "PartialLines";
 
-            var doc = LoadXmlReplaceListDocument();
-            var list = LoadReplaceList(doc, replaceListName);
-
             var userDoc = LoadXmlReplaceListUserDocument();
             var userList = LoadReplaceList(userDoc, replaceListName);
 
-            return SaveToList(fromWord, toWord, userDoc, replaceListName, "LinePart", list, userList);
+            return SaveToList(fromWord, toWord, userDoc, replaceListName, "LinePart", userList);
         }
 
-        private bool SaveToList(string fromWord, string toWord, XmlDocument userDoc, string replaceListName, string elementName, Dictionary<string, string> dictionary, Dictionary<string, string> userDictionary)
+        private bool SaveToList(string fromWord, string toWord, XmlDocument userDoc, string replaceListName, string elementName, Dictionary<string, string> userDictionary)
         {
-            if (dictionary == null)
-            {
-                throw new ArgumentNullException(nameof(dictionary));
-            }
-
             if (userDictionary == null)
             {
                 throw new ArgumentNullException(nameof(userDictionary));
@@ -1100,20 +1093,24 @@ namespace Nikse.SubtitleEdit.Core.Dictionaries
 
             userDictionary.Add(fromWord, toWord);
             XmlNode wholeWordsNode = userDoc.DocumentElement?.SelectSingleNode(replaceListName);
-            if (wholeWordsNode != null)
+
+            if (wholeWordsNode == null)
             {
-                XmlNode newNode = userDoc.CreateNode(XmlNodeType.Element, elementName, null);
-                XmlAttribute aFrom = userDoc.CreateAttribute("from");
-                XmlAttribute aTo = userDoc.CreateAttribute("to");
-                aTo.InnerText = toWord;
-                aFrom.InnerText = fromWord;
-                if (newNode.Attributes != null)
-                {
-                    newNode.Attributes.Append(aFrom);
-                    newNode.Attributes.Append(aTo);
-                    wholeWordsNode.AppendChild(newNode);
-                    userDoc.Save(ReplaceListXmlFileNameUser);
-                }
+                wholeWordsNode = userDoc.CreateElement(replaceListName);
+                userDoc.DocumentElement?.AppendChild(wholeWordsNode);
+            }
+
+            XmlNode newNode = userDoc.CreateNode(XmlNodeType.Element, elementName, null);
+            XmlAttribute aFrom = userDoc.CreateAttribute("from");
+            XmlAttribute aTo = userDoc.CreateAttribute("to");
+            aTo.InnerText = toWord;
+            aFrom.InnerText = fromWord;
+            if (newNode.Attributes != null)
+            {
+                newNode.Attributes.Append(aFrom);
+                newNode.Attributes.Append(aTo);
+                wholeWordsNode.AppendChild(newNode);
+                userDoc.Save(ReplaceListXmlFileNameUser);
             }
 
             return true;

@@ -40,9 +40,16 @@ namespace Nikse.SubtitleEdit.Forms
             buttonSearchFolder.Text = l.ScanFolder;
             checkBoxScanFolderRecursive.Text = l.Recursive;
             checkBoxScanFolderRecursive.Left = buttonSearchFolder.Left - checkBoxScanFolderRecursive.Width - 5;
-            checkBoxGenerateSceneChanges.Text = LanguageSettings.Current.ImportSceneChanges.GetSceneChangesWithFfmpeg;
-            checkBoxGenerateSceneChanges.Left = groupBoxInput.Left + listViewInputFiles.Width - checkBoxGenerateSceneChanges.Width;
-            checkBoxGenerateSceneChanges.Visible = !string.IsNullOrWhiteSpace(Configuration.Settings.General.FFmpegLocation) && File.Exists(Configuration.Settings.General.FFmpegLocation);
+            checkBoxGenerateShotChanges.Text = LanguageSettings.Current.ImportShotChanges.GetShotChangesWithFfmpeg;
+            checkBoxGenerateShotChanges.Left = groupBoxInput.Left + listViewInputFiles.Width - checkBoxGenerateShotChanges.Width;
+            checkBoxGenerateShotChanges.Visible = !Configuration.IsRunningOnWindows ||
+                                                   (!string.IsNullOrWhiteSpace(Configuration.Settings.General.FFmpegLocation) &&
+                                                    File.Exists(Configuration.Settings.General.FFmpegLocation));
+            if (checkBoxGenerateShotChanges.Visible)
+            {
+                checkBoxGenerateShotChanges.Checked = Configuration.Settings.VideoControls.GenerateSpectrogram;
+            }
+
             removeToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.Remove;
             removeAllToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.RemoveAll;
             UiUtil.FixLargeFonts(this, buttonDone);
@@ -67,7 +74,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             var idx = listViewInputFiles.SelectedIndices[0];
             listViewInputFiles.BeginUpdate();
-            for (int i = listViewInputFiles.SelectedIndices.Count - 1; i >= 0; i--)
+            for (var i = listViewInputFiles.SelectedIndices.Count - 1; i >= 0; i--)
             {
                 listViewInputFiles.Items.RemoveAt(listViewInputFiles.SelectedIndices[i]);
             }
@@ -91,7 +98,7 @@ namespace Nikse.SubtitleEdit.Forms
             openFileDialog1.Multiselect = true;
             if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
             {
-                foreach (string fileName in openFileDialog1.FileNames)
+                foreach (var fileName in openFileDialog1.FileNames.OrderBy(Path.GetFileName))
                 {
                     AddInputFile(fileName);
                 }
@@ -143,26 +150,28 @@ namespace Nikse.SubtitleEdit.Forms
                 folderBrowserDialog1.SelectedPath = Configuration.Settings.Tools.WaveformBatchLastFolder;
             }
 
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            if (folderBrowserDialog1.ShowDialog() != DialogResult.OK)
             {
-                listViewInputFiles.BeginUpdate();
-                buttonRipWave.Enabled = false;
-                progressBar1.Style = ProgressBarStyle.Marquee;
-                progressBar1.Visible = true;
-                buttonInputBrowse.Enabled = false;
-                buttonSearchFolder.Enabled = false;
-                _abort = false;
-
-                SearchFolder(folderBrowserDialog1.SelectedPath);
-
-                buttonRipWave.Enabled = true;
-                progressBar1.Style = ProgressBarStyle.Continuous;
-                progressBar1.Visible = true;
-                buttonInputBrowse.Enabled = true;
-                buttonSearchFolder.Enabled = true;
-                listViewInputFiles.EndUpdate();
-                Configuration.Settings.Tools.WaveformBatchLastFolder = folderBrowserDialog1.SelectedPath;
+                return;
             }
+
+            listViewInputFiles.BeginUpdate();
+            buttonRipWave.Enabled = false;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            progressBar1.Visible = true;
+            buttonInputBrowse.Enabled = false;
+            buttonSearchFolder.Enabled = false;
+            _abort = false;
+
+            SearchFolder(folderBrowserDialog1.SelectedPath);
+
+            buttonRipWave.Enabled = true;
+            progressBar1.Style = ProgressBarStyle.Continuous;
+            progressBar1.Visible = true;
+            buttonInputBrowse.Enabled = true;
+            buttonSearchFolder.Enabled = true;
+            listViewInputFiles.EndUpdate();
+            Configuration.Settings.Tools.WaveformBatchLastFolder = folderBrowserDialog1.SelectedPath;
         }
 
         private void SearchFolder(string path)
@@ -179,11 +188,11 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void ScanFiles(IEnumerable<string> fileNames)
         {
-            foreach (string fileName in fileNames)
+            foreach (var fileName in fileNames.OrderBy(Path.GetFileName))
             {
                 try
                 {
-                    string ext = Path.GetExtension(fileName);
+                    var ext = Path.GetExtension(fileName);
                     if (ext != null && (Utilities.VideoFileExtensions.Contains(ext.ToLowerInvariant()) || Utilities.AudioFileExtensions.Contains(ext.ToLowerInvariant())))
                     {
                         var fi = new FileInfo(fileName);
@@ -195,6 +204,7 @@ namespace Nikse.SubtitleEdit.Forms
                         {
                             AddFromSearch(fileName, fi, ext.Remove(0, 1));
                         }
+
                         progressBar1.Refresh();
                         Application.DoEvents();
                         if (_abort)
@@ -231,6 +241,7 @@ namespace Nikse.SubtitleEdit.Forms
                 MessageBox.Show(LanguageSettings.Current.BatchConvert.NothingToConvert);
                 return;
             }
+
             _converting = true;
             buttonRipWave.Enabled = false;
             progressBar1.Style = ProgressBarStyle.Blocks;
@@ -248,20 +259,22 @@ namespace Nikse.SubtitleEdit.Forms
 
             listViewInputFiles.EndUpdate();
             Refresh();
-            int index = 0;
+            var index = 0;
             while (index < listViewInputFiles.Items.Count && _abort == false)
             {
                 var item = listViewInputFiles.Items[index];
-                Action<string> updateStatus = status =>
+
+                void UpdateStatus(string status)
                 {
                     item.SubItems[3].Text = status;
                     Refresh();
-                };
-                updateStatus(LanguageSettings.Current.AddWaveformBatch.ExtractingAudio);
-                string fileName = item.Text;
+                }
+
+                UpdateStatus(LanguageSettings.Current.AddWaveformBatch.ExtractingAudio);
+                var fileName = item.Text;
                 try
                 {
-                    string targetFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".wav");
+                    var targetFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".wav");
                     Process process;
                     try
                     {
@@ -270,15 +283,37 @@ namespace Nikse.SubtitleEdit.Forms
                     }
                     catch (DllNotFoundException)
                     {
-                        if (MessageBox.Show(LanguageSettings.Current.AddWaveform.VlcMediaPlayerNotFound + Environment.NewLine +
-                                            Environment.NewLine + LanguageSettings.Current.AddWaveform.GoToVlcMediaPlayerHomePage,
-                                            LanguageSettings.Current.AddWaveform.VlcMediaPlayerNotFoundTitle,
-                                            MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        var isFfmpegAvailable = !string.IsNullOrEmpty(Configuration.Settings.General.FFmpegLocation) && File.Exists(Configuration.Settings.General.FFmpegLocation);
+                        if (isFfmpegAvailable)
                         {
-                            UiUtil.OpenUrl("http://www.videolan.org/");
+                            Configuration.Settings.General.UseFFmpegForWaveExtraction = true;
+                            process = AddWaveform.GetCommandLineProcess(fileName, -1, targetFile, Configuration.Settings.General.VlcWaveTranscodeSettings, out var encoderName);
+                            labelInfo.Text = encoderName;
                         }
-                        buttonRipWave.Enabled = true;
-                        return;
+                        else
+                        {
+                            if (MessageBox.Show(LanguageSettings.Current.AddWaveform.FfmpegNotFound, "Subtitle Edit", MessageBoxButtons.YesNoCancel) != DialogResult.Yes)
+                            {
+                                buttonRipWave.Enabled = true;
+                                return;
+                            }
+
+                            using (var form = new DownloadFfmpeg())
+                            {
+                                if (form.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(form.FFmpegPath))
+                                {
+                                    Configuration.Settings.General.FFmpegLocation = form.FFmpegPath;
+                                    Configuration.Settings.General.UseFFmpegForWaveExtraction = true;
+                                    process = AddWaveform.GetCommandLineProcess(fileName, -1, targetFile, Configuration.Settings.General.VlcWaveTranscodeSettings, out var encoderName);
+                                    labelInfo.Text = encoderName;
+                                }
+                                else
+                                {
+                                    buttonRipWave.Enabled = true;
+                                    return;
+                                }
+                            }
+                        }
                     }
 
                     process.Start();
@@ -328,12 +363,12 @@ namespace Nikse.SubtitleEdit.Forms
                         }
                     }
 
-                    updateStatus(LanguageSettings.Current.AddWaveformBatch.Calculating);
+                    UpdateStatus(LanguageSettings.Current.AddWaveformBatch.Calculating);
                     MakeWaveformAndSpectrogram(fileName, targetFile, _delayInMilliseconds);
 
-                    if (checkBoxGenerateSceneChanges.Visible && checkBoxGenerateSceneChanges.Checked)
+                    if (checkBoxGenerateShotChanges.Visible && checkBoxGenerateShotChanges.Checked)
                     {
-                        GenerateSceneChanges(fileName);
+                        GenerateShotChanges(fileName);
                     }
 
                     // cleanup
@@ -348,13 +383,13 @@ namespace Nikse.SubtitleEdit.Forms
 
                     IncrementAndShowProgress();
 
-                    updateStatus(LanguageSettings.Current.AddWaveformBatch.Done);
+                    UpdateStatus(LanguageSettings.Current.AddWaveformBatch.Done);
                 }
                 catch
                 {
                     IncrementAndShowProgress();
 
-                    updateStatus(LanguageSettings.Current.AddWaveformBatch.Error);
+                    UpdateStatus(LanguageSettings.Current.AddWaveformBatch.Error);
                 }
                 index++;
             }
@@ -368,15 +403,15 @@ namespace Nikse.SubtitleEdit.Forms
             buttonSearchFolder.Enabled = true;
         }
 
-        private void GenerateSceneChanges(string videoFileName)
+        private void GenerateShotChanges(string videoFileName)
         {
-            var sceneChangesGenerator = new SceneChangesGenerator();
+            var shotChangesGenerator = new ShotChangesGenerator();
             var threshold = 0.4m;
             if (decimal.TryParse(Configuration.Settings.General.FFmpegSceneThreshold, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var d))
             {
                 threshold = d;
             }
-            using (var process = sceneChangesGenerator.GetProcess(videoFileName, threshold))
+            using (var process = shotChangesGenerator.GetProcess(videoFileName, threshold))
             {
                 while (!process.HasExited)
                 {
@@ -390,10 +425,10 @@ namespace Nikse.SubtitleEdit.Forms
                     }
                 }
             }
-            var seconds = SceneChangesGenerator.GetSeconds(sceneChangesGenerator.GetTimeCodesString().SplitToLines().ToArray());
+            var seconds = ShotChangesGenerator.GetSeconds(shotChangesGenerator.GetTimeCodesString().SplitToLines().ToArray());
             if (seconds.Count > 0)
             {
-                SceneChangeHelper.SaveSceneChanges(videoFileName, seconds);
+                ShotChangeHelper.SaveShotChanges(videoFileName, seconds);
             }
         }
 
@@ -402,7 +437,6 @@ namespace Nikse.SubtitleEdit.Forms
             using (var waveFile = new WavePeakGenerator(targetFile))
             {
                 waveFile.GeneratePeaks(delayInMilliseconds, WavePeakGenerator.GetPeakWaveFileName(videoFileName));
-
                 if (Configuration.Settings.VideoControls.GenerateSpectrogram)
                 {
                     waveFile.GenerateSpectrogram(delayInMilliseconds, WavePeakGenerator.SpectrogramDrawer.GetSpectrogramFolder(videoFileName));
@@ -472,7 +506,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             var fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
             listViewInputFiles.BeginUpdate();
-            foreach (string fileName in fileNames)
+            foreach (var fileName in fileNames.OrderBy(Path.GetFileName))
             {
                 if (File.Exists(fileName))
                 {

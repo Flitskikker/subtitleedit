@@ -297,7 +297,73 @@ namespace Nikse.SubtitleEdit.Core.Common
             "všeč", "videti", "stanovanje", "službo", "prosim", "naredila", "moram", "domov", "Vrzi", "Povej", "številko", "zaporu",
             "ugrabila", "ubila", "tvoja", "tudi", "tečna", "stvari", "rusko", "povedala", "obraz", "nalogo", "mislim", "govoriš",
             "Seveda", "Razmišljam", "Potem", "Nič", "Nisem", "Mogoče", "žensko", "žalostna", "človek", "Čisto", "znaš",
-            "zlomi", "zgodilo", "zdaj", "zajtrk", "utrujena","ustrelila", "srečna", "čarovnik", "zaživeti"
+            "zlomi", "zgodilo", "zdaj", "zajtrk", "utrujena","ustrelila", "srečna", "čarovnik", "zaživeti",
+            "Torej", "plasti","kanjon", "več", "prišlo", "presenečeni", "največje"
+        };
+
+        private static readonly string[] AutoDetectWordsIcelandic =
+        {
+            "við",
+            "Það",
+            "með",
+            "Hvað",
+            "fyrir",
+            "hvað",
+            "verður",
+            "segja",
+            "þessu",
+            "hérna",
+            "maður",
+            "Mér",
+            "Guð",
+            "þið",
+            "svona",
+            "okkur",
+            "þau",
+            "sé",
+            "núna",
+            "hefur",
+            "hafa",
+            "eða",
+            "þegar",
+            "þarna",
+            "verð",
+            "veist",
+            "ætla",
+            "okkar",
+            "barnið",
+            "eitthvað",
+            "ólétt",
+            "væri",
+            "sagði",
+            "Því",
+            "ykkur",
+            "annað",
+            "Frábært",
+            "Þakka",
+            "góður",
+            "Gerðu",
+            "Fyrirgefðu",
+            "verða",
+            "kvöld",
+            "alvöru",
+            "Veistu",
+            "Kannski",
+            "Einmitt",
+            "verðum",
+            "líður",
+            "höfum",
+            "hugmynd",
+            "Heyrðu",
+            "skrýtið",
+            "stefnumót",
+            "skeið",
+            "síðan",
+            "hingað",
+            "ótrúlegt",
+            "Þekkirðu",
+            "spýtustrákur",
+            "miðskóla",
         };
 
         private static readonly string[] AutoDetectWordsLatvian =
@@ -330,10 +396,10 @@ namespace Nikse.SubtitleEdit.Core.Common
 
         private static string AutoDetectGoogleLanguage(string text, int bestCount)
         {
-            int count = GetCount(text, AutoDetectWordsEnglish);
+            var count = GetCount(text, AutoDetectWordsEnglish);
             if (count > bestCount)
             {
-                int dutchCount = GetCount(text, AutoDetectWordsDutch);
+                var dutchCount = GetCount(text, AutoDetectWordsDutch);
                 if (dutchCount < count)
                 {
                     return "en";
@@ -343,11 +409,17 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsDanish);
             if (count > bestCount)
             {
-                int norwegianCount = GetCount(text, "ut", "deg", "meg", "merkelig", "mye", "spørre");
-                int dutchCount = GetCount(text, AutoDetectWordsDutch);
-                int swedishCount = GetCount(text, AutoDetectWordsSwedish);
+                var norwegianCount = GetCount(text, "ut", "deg", "meg", "merkelig", "mye", "spørre");
+                var dutchCount = GetCount(text, AutoDetectWordsDutch);
+                var swedishCount = GetCount(text, AutoDetectWordsSwedish);
+                var icelandicCount = GetCount(text, AutoDetectWordsIcelandic);
                 if (norwegianCount < 2 && dutchCount < count && swedishCount < count)
                 {
+                    if (icelandicCount > count * 1.5)
+                    {
+                        return "is";
+                    }
+
                     return "da";
                 }
             }
@@ -355,9 +427,9 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsNorwegian);
             if (count > bestCount)
             {
-                int danishCount = GetCount(text, "siger", "dig", "mig", "mærkelig", "tilbage", "spørge");
-                int dutchCount = GetCount(text, AutoDetectWordsDutch);
-                int swedishCount = GetCount(text, AutoDetectWordsSwedish);
+                var danishCount = GetCount(text, "siger", "dig", "mig", "mærkelig", "tilbage", "spørge");
+                var dutchCount = GetCount(text, AutoDetectWordsDutch);
+                var swedishCount = GetCount(text, AutoDetectWordsSwedish);
                 if (danishCount < 2 && dutchCount < count && swedishCount < count)
                 {
                     return "no";
@@ -373,8 +445,8 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsSpanish);
             if (count > bestCount)
             {
-                int frenchCount = GetCount(text, "[Cc]'est", "pas", "vous", "pour", "suis", "Pourquoi", "maison", "souviens", "quelque"); // not spanish words
-                int portugueseCount = GetCount(text, "[NnCc]ão", "Então", "h?ouve", "pessoal", "rapariga", "tivesse", "fizeste",
+                var frenchCount = GetCount(text, "[Cc]'est", "pas", "vous", "pour", "suis", "Pourquoi", "maison", "souviens", "quelque"); // not spanish words
+                var portugueseCount = GetCount(text, "[NnCc]ão", "Então", "h?ouve", "pessoal", "rapariga", "tivesse", "fizeste",
                                                      "jantar", "conheço", "atenção", "foste", "milhões", "devias", "ganhar", "raios"); // not spanish words
                 if (frenchCount < 2 && portugueseCount < 2)
                 {
@@ -385,7 +457,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsItalian);
             if (count > bestCount)
             {
-                int frenchCount = GetCount(text, "[Cc]'est", "pas", "vous", "pour", "suis", "Pourquoi", "maison", "souviens", "quelque"); // not italian words
+                var frenchCount = GetCount(text, "[Cc]'est", "pas", "vous", "pour", "suis", "Pourquoi", "maison", "souviens", "quelque"); // not italian words
                 if (frenchCount < 2)
                 {
                     return "it";
@@ -395,7 +467,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsFrench);
             if (count > bestCount)
             {
-                int romanianCount = GetCount(text, "[Vv]reau", "[Ss]înt", "[Aa]cum", "pentru", "domnule", "aici");
+                var romanianCount = GetCount(text, "[Vv]reau", "[Ss]înt", "[Aa]cum", "pentru", "domnule", "aici");
                 if (romanianCount < 5)
                 {
                     return "fr";
@@ -477,8 +549,8 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsArabic);
             if (count > bestCount)
             {
-                int hebrewCount = GetCount(text, AutoDetectWordsHebrew);
-                int farsiCount = GetCount(text, AutoDetectWordsFarsi);
+                var hebrewCount = GetCount(text, AutoDetectWordsHebrew);
+                var farsiCount = GetCount(text, AutoDetectWordsFarsi);
                 if (hebrewCount < count && farsiCount < count)
                 {
                     return "ar"; // Arabic
@@ -500,8 +572,8 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsCroatianAndSerbian);
             if (count > bestCount)
             {
-                int croatianCount = GetCount(text, AutoDetectWordsCroatian);
-                int serbianCount = GetCount(text, AutoDetectWordsSerbian);
+                var croatianCount = GetCount(text, AutoDetectWordsCroatian);
+                var serbianCount = GetCount(text, AutoDetectWordsSerbian);
                 var slovenianCount = GetCount(text, AutoDetectWordsSlovenian);
                 if (croatianCount > serbianCount)
                 {
@@ -647,6 +719,12 @@ namespace Nikse.SubtitleEdit.Core.Common
                 return "mk";
             }
 
+            count = GetCount(text, AutoDetectWordsIcelandic);
+            if (count > bestCount)
+            {
+                return "is";
+            }
+
             return string.Empty;
         }
 
@@ -658,10 +736,10 @@ namespace Nikse.SubtitleEdit.Core.Common
         public static string AutoDetectGoogleLanguage(Subtitle subtitle, int maxNumberOfSubtitlesToCheck)
         {
             const int averageLength = 40;
-            int max = subtitle.Paragraphs.Count;
+            var max = subtitle.Paragraphs.Count;
             var sb = new StringBuilder(max * averageLength);
-            int index = 0;
-            int emptyLines = 0;
+            var index = 0;
+            var emptyLines = 0;
             while (index < max && index < maxNumberOfSubtitlesToCheck + emptyLines)
             {
                 var text = subtitle.Paragraphs[index].Text;
@@ -697,7 +775,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             var s = new Subtitle(subtitle);
             s.RemoveEmptyLines();
             var allText = s.GetAllTexts(500000);
-            string languageId = AutoDetectGoogleLanguage(allText, s.Paragraphs.Count / 14);
+            var languageId = AutoDetectGoogleLanguage(allText, s.Paragraphs.Count / 14);
             if (string.IsNullOrEmpty(languageId))
             {
                 languageId = GetEncodingViaLetter(allText);
@@ -717,16 +795,16 @@ namespace Nikse.SubtitleEdit.Core.Common
                 languageName = "en_US";
             }
 
-            int bestCount = subtitle.Paragraphs.Count / 14;
+            var bestCount = subtitle.Paragraphs.Count / 14;
 
-            string text = subtitle.GetAllTexts();
-            List<string> dictionaryNames = Utilities.GetDictionaryLanguages();
+            var text = subtitle.GetAllTexts();
+            var dictionaryNames = Utilities.GetDictionaryLanguages();
 
-            bool containsEnGb = false;
-            bool containsEnUs = false;
-            bool containsHrHr = false;
-            bool containsSrLatn = false;
-            foreach (string name in dictionaryNames)
+            var containsEnGb = false;
+            var containsEnUs = false;
+            var containsHrHr = false;
+            var containsSrLatn = false;
+            foreach (var name in dictionaryNames)
             {
                 if (name.Contains("[en_GB]"))
                 {
@@ -749,11 +827,11 @@ namespace Nikse.SubtitleEdit.Core.Common
                 }
             }
 
-            foreach (string name in dictionaryNames)
+            foreach (var name in dictionaryNames)
             {
-                string shortName = string.Empty;
-                int start = name.IndexOf('[');
-                int end = name.IndexOf(']');
+                var shortName = string.Empty;
+                var start = name.IndexOf('[');
+                var end = name.IndexOf(']');
                 if (start >= 0 && end > start)
                 {
                     start++;
@@ -1144,6 +1222,15 @@ namespace Nikse.SubtitleEdit.Core.Common
                             bestCount = count;
                         }
                         break;
+                    case "is_is": // Icelandic
+                    case "is":    // Icelandic (Neutral)
+                        count = GetCount(text, AutoDetectWordsIcelandic);
+                        if (count > bestCount)
+                        {
+                            languageName = shortName;
+                            bestCount = count;
+                        }
+                        break;
                 }
             }
             return languageName;
@@ -1242,11 +1329,11 @@ namespace Nikse.SubtitleEdit.Core.Common
                 }
 
                 var spanishCount1252 = GetCount(textEnc1252, AutoDetectWordsSpanish);
-                if (textEnc1252.Contains('¡'))
+                if (textEnc1252.IndexOf('¡') >= 0)
                 {
                     spanishCount1252 += 5;
                 }
-                if (textEnc1252.Contains('¿'))
+                if (textEnc1252.IndexOf('¿') >= 0)
                 {
                     spanishCount1252 += 5;
                 }
@@ -1502,6 +1589,9 @@ namespace Nikse.SubtitleEdit.Core.Common
             return false;
         }
 
+        public static string KoreanLetters = "가나다라마바사아자차카타파하아야어여오요우유으이대한민국활화산동물들천국의섬유독춤을춥니다";
+        public static string JapaneseLetters = "あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをん";
+
         public static string GetEncodingViaLetter(string text)
         {
             var dictionary = new Dictionary<string, int>();
@@ -1519,7 +1609,7 @@ namespace Nikse.SubtitleEdit.Core.Common
 
             // Korean
             count = 0;
-            foreach (var letter in "가나다라마바사아자차카타파하아야어여오요우유으이")
+            foreach (var letter in KoreanLetters)
             {
                 if (text.Contains(letter))
                 {
@@ -1530,7 +1620,7 @@ namespace Nikse.SubtitleEdit.Core.Common
 
             // Japanese
             count = 0;
-            foreach (var letter in "あいうえおかきくけこがぎぐげごさしすせそざじずぜぞたちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽまみむめもやゆよらりるれろわをん")
+            foreach (var letter in JapaneseLetters)
             {
                 if (text.Contains(letter))
                 {

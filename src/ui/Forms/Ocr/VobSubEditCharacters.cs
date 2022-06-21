@@ -33,11 +33,11 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
                 }
 
                 const int makeHigher = 40;
-                labelImageCompareFiles.Top = labelImageCompareFiles.Top - makeHigher;
-                listBoxFileNames.Top = listBoxFileNames.Top - makeHigher;
-                listBoxFileNames.Height = listBoxFileNames.Height + makeHigher;
-                groupBoxCurrentCompareImage.Top = groupBoxCurrentCompareImage.Top - makeHigher;
-                groupBoxCurrentCompareImage.Height = groupBoxCurrentCompareImage.Height + makeHigher;
+                labelImageCompareFiles.Top -= makeHigher;
+                listBoxFileNames.Top -= makeHigher;
+                listBoxFileNames.Height += makeHigher;
+                groupBoxCurrentCompareImage.Top -= makeHigher;
+                groupBoxCurrentCompareImage.Height += makeHigher;
             }
 
             labelImageInfo.Text = string.Empty;
@@ -348,6 +348,11 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             {
                 DialogResult = DialogResult.Cancel;
             }
+            else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.I)
+            {
+                checkBoxItalic.Checked = !checkBoxItalic.Checked;
+                e.SuppressKeyPress = true;
+            }
         }
 
         private void ButtonUpdateClick(object sender, EventArgs e)
@@ -535,8 +540,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             DialogResult result = saveFileDialog1.ShowDialog(this);
             if (result == DialogResult.OK)
             {
-                Bitmap bmp = pictureBox1.Image as Bitmap;
-                if (bmp == null)
+                if (!(pictureBox1.Image is Bitmap bmp))
                 {
                     MessageBox.Show("No image!");
                     return;

@@ -2,7 +2,7 @@
 <Language Name="Norsk">
   <General>
     <Title>Subtitle Edit</Title>
-    <Version>3.6.2</Version>
+    <Version>3.6.6</Version>
     <TranslatedBy>Oversatt av Dandelion Sprout</TranslatedBy>
     <CultureName>nb-NO</CultureName>
     <HelpFile />
@@ -104,9 +104,6 @@ E-post for norsk oversettelse: mailto:imreeil42@gmail.com</AboutText1>
     <SourceVideoFile>Video-kildefil:</SourceVideoFile>
     <GenerateWaveformData>Generer bølgevisningsdata</GenerateWaveformData>
     <PleaseWait>Dette kan ta noen minutter — vennligst vent</PleaseWait>
-    <VlcMediaPlayerNotFoundTitle>VLC Media Player ble ikke funnet</VlcMediaPlayerNotFoundTitle>
-    <VlcMediaPlayerNotFound>Subtitle Edit trenger VLC Media Player 1.1.x eller nyere for å ekstraktere lyddata.</VlcMediaPlayerNotFound>
-    <GoToVlcMediaPlayerHomePage>Vil du gå til hjemmesiden til VLC Media Player?</GoToVlcMediaPlayerHomePage>
     <GeneratingPeakFile>Genererer satsvis fil...</GeneratingPeakFile>
     <GeneratingSpectrogram>Genererer spektrogram...</GeneratingSpectrogram>
     <ExtractingSeconds>Ekstrakterer lyd: {0:0.0} seconds</ExtractingSeconds>
@@ -669,7 +666,7 @@ Tips: Se om du har noe plass igjen på harddisken.</WaveFileMalformed>
     <Remove>Fjern</Remove>
     <RemoveAll>Fjern alle</RemoveAll>
   </ImportImages>
-  <ImportSceneChanges>
+  <ImportShotChanges>
     <Title>Importer sceneendringer</Title>
     <OpenTextFile>Åpne tekstfil...</OpenTextFile>
     <ImportOptions>Importer alternativer</ImportOptions>
@@ -678,7 +675,7 @@ Tips: Se om du har noe plass igjen på harddisken.</WaveFileMalformed>
     <Frames>Bilder</Frames>
     <Seconds>Sekunder</Seconds>
     <Milliseconds>Millisekunder</Milliseconds>
-  </ImportSceneChanges>
+  </ImportShotChanges>
   <ImportText>
     <Title>Importer ren tekst</Title>
     <OneSubtitleIsOneFile>Multiple files - one file is one subtitle</OneSubtitleIsOneFile>
@@ -974,8 +971,8 @@ Tips: Se om du har noe plass igjen på harddisken.</WaveFileMalformed>
         <OpenDvd>Åpne DVD...</OpenDvd>
         <ChooseAudioTrack>Velg lydspor</ChooseAudioTrack>
         <CloseVideo>Lukk videofil</CloseVideo>
-        <ImportSceneChanges>Importer sceneendringer...</ImportSceneChanges>
-        <RemoveSceneChanges>Fjern sceneendringer</RemoveSceneChanges>
+        <ImportShotChanges>Importer sceneendringer...</ImportShotChanges>
+        <RemoveShotChanges>Fjern sceneendringer</RemoveShotChanges>
         <WaveformBatchGenerate>Satsvis generering av bølgevisninger...</WaveformBatchGenerate>
         <ShowHideVideo>Vis/skjul video</ShowHideVideo>
         <ShowHideWaveform>Vis/skjul bølgevisning</ShowHideWaveform>
@@ -1398,7 +1395,7 @@ Vil du fortsette?</SubtitleAppendPrompt>
     <BeforeDisplaySubtitleJoin>Før sammenslåing av undertekster</BeforeDisplaySubtitleJoin>
     <SubtitlesJoined>Undertekster slått sammen</SubtitlesJoined>
     <StatusLog>Statuslogg</StatusLog>
-    <XSceneChangesImported>{0} sceneendringer importert</XSceneChangesImported>
+    <XShotChangesImported>{0} sceneendringer importert</XShotChangesImported>
     <PluginXExecuted>Plugin '{0}' er satt i gang.</PluginXExecuted>
     <NotAValidXSubFile>Dette er ikke en gyldig XSub-fil!</NotAValidXSubFile>
     <BeforeMergeLinesWithSameText>Før sammenslåing av linjer med samme tekst</BeforeMergeLinesWithSameText>

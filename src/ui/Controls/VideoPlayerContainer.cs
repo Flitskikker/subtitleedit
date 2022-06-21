@@ -201,7 +201,6 @@ namespace Nikse.SubtitleEdit.Controls
         public VideoPlayerContainer()
         {
             _chapters = new List<MatroskaChapter>();
-            SmpteMode = false;
             FontSizeFactor = 1.0F;
             BorderStyle = BorderStyle.None;
             _resources = new System.ComponentModel.ComponentResourceManager(typeof(VideoPlayerContainer));
@@ -370,7 +369,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public Paragraph LastParagraph { get; set; }
 
-        public void SetSubtitleText(string text, Paragraph p, Subtitle subtitle)
+        public void SetSubtitleText(string text, Paragraph p, Subtitle subtitle, SubtitleFormat format)
         {
             var mpv = VideoPlayer as LibMpvDynamic;
             LastParagraph = p;
@@ -382,7 +381,7 @@ namespace Nikse.SubtitleEdit.Controls
                     VideoPlayerContainerResize(null, null);
                 }
                 _subtitleText = text;
-                RefreshMpv(mpv, subtitle);
+                RefreshMpv(mpv, subtitle, format);
                 if (TextBox.Text.Length > 0)
                 {
                     TextBox.Text = string.Empty;
@@ -441,7 +440,7 @@ namespace Nikse.SubtitleEdit.Controls
         private int _mpvSubOldHash = -1;
         private string _mpvTextFileName;
         private int _retryCount = 3;
-        private void RefreshMpv(LibMpvDynamic mpv, Subtitle subtitle)
+        private void RefreshMpv(LibMpvDynamic mpv, Subtitle subtitle, SubtitleFormat uiFormat)
         {
             if (subtitle == null)
             {
@@ -450,9 +449,9 @@ namespace Nikse.SubtitleEdit.Controls
 
             try
             {
+                subtitle = new Subtitle(subtitle, false);
                 if (SmpteMode)
                 {
-                    subtitle = new Subtitle(subtitle, false);
                     foreach (var paragraph in subtitle.Paragraphs)
                     {
                         paragraph.StartTime.TotalMilliseconds *= 1.001;
@@ -469,11 +468,10 @@ namespace Nikse.SubtitleEdit.Controls
                 }
                 else
                 {
-                    if (subtitle.Header == null || !subtitle.Header.Contains("[V4+ Styles]"))
+                    if (subtitle.Header == null || !subtitle.Header.Contains("[V4+ Styles]") || uiFormat.Name != AdvancedSubStationAlpha.NameOfFormat)
                     {
                         if (subtitle.Header != null && subtitle.Header.Contains("[V4 Styles]"))
                         {
-                            subtitle = new Subtitle(subtitle, false);
                             subtitle.Header = AdvancedSubStationAlpha.GetHeaderAndStylesFromSubStationAlpha(subtitle.Header);
                         }
 
@@ -570,232 +568,7 @@ namespace Nikse.SubtitleEdit.Controls
             set
             {
                 _subtitleText = value;
-
-                bool alignLeft = _subtitleText.StartsWith("{\\a1}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\a5}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\a9}", StringComparison.Ordinal) || // sub station alpha
-                                 _subtitleText.StartsWith("{\\an1}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\an4}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\an7}", StringComparison.Ordinal); // advanced sub station alpha
-
-                bool alignRight = _subtitleText.StartsWith("{\\a3}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\a7}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\a11}", StringComparison.Ordinal) || // sub station alpha
-                                  _subtitleText.StartsWith("{\\an3}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\an6}", StringComparison.Ordinal) || _subtitleText.StartsWith("{\\an9}", StringComparison.Ordinal); // advanced sub station alpha
-
-                // remove styles for display text (except italic)
-                string text = Utilities.RemoveSsaTags(_subtitleText);
-                text = text.Replace("<b></b>", string.Empty);
-                text = text.Replace("<i></i>", string.Empty);
-                text = text.Replace("<u></u>", string.Empty);
-
-                // display italic
-                var sb = new StringBuilder();
-                int i = 0;
-                bool isItalic = false;
-                bool isBold = false;
-                bool isUnderline = false;
-                bool isFontColor = false;
-                int fontColorBegin = 0;
-                TextBox.Text = string.Empty;
-                int letterCount = 0;
-                var fontColorLookups = new Dictionary<Point, Color>();
-                var styleLookups = new Dictionary<int, FontStyle>(text.Length);
-                for (int j = 0; j < text.Length; j++)
-                {
-                    styleLookups.Add(j, Configuration.Settings.General.VideoPlayerPreviewFontBold ? FontStyle.Bold : FontStyle.Regular);
-                }
-
-                Color fontColor = Color.White;
-                while (i < text.Length)
-                {
-                    if (text.Substring(i).StartsWith("<i>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        TextBox.AppendText(sb.ToString());
-                        sb.Clear();
-                        isItalic = true;
-                        i += 2;
-                    }
-                    else if (isItalic && text.Substring(i).StartsWith("</i>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        TextBox.AppendText(sb.ToString());
-                        sb.Clear();
-                        isItalic = false;
-                        i += 3;
-                    }
-                    else if (text.Substring(i).StartsWith("<b>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (!Configuration.Settings.General.VideoPlayerPreviewFontBold)
-                        {
-                            TextBox.AppendText(sb.ToString());
-                            sb.Clear();
-                            isBold = true;
-                        }
-                        i += 2;
-                    }
-                    else if (isBold && text.Substring(i).StartsWith("</b>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (!Configuration.Settings.General.VideoPlayerPreviewFontBold)
-                        {
-                            TextBox.AppendText(sb.ToString());
-                            sb.Clear();
-                            isBold = false;
-                        }
-                        i += 3;
-                    }
-                    else if (Configuration.Settings.General.VideoPlayerPreviewFontBold && text.Substring(i).StartsWith("</b>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        i += 3;
-                    }
-                    else if (text.Substring(i).StartsWith("<u>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        TextBox.AppendText(sb.ToString());
-                        sb.Clear();
-                        isUnderline = true;
-                        i += 2;
-                    }
-                    else if (isUnderline && text.Substring(i).StartsWith("</u>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        TextBox.AppendText(sb.ToString());
-                        sb.Clear();
-                        isUnderline = false;
-                        i += 3;
-                    }
-                    else if (text.Substring(i).StartsWith("<font ", StringComparison.OrdinalIgnoreCase))
-                    {
-                        string s = text.Substring(i);
-                        bool fontFound = false;
-                        int end = s.IndexOf('>');
-                        if (end > 0)
-                        {
-                            string f = s.Substring(0, end);
-                            int colorStart = f.IndexOf(" color=", StringComparison.OrdinalIgnoreCase);
-
-                            if (colorStart > 0)
-                            {
-                                int colorEnd = colorStart + " color=".Length + 1;
-                                if (colorEnd < f.Length)
-                                {
-                                    colorEnd = f.IndexOf('"', colorEnd);
-                                    if (colorEnd > 0 || colorEnd == -1)
-                                    {
-                                        if (colorEnd == -1)
-                                        {
-                                            s = f.Substring(colorStart);
-                                        }
-                                        else
-                                        {
-                                            s = f.Substring(colorStart, colorEnd - colorStart);
-                                        }
-
-                                        s = s.Remove(0, " color=".Length);
-                                        s = s.Trim('"');
-                                        s = s.Trim('\'');
-                                        try
-                                        {
-                                            fontColor = ColorTranslator.FromHtml(s);
-                                            fontFound = true;
-                                        }
-                                        catch
-                                        {
-                                            fontFound = false;
-                                            if (s.Length > 0)
-                                            {
-                                                try
-                                                {
-                                                    fontColor = ColorTranslator.FromHtml("#" + s);
-                                                    fontFound = true;
-                                                }
-                                                catch
-                                                {
-                                                    fontFound = false;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            i += end;
-                        }
-                        if (fontFound)
-                        {
-                            TextBox.AppendText(sb.ToString());
-                            sb.Clear();
-                            isFontColor = true;
-                            fontColorBegin = letterCount;
-                        }
-                    }
-                    else if (isFontColor && text.Substring(i).StartsWith("</font>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        fontColorLookups.Add(new Point(fontColorBegin, TextBox.Text.Length + sb.ToString().Length - fontColorBegin), fontColor);
-                        TextBox.AppendText(sb.ToString());
-                        sb.Clear();
-                        isFontColor = false;
-                        i += 6;
-                    }
-                    else if (text.Substring(i).StartsWith("</font>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        i += 6;
-                    }
-                    else if (text[i] == '\n') // RichTextBox only count NewLine as one character!
-                    {
-                        sb.Append(text[i]);
-                    }
-                    else if (text[i] == '\r')
-                    {
-                        // skip carriage return (0xd / 13)
-                    }
-                    else
-                    {
-                        var idx = TextBox.TextLength + sb.Length;
-                        if (isBold)
-                        {
-                            styleLookups[idx] |= FontStyle.Bold;
-                        }
-
-                        if (isItalic)
-                        {
-                            styleLookups[idx] |= FontStyle.Italic;
-                        }
-
-                        if (isUnderline)
-                        {
-                            styleLookups[idx] |= FontStyle.Underline;
-                        }
-
-                        sb.Append(text[i]);
-                        letterCount++;
-                    }
-                    i++;
-                }
-                TextBox.Text += sb.ToString();
-                TextBox.SelectAll();
-
-                if (alignLeft)
-                {
-                    TextBox.SelectionAlignment = HorizontalAlignment.Left;
-                }
-                else if (alignRight)
-                {
-                    TextBox.SelectionAlignment = HorizontalAlignment.Right;
-                }
-                else
-                {
-                    TextBox.SelectionAlignment = HorizontalAlignment.Center;
-                }
-
-                TextBox.DeselectAll();
-
-                Font currentFont = TextBox.SelectionFont;
-                for (int k = 0; k < TextBox.TextLength; k++)
-                {
-                    TextBox.SelectionStart = k;
-                    TextBox.SelectionLength = 1;
-                    TextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, styleLookups[k]);
-                    TextBox.DeselectAll();
-                }
-
-                foreach (var entry in fontColorLookups)
-                {
-                    TextBox.SelectionStart = entry.Key.X;
-                    TextBox.SelectionLength = entry.Key.Y;
-                    TextBox.SelectionColor = entry.Value;
-                    TextBox.DeselectAll();
-                }
+                SetRtbHtml.SetText(TextBox, value);
             }
         }
 
@@ -1856,7 +1629,7 @@ namespace Nikse.SubtitleEdit.Controls
         /// See https://blog.frame.io/2017/07/17/timecode-and-frame-rates/ and
         ///     https://backlothelp.netflix.com/hc/en-us/articles/215131928-How-do-I-know-whether-to-select-SMPTE-or-MEDIA-for-a-timing-reference-
         /// </summary>
-        public bool SmpteMode { get; set; }
+        public bool SmpteMode => Configuration.Settings.General.CurrentVideoIsSmpte;
 
         public void RefreshProgressBar()
         {
@@ -1901,13 +1674,13 @@ namespace Nikse.SubtitleEdit.Controls
 
         private void SetVolumeBarPosition(int mouseX)
         {
-            int max = _pictureBoxVolumeBarBackground.Width - 18;
+            var max = _pictureBoxVolumeBarBackground.Width - 18;
             if (mouseX > max)
             {
                 mouseX = max;
             }
 
-            double percent = (mouseX * 100.0) / max;
+            var percent = (mouseX * 100.0) / max;
             _pictureBoxVolumeBar.Width = (int)(max * percent / 100.0);
             if (_videoPlayer != null)
             {
@@ -1935,11 +1708,14 @@ namespace Nikse.SubtitleEdit.Controls
             if (VideoPlayer == null)
             {
                 _pictureBoxVolumeBar.Width = 0;
+                _labelVolume.Text = "0%";
             }
             else
             {
-                int max = _pictureBoxVolumeBarBackground.Width - 18;
-                _pictureBoxVolumeBar.Width = (int)(max * Volume / 100.0);
+                var v = Volume;
+                var max = _pictureBoxVolumeBarBackground.Width - 18;
+                _pictureBoxVolumeBar.Width = (int)(max * v / 100.0);
+                _labelVolume.Text = v + "%";
             }
         }
 
@@ -2132,7 +1908,6 @@ namespace Nikse.SubtitleEdit.Controls
             DeleteTempMpvFileName();
             base.Dispose(disposing);
             _retryCount = 3;
-            SmpteMode = false;
         }
 
         public void PauseAndDisposePlayer()
@@ -2156,7 +1931,6 @@ namespace Nikse.SubtitleEdit.Controls
 
             DeleteTempMpvFileName();
             _retryCount = 3;
-            SmpteMode = false;
             RefreshProgressBar();
         }
 

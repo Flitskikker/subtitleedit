@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\ILRepack.2.0.18\build\ILRepack.props" Condition="Exists('..\..packages\ILRepack.2.0.18\build\ILRepack.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -20,7 +19,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -62,8 +61,11 @@
       <HintPath>DLLs\Interop.QuartzTypeLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ncalc.1.3.8\lib\NCalc.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHunspell, Version=1.2.5554.16953, Culture=neutral, PublicKeyToken=1ac793ea843b4366, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NHunspell.1.2.5554.16953\lib\net\NHunspell.dll</HintPath>
@@ -83,6 +85,15 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Vosk, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Vosk.0.3.38\lib\netstandard2.0\Vosk.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Document.NET, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DocX.2.2.0\lib\net40\Xceed.Document.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Words.NET, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DocX.2.2.0\lib\net40\Xceed.Words.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\CuesPreviewView.cs">
@@ -130,11 +141,23 @@
     <Compile Include="Forms\Assa\AssaProgressBar.Designer.cs">
       <DependentUpon>AssaProgressBar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Assa\AssaProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Assa\AssaProperties.Designer.cs">
+      <DependentUpon>AssaProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Assa\ResolutionResampler.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Assa\ResolutionResampler.Designer.cs">
       <DependentUpon>ResolutionResampler.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Assa\AssSetBackground.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Assa\AssSetBackground.Designer.cs">
+      <DependentUpon>AssSetBackground.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Assa\SetPosition.cs">
       <SubType>Form</SubType>
@@ -165,6 +188,12 @@
     </Compile>
     <Compile Include="Forms\Assa\TagHistory.Designer.cs">
       <DependentUpon>TagHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AudioToText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AudioToText.Designer.cs">
+      <DependentUpon>AudioToText.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\BatchConvertMkvEnding.cs">
       <SubType>Form</SubType>
@@ -238,11 +267,41 @@
     <Compile Include="Forms\AddWaveformBatch.Designer.cs">
       <DependentUpon>AddWaveformBatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AudioToText.cs">
+    <Compile Include="Forms\AudioToTextModelDownload.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AudioToText.Designer.cs">
-      <DependentUpon>AudioToText.cs</DependentUpon>
+    <Compile Include="Forms\AudioToTextModelDownload.Designer.cs">
+      <DependentUpon>AudioToTextModelDownload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DownloadVosk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DownloadVosk.Designer.cs">
+      <DependentUpon>DownloadVosk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Ocr\WordSplitDictionaryGenerator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Ocr\WordSplitDictionaryGenerator.Designer.cs">
+      <DependentUpon>WordSplitDictionaryGenerator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ShotChangesList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ShotChangesList.Designer.cs">
+      <DependentUpon>ShotChangesList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DownloadYouTubeDl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DownloadYouTubeDl.Designer.cs">
+      <DependentUpon>DownloadYouTubeDl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ErrorsGoTo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ErrorsGoTo.Designer.cs">
+      <DependentUpon>ErrorsGoTo.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\BookmarksGoTo.cs">
       <SubType>Form</SubType>
@@ -370,17 +429,41 @@
     <Compile Include="Forms\Assa\ChooseAssaFontName.Designer.cs">
       <DependentUpon>ChooseAssaFontName.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Styles\SubStationAlphaStylesCategoriesImportExport.cs">
+    <Compile Include="Forms\Assa\SubStationAlphaStylesCategoriesImportExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Styles\SubStationAlphaStylesCategoriesImportExport.Designer.cs">
+    <Compile Include="Forms\Assa\SubStationAlphaStylesCategoriesImportExport.Designer.cs">
       <DependentUpon>SubStationAlphaStylesCategoriesImportExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Styles\SubStationAlphaStylesCategoriesManager.cs">
+    <Compile Include="Forms\Assa\SubStationAlphaStylesCategoriesManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Styles\SubStationAlphaStylesCategoriesManager.Designer.cs">
+    <Compile Include="Forms\Assa\SubStationAlphaStylesCategoriesManager.Designer.cs">
       <DependentUpon>SubStationAlphaStylesCategoriesManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ShotChanges\AdjustTimingViaShotChanges.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ShotChanges\AdjustTimingViaShotChanges.Designer.cs">
+      <DependentUpon>AdjustTimingViaShotChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SeJobs\SeJobExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SeJobs\SeJobExport.Designer.cs">
+      <DependentUpon>SeJobExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TimedTextPropertiesItunes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TimedTextPropertiesItunes.Designer.cs">
+      <DependentUpon>TimedTextPropertiesItunes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TimedTextSmpteTiming.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TimedTextSmpteTiming.Designer.cs">
+      <DependentUpon>TimedTextSmpteTiming.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Translate\GenericTranslate.cs">
       <SubType>Form</SubType>
@@ -412,11 +495,11 @@
     <Compile Include="Forms\NetflixFixErrors.Designer.cs">
       <DependentUpon>NetflixFixErrors.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Ocr\AddBeterMultiMatch.cs">
+    <Compile Include="Forms\Ocr\AddBetterMultiMatch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Ocr\AddBeterMultiMatch.Designer.cs">
-      <DependentUpon>AddBeterMultiMatch.cs</DependentUpon>
+    <Compile Include="Forms\Ocr\AddBetterMultiMatch.Designer.cs">
+      <DependentUpon>AddBetterMultiMatch.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Ocr\AddBetterMultiMatchNOcr.cs">
       <SubType>Form</SubType>
@@ -580,11 +663,11 @@
     <Compile Include="Forms\ImportImages.Designer.cs">
       <DependentUpon>ImportImages.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ImportSceneChanges.cs">
+    <Compile Include="Forms\ShotChanges\ImportShotChanges.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ImportSceneChanges.Designer.cs">
-      <DependentUpon>ImportSceneChanges.cs</DependentUpon>
+    <Compile Include="Forms\ShotChanges\ImportShotChanges.Designer.cs">
+      <DependentUpon>ImportShotChanges.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ImportUnknownFormat.cs">
       <SubType>Form</SubType>
@@ -1060,11 +1143,18 @@
     <Compile Include="Forms\Styles\TimedTextStyles.Designer.cs">
       <DependentUpon>TimedTextStyles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Translate\SplitHelper.cs" />
     <Compile Include="Forms\Translate\TranslateBlock.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Translate\TranslateBlock.Designer.cs">
       <DependentUpon>TranslateBlock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Translate\TranslateExportImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Translate\TranslateExportImport.Designer.cs">
+      <DependentUpon>TranslateExportImport.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Translate\TranslateViaCopyPaste.cs">
       <SubType>Form</SubType>
@@ -1221,15 +1311,19 @@
     <Compile Include="Logic\CommandLineConvert\TsToBdnXml.cs" />
     <Compile Include="Logic\CommandLineConvert\TsConvert.cs" />
     <Compile Include="Logic\CommandLineConvert\TsToBluRaySup.cs" />
+    <Compile Include="Logic\CpsLineLength.cs" />
     <Compile Include="Logic\CurrentLanguage.cs" />
     <Compile Include="Logic\DarkTheme.cs" />
+    <Compile Include="Logic\FileTypeAssociations.cs" />
     <Compile Include="Logic\FindReplaceDialogHelper.cs" />
     <Compile Include="Logic\Language.cs" />
     <Compile Include="Logic\LanguageDeserializer.cs" />
     <Compile Include="Logic\LanguageStructure.cs" />
     <Compile Include="Logic\Networking\SeNetworkService.cs" />
     <Compile Include="Logic\TimeCodesGenerator.cs" />
-    <Compile Include="Logic\SceneChangesGenerator.cs" />
+    <Compile Include="Logic\PathHelper.cs" />
+    <Compile Include="Logic\ReplaceAllHelper.cs" />
+    <Compile Include="Logic\ShotChangesGenerator.cs" />
     <Compile Include="Logic\ListViewSorter.cs" />
     <Compile Include="Logic\NativeMethods.cs" />
     <Compile Include="Logic\NikseBitmapImageSplitter.cs" />
@@ -1258,6 +1352,12 @@
     <Compile Include="Logic\Ocr\Tesseract\TesseractMultiRunner.cs" />
     <Compile Include="Logic\RtfTextConverterRichTextBox.cs" />
     <Compile Include="Logic\MainShortcuts.cs" />
+    <Compile Include="Logic\SeJob\SeJobHandler.cs" />
+    <Compile Include="Logic\SeJob\SeJobBookmark.cs" />
+    <Compile Include="Logic\SeJob\SeJobModel.cs" />
+    <Compile Include="Logic\SeJob\SeJobRules.cs" />
+    <Compile Include="Logic\SeJob\SeJobWaveform.cs" />
+    <Compile Include="Logic\SetRtbHtml.cs" />
     <Compile Include="Logic\SpellCheck\Hunspell.cs" />
     <Compile Include="Logic\SpellCheck\LinuxHunspell.cs" />
     <Compile Include="Logic\SpellCheck\MacHunspell.cs" />
@@ -1317,8 +1417,14 @@
     <EmbeddedResource Include="Forms\Assa\AssaProgressBar.resx">
       <DependentUpon>AssaProgressBar.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Assa\AssaProperties.resx">
+      <DependentUpon>AssaProperties.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Assa\ResolutionResampler.resx">
       <DependentUpon>ResolutionResampler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Assa\AssSetBackground.resx">
+      <DependentUpon>AssSetBackground.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Assa\SetPosition.resx">
       <DependentUpon>SetPosition.cs</DependentUpon>
@@ -1334,6 +1440,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Assa\TagHistory.resx">
       <DependentUpon>TagHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AudioToText.resx">
+      <DependentUpon>AudioToText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BatchConvertMkvEnding.resx">
       <DependentUpon>BatchConvertMkvEnding.cs</DependentUpon>
@@ -1371,8 +1480,23 @@
     <EmbeddedResource Include="Forms\AddWaveformBatch.resx">
       <DependentUpon>AddWaveformBatch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AudioToText.resx">
-      <DependentUpon>AudioToText.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\AudioToTextModelDownload.resx">
+      <DependentUpon>AudioToTextModelDownload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DownloadVosk.resx">
+      <DependentUpon>DownloadVosk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Ocr\WordSplitDictionaryGenerator.resx">
+      <DependentUpon>WordSplitDictionaryGenerator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ShotChangesList.resx">
+      <DependentUpon>ShotChangesList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DownloadYouTubeDl.resx">
+      <DependentUpon>DownloadYouTubeDl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ErrorsGoTo.resx">
+      <DependentUpon>ErrorsGoTo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BookmarksGoTo.resx">
       <DependentUpon>BookmarksGoTo.cs</DependentUpon>
@@ -1438,11 +1562,23 @@
     <EmbeddedResource Include="Forms\Assa\ChooseAssaFontName.resx">
       <DependentUpon>ChooseAssaFontName.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Styles\SubStationAlphaStylesCategoriesImportExport.resx">
+    <EmbeddedResource Include="Forms\Assa\SubStationAlphaStylesCategoriesImportExport.resx">
       <DependentUpon>SubStationAlphaStylesCategoriesImportExport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Styles\SubStationAlphaStylesCategoriesManager.resx">
+    <EmbeddedResource Include="Forms\Assa\SubStationAlphaStylesCategoriesManager.resx">
       <DependentUpon>SubStationAlphaStylesCategoriesManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SeJobs\SeJobExport.resx">
+      <DependentUpon>SeJobExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ShotChanges\AdjustTimingViaShotChanges.resx">
+      <DependentUpon>AdjustTimingViaShotChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TimedTextPropertiesItunes.resx">
+      <DependentUpon>TimedTextPropertiesItunes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TimedTextSmpteTiming.resx">
+      <DependentUpon>TimedTextSmpteTiming.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Translate\GenericTranslate.resx">
       <DependentUpon>GenericTranslate.cs</DependentUpon>
@@ -1460,8 +1596,8 @@
     <EmbeddedResource Include="Forms\NetflixFixErrors.resx">
       <DependentUpon>NetflixFixErrors.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Ocr\AddBeterMultiMatch.resx">
-      <DependentUpon>AddBeterMultiMatch.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Ocr\AddBetterMultiMatch.resx">
+      <DependentUpon>AddBetterMultiMatch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Ocr\AddBetterMultiMatchNOcr.resx">
       <DependentUpon>AddBetterMultiMatchNOcr.cs</DependentUpon>
@@ -1536,8 +1672,8 @@
     <EmbeddedResource Include="Forms\ImportImages.resx">
       <DependentUpon>ImportImages.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImportSceneChanges.resx">
-      <DependentUpon>ImportSceneChanges.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ShotChanges\ImportShotChanges.resx">
+      <DependentUpon>ImportShotChanges.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportUnknownFormat.resx">
       <DependentUpon>ImportUnknownFormat.cs</DependentUpon>
@@ -1778,6 +1914,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Translate\TranslateBlock.resx">
       <DependentUpon>TranslateBlock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Translate\TranslateExportImport.resx">
+      <DependentUpon>TranslateExportImport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Translate\TranslateViaCopyPaste.resx">
       <DependentUpon>TranslateViaCopyPaste.cs</DependentUpon>
@@ -2181,5 +2320,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Vosk.0.3.38\build\Vosk.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Vosk.0.3.38\build\Vosk.targets'))" />
   </Target>
+  <Import Project="..\..\packages\Vosk.0.3.38\build\Vosk.targets" Condition="Exists('..\..\packages\Vosk.0.3.38\build\Vosk.targets')" />
 </Project>

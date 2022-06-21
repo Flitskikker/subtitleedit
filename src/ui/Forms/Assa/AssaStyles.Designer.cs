@@ -166,6 +166,7 @@
             this.labelStorageCategory = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.buttonApply = new System.Windows.Forms.Button();
+            this.labelDuplicateStyleNames = new System.Windows.Forms.Label();
             this.contextMenuStripFile.SuspendLayout();
             this.groupBoxStyles.SuspendLayout();
             this.groupBoxProperties.SuspendLayout();
@@ -426,7 +427,7 @@
             // 
             this.buttonAddStyleToStorage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonAddStyleToStorage.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonAddStyleToStorage.Location = new System.Drawing.Point(280, 275);
+            this.buttonAddStyleToStorage.Location = new System.Drawing.Point(290, 275);
             this.buttonAddStyleToStorage.Name = "buttonAddStyleToStorage";
             this.buttonAddStyleToStorage.Size = new System.Drawing.Size(163, 52);
             this.buttonAddStyleToStorage.TabIndex = 4;
@@ -476,7 +477,7 @@
             this.buttonRemoveAll.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.buttonRemoveAll.Location = new System.Drawing.Point(182, 304);
             this.buttonRemoveAll.Name = "buttonRemoveAll";
-            this.buttonRemoveAll.Size = new System.Drawing.Size(92, 23);
+            this.buttonRemoveAll.Size = new System.Drawing.Size(102, 23);
             this.buttonRemoveAll.TabIndex = 7;
             this.buttonRemoveAll.Text = "Remove all";
             this.buttonRemoveAll.UseVisualStyleBackColor = true;
@@ -500,7 +501,7 @@
             this.buttonRemove.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.buttonRemove.Location = new System.Drawing.Point(182, 275);
             this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(92, 23);
+            this.buttonRemove.Size = new System.Drawing.Size(102, 23);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "Remove";
             this.buttonRemove.UseVisualStyleBackColor = true;
@@ -992,12 +993,12 @@
             65536});
             this.numericUpDownAngle.Location = new System.Drawing.Point(391, 84);
             this.numericUpDownAngle.Maximum = new decimal(new int[] {
-            180,
+            99000,
             0,
             0,
             0});
             this.numericUpDownAngle.Minimum = new decimal(new int[] {
-            180,
+            99000,
             0,
             0,
             -2147483648});
@@ -1230,7 +1231,7 @@
             // 
             this.buttonAddToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonAddToFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonAddToFile.Location = new System.Drawing.Point(280, 271);
+            this.buttonAddToFile.Location = new System.Drawing.Point(290, 271);
             this.buttonAddToFile.Name = "buttonAddToFile";
             this.buttonAddToFile.Size = new System.Drawing.Size(163, 52);
             this.buttonAddToFile.TabIndex = 10;
@@ -1280,7 +1281,7 @@
             this.buttonStorageRemoveAll.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.buttonStorageRemoveAll.Location = new System.Drawing.Point(182, 300);
             this.buttonStorageRemoveAll.Name = "buttonStorageRemoveAll";
-            this.buttonStorageRemoveAll.Size = new System.Drawing.Size(92, 23);
+            this.buttonStorageRemoveAll.Size = new System.Drawing.Size(102, 23);
             this.buttonStorageRemoveAll.TabIndex = 13;
             this.buttonStorageRemoveAll.Text = "Remove all";
             this.buttonStorageRemoveAll.UseVisualStyleBackColor = true;
@@ -1304,7 +1305,7 @@
             this.buttonStorageRemove.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.buttonStorageRemove.Location = new System.Drawing.Point(182, 271);
             this.buttonStorageRemove.Name = "buttonStorageRemove";
-            this.buttonStorageRemove.Size = new System.Drawing.Size(92, 23);
+            this.buttonStorageRemove.Size = new System.Drawing.Size(102, 23);
             this.buttonStorageRemove.TabIndex = 9;
             this.buttonStorageRemove.Text = "Remove";
             this.buttonStorageRemove.UseVisualStyleBackColor = true;
@@ -1603,11 +1604,24 @@
             this.buttonApply.UseVisualStyleBackColor = true;
             this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
             // 
-            // Styles
+            // labelDuplicateStyleNames
+            // 
+            this.labelDuplicateStyleNames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelDuplicateStyleNames.AutoSize = true;
+            this.labelDuplicateStyleNames.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDuplicateStyleNames.ForeColor = System.Drawing.Color.Firebrick;
+            this.labelDuplicateStyleNames.Location = new System.Drawing.Point(12, 687);
+            this.labelDuplicateStyleNames.Name = "labelDuplicateStyleNames";
+            this.labelDuplicateStyleNames.Size = new System.Drawing.Size(154, 13);
+            this.labelDuplicateStyleNames.TabIndex = 10;
+            this.labelDuplicateStyleNames.Text = "labelDuplicateStyleNames";
+            // 
+            // AssaStyles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1064, 709);
+            this.Controls.Add(this.labelDuplicateStyleNames);
             this.Controls.Add(this.buttonApply);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.labelStatus);
@@ -1616,7 +1630,7 @@
             this.Controls.Add(this.buttonOK);
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(1060, 630);
-            this.Name = "Styles";
+            this.Name = "AssaStyles";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -1804,5 +1818,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDownScaleX;
         private System.Windows.Forms.Label labelScaleX;
         private System.Windows.Forms.ComboBox comboBoxOpaqueBoxStyle;
+        private System.Windows.Forms.Label labelDuplicateStyleNames;
     }
 }

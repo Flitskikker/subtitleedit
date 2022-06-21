@@ -61,6 +61,8 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             buttonRemove.Text = LanguageSettings.Current.SubStationAlphaStyles.Remove;
             buttonRemoveAll.Text = LanguageSettings.Current.SubStationAlphaStyles.RemoveAll;
             buttonTextColor.Text = LanguageSettings.Current.Settings.WaveformTextColor;
+            buttonReset.Text = LanguageSettings.Current.General.Reset;
+            buttonTakePosFromVideo.Text = l.TakePosFromVideo;
             columnHeaderName.Text = LanguageSettings.Current.General.Text;
             columnHeaderStart.Text = LanguageSettings.Current.General.StartTime;
 
@@ -529,7 +531,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             var script = @"[Script Info]
 ; This is an Advanced Sub Station Alpha v4+script.
 ScriptType: v4.00+
-Collisions: Normal
+ScaledBorderAndShadow: Yes
 PlayResX: [VIDEO_WIDTH]
 PlayResY: [VIDEO_HEIGHT]
 
@@ -626,7 +628,7 @@ Dialogue: -255,0:00:00.00,0:43:00.00,SE-progress-bar-bg,,0,0,0,,[PB_DRAWING]";
                                 $"{position + numericUpDownSplitterWidth.Value} {splitterTop + numericUpDownSplitterHeight.Value} " + // bottom right point
                                 $"{position} {splitterTop + numericUpDownSplitterHeight.Value} " + // bottom left point
                                 $"{position} {splitterTop}" + // top left point
-                                "{{\\p0}}";
+                                $"{{\\p0}}";
 
                         }
                         else
@@ -643,7 +645,7 @@ Dialogue: -255,0:00:00.00,0:43:00.00,SE-progress-bar-bg,,0,0,0,,[PB_DRAWING]";
                                 $"{position + numericUpDownSplitterWidth.Value} {splitterTop + numericUpDownSplitterHeight.Value} " + // bottom right point
                                 $"{position} {splitterTop + numericUpDownSplitterHeight.Value} " + // bottom left point
                                 $"{position} {splitterTop}" + // top left point
-                                "{{\\p0}}";
+                                $"{{\\p0}}";
                         }
 
                         if (i > 0)
@@ -668,13 +670,14 @@ Dialogue: -255,0:00:00.00,0:43:00.00,SE-progress-bar-bg,,0,0,0,,[PB_DRAWING]";
                 }
             }
 
-            textBoxSource.Text = new AdvancedSubStationAlpha().ToText(_progessBarSubtitle, string.Empty);
+            var format = new AdvancedSubStationAlpha();
+            textBoxSource.Text = format.ToText(_progessBarSubtitle, string.Empty);
 
 
             var hashValue = _progessBarSubtitle.GetFastHashCode(string.Empty);
             if (hashValue != _oldHashValue)
             {
-                _videoPlayerContainer.SetSubtitleText(string.Empty, new Paragraph(), _progessBarSubtitle);
+                _videoPlayerContainer.SetSubtitleText(string.Empty, new Paragraph(), _progessBarSubtitle, format);
                 _oldHashValue = hashValue;
             }
 

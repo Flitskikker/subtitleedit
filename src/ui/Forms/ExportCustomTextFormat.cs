@@ -2,7 +2,10 @@
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Nikse.SubtitleEdit.Forms
@@ -11,6 +14,7 @@ namespace Nikse.SubtitleEdit.Forms
     {
         public const string EnglishDoNotModify = "[Do not modify]";
         public string FormatOk { get; set; }
+        private static readonly Regex CurlyCodePattern = new Regex("{\\d+}", RegexOptions.Compiled);
 
         public ExportCustomTextFormat(string format)
         {
@@ -28,10 +32,11 @@ namespace Nikse.SubtitleEdit.Forms
             comboBoxNewLine.Items.Add("{cr}");
 
             comboBoxTimeCode.Text = "hh:mm:ss,zzz";
+            textBoxFileExtension.Text = "txt";
             if (!string.IsNullOrEmpty(format))
             {
                 var arr = format.Split('Æ');
-                if (arr.Length == 6)
+                if (arr.Length >= 6)
                 {
                     textBoxName.Text = arr[0];
                     textBoxHeader.Text = arr[1];
@@ -44,6 +49,11 @@ namespace Nikse.SubtitleEdit.Forms
                     textBoxParagraph.Text = arr[2];
                     comboBoxNewLine.Text = arr[4].Replace(EnglishDoNotModify, l.DoNotModify);
                     textBoxFooter.Text = arr[5];
+
+                    if (arr.Length >= 7)
+                    {
+                        textBoxFileExtension.Text = arr[6];
+                    }
                 }
             }
             GeneratePreview();
@@ -56,6 +66,8 @@ namespace Nikse.SubtitleEdit.Forms
             labelHeader.Text = l.Header;
             labelTextLine.Text = l.TextLine;
             labelFooter.Text = l.Footer;
+            labelFileExt.Text = l.FileExtension;
+            textBoxFileExtension.Left = labelFileExt.Right + 5;
             buttonOK.Text = LanguageSettings.Current.General.Ok;
             buttonCancel.Text = LanguageSettings.Current.General.Cancel;
             groupBoxPreview.Text = LanguageSettings.Current.General.Preview;
@@ -90,8 +102,8 @@ namespace Nikse.SubtitleEdit.Forms
                 var newLine = comboBoxNewLine.Text.Replace(LanguageSettings.Current.ExportCustomTextFormat.DoNotModify, EnglishDoNotModify);
                 var template = GetParagraphTemplate(textBoxParagraph.Text);
                 textBoxPreview.Text = GetHeaderOrFooter("Demo", subtitle, textBoxHeader.Text) +
-                                      GetParagraph(template, start1, end1, GetText(p1.Text, newLine), GetText("Line 1a." + Environment.NewLine + "Line 1b.", newLine), 0, p1.Actor, p1.Duration, comboBoxTimeCode.Text, Utilities.GetCharactersPerSecond(p1)) +
-                                      GetParagraph(template, start2, end2, GetText(p2.Text, newLine), GetText("Line 2a." + Environment.NewLine + "Line 2b.", newLine), 1, p2.Actor, p2.Duration, comboBoxTimeCode.Text, Utilities.GetCharactersPerSecond(p2)) +
+                                      GetParagraph(template, start1, end1, GetText(p1.Text, newLine), GetText("Line 1a." + Environment.NewLine + "Line 1b.", newLine), 0, p1.Actor, p1.Duration, comboBoxTimeCode.Text, p1) +
+                                      GetParagraph(template, start2, end2, GetText(p2.Text, newLine), GetText("Line 2a." + Environment.NewLine + "Line 2b.", newLine), 1, p2.Actor, p2.Duration, comboBoxTimeCode.Text, p2) +
                                       GetHeaderOrFooter("Demo", subtitle, textBoxFooter.Text);
             }
             catch (Exception ex)
@@ -105,7 +117,7 @@ namespace Nikse.SubtitleEdit.Forms
             var s = template.Replace("{start}", "{0}");
             s = s.Replace("{end}", "{1}");
             s = s.Replace("{text}", "{2}");
-            s = s.Replace("{translation}", "{3}");
+            s = s.Replace("{original-text}", "{3}");
             s = s.Replace("{number}", "{4}");
             s = s.Replace("{number:", "{4:");
             s = s.Replace("{number-1}", "{5}");
@@ -117,6 +129,9 @@ namespace Nikse.SubtitleEdit.Forms
             s = s.Replace("{cps-comma}", "{10}");
             s = s.Replace("{cps-period}", "{11}");
             s = s.Replace("{text-length}", "{12}");
+            s = s.Replace("{text-length-br0}", "{13}");
+            s = s.Replace("{text-length-br1}", "{14}");
+            s = s.Replace("{text-length-br2}", "{15}");
             s = s.Replace("{tab}", "\t");
             return s;
         }
@@ -274,7 +289,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            FormatOk = textBoxName.Text + "Æ" + textBoxHeader.Text + "Æ" + textBoxParagraph.Text + "Æ" + comboBoxTimeCode.Text + "Æ" + comboBoxNewLine.Text.Replace(LanguageSettings.Current.ExportCustomTextFormat.DoNotModify, EnglishDoNotModify) + "Æ" + textBoxFooter.Text;
+            FormatOk = textBoxName.Text + "Æ" + textBoxHeader.Text + "Æ" + textBoxParagraph.Text + "Æ" + comboBoxTimeCode.Text + "Æ" + comboBoxNewLine.Text.Replace(LanguageSettings.Current.ExportCustomTextFormat.DoNotModify, EnglishDoNotModify) + "Æ" + textBoxFooter.Text + "Æ" + textBoxFileExtension.Text.Trim('.', ' ');
             DialogResult = DialogResult.OK;
         }
 
@@ -309,9 +324,10 @@ namespace Nikse.SubtitleEdit.Forms
             return template;
         }
 
-        internal static string GetParagraph(string template, string start, string end, string text, string translation, int number, string actor, TimeCode duration, string timeCodeTemplate, double cps)
+        internal static string GetParagraph(string template, string start, string end, string text, string originalText, int number, string actor, TimeCode duration, string timeCodeTemplate, Paragraph p)
         {
-            string d = duration.ToString();
+            var cps = Utilities.GetCharactersPerSecond(p);
+            var d = duration.ToString();
             if (timeCodeTemplate == "ff" || timeCodeTemplate == "f")
             {
                 d = SubtitleFormat.MillisecondsToFrames(duration.TotalMilliseconds).ToString(CultureInfo.InvariantCulture);
@@ -388,13 +404,124 @@ namespace Nikse.SubtitleEdit.Forms
                 line2 = lines[1];
             }
 
-            string s = template;
-            s = s.Replace("{{", "@@@@_@@@{");
-            s = s.Replace("}}", "}@@@_@@@@");
-            s = string.Format(s, start, end, text, translation, number + 1, number, d, actor, line1, line2, cps.ToString(CultureInfo.InvariantCulture).Replace(".", ","), cps.ToString(CultureInfo.InvariantCulture), text.Length);
-            s = s.Replace("@@@@_@@@", "{");
-            s = s.Replace("@@@_@@@@", "}");
+            var s = template;
+            var replaceStart = GetReplaceChar(s);
+            var replaceEnd = GetReplaceChar(s + replaceStart);
+            s = PreBeginCurly(s, replaceStart);
+            s = PreEndCurly(s, replaceEnd);
+            s = string.Format(s, start, end, text, originalText, number + 1, number, d, actor, line1, line2,
+                              cps.ToString(CultureInfo.InvariantCulture).Replace(".", ","),
+                              cps.ToString(CultureInfo.InvariantCulture),
+                              text.Length,
+                              p.Text.RemoveChar('\r', '\n').Length,
+                              p.Text.RemoveChar('\r', '\n').Length + lines.Count - 1,
+                              p.Text.RemoveChar('\r', '\n').Length + (lines.Count - 1) * 2);
+            s = PostCurly(s, replaceStart, replaceEnd);
             return s;
+        }
+
+        private static string GetReplaceChar(string s)
+        {
+            var chars = new List<char> { '@', '¤', '%', '=', '+', 'æ', 'Æ', '`', '*', ';' };
+
+            foreach (var c in chars)
+            {
+                if (!s.Contains(c))
+                {
+                    return c.ToString();
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string PreBeginCurly(string s, string replaceStart)
+        {
+            if (string.IsNullOrEmpty(replaceStart))
+            {
+                return s;
+            }
+
+            var indices = GetCurlyBeginIndexesReversed(s);
+            for (int i = 0; i < indices.Count; i++)
+            {
+                var idx = indices[i];
+                s = s.Remove(idx, 1);
+                s = s.Insert(idx, replaceStart);
+            }
+
+            return s;
+        }
+
+        private static string PreEndCurly(string s, string replaceEnd)
+        {
+            if (string.IsNullOrEmpty(replaceEnd))
+            {
+                return s;
+            }
+
+            var indices = GetCurlyEndIndexesReversed(s);
+            for (int i = 0; i < indices.Count; i++)
+            {
+                var idx = indices[i];
+                s = s.Remove(idx, 1);
+                s = s.Insert(idx, replaceEnd);
+            }
+
+            return s;
+        }
+
+        private static string PostCurly(string s, string replaceStart, string replaceEnd)
+        {
+            if (!string.IsNullOrEmpty(replaceStart))
+            {
+                s = s.Replace(replaceStart, "{");
+            }
+
+            if (!string.IsNullOrEmpty(replaceEnd))
+            {
+                s = s.Replace(replaceEnd, "}");
+            }
+
+            return s;
+        }
+
+        private static List<int> GetCurlyBeginIndexesReversed(string s)
+        {
+            var matchIndices = CurlyCodePattern.Matches(s)
+                .Cast<Match>()
+                .Select(m => m.Index)
+                .ToList();
+            var list = new List<int>();
+            for (int i = s.Length - 1; i >= 0; i--)
+            {
+                var c = s[i];
+                if (c == '{' && !matchIndices.Contains(i))
+                {
+                    list.Add(i);
+                }
+            }
+
+            return list;
+        }
+
+        private static List<int> GetCurlyEndIndexesReversed(string s)
+        {
+            var matchIndices = CurlyCodePattern.Matches(s)
+                .Cast<Match>()
+                .Select(m => m.Index + m.Length - 1)
+                .ToList();
+            var list = new List<int>();
+            for (int i = s.Length - 1; i >= 0; i--)
+            {
+                var c = s[i];
+                if (c == '}' && !matchIndices.Contains(i))
+                {
+                    list.Add(i);
+                }
+            }
+
+            return list;
         }
     }
 }

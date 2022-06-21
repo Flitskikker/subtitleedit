@@ -105,6 +105,7 @@ namespace Nikse.SubtitleEdit.Core.Forms
             int count = 0;
             bool removedInFirstLine = false;
             bool removedInSecondLine = false;
+            bool removedFirstLineNotStart = false;
             foreach (string line in lines)
             {
                 int indexOfColon = line.IndexOf(':');
@@ -262,6 +263,10 @@ namespace Nikse.SubtitleEdit.Core.Forms
                                 if (remove)
                                 {
                                     newText = RemovePartialBeforeColon(line, indexOfColon, newText, count, ref removedInFirstLine, ref removedInSecondLine, ref remove);
+                                    if (count == 0 && removedInFirstLine && indexOfColon > 10)
+                                    {
+                                        removedFirstLineNotStart = true;
+                                    }
 
                                     if (remove)
                                     {
@@ -359,13 +364,22 @@ namespace Nikse.SubtitleEdit.Core.Forms
                                 }
                                 else
                                 {
-                                    string s = line;
-                                    string l1Trim = HtmlUtil.RemoveHtmlTags(lines[0]).TrimEnd('"');
-                                    if (count == 1 && lines.Count == 2 && !l1Trim.EndsWith('.') &&
-                                                                           !l1Trim.EndsWith('!') &&
-                                                                           !l1Trim.EndsWith('?'))
+                                    var s = line;
+
+                                    var skipDoToNumbers =
+                                        indexOfColon < line.Length - 1 &&
+                                        char.IsDigit(line[indexOfColon - 1]) &&
+                                        char.IsDigit(line[indexOfColon + 1]);
+
+                                    var l1Trim = HtmlUtil.RemoveHtmlTags(lines[0]).TrimEnd('"');
+                                    if (!skipDoToNumbers &&
+                                        count == 1 && 
+                                        lines.Count == 2 && 
+                                        !l1Trim.EndsWith('.') &&
+                                        !l1Trim.EndsWith('!') &&
+                                        !l1Trim.EndsWith('?'))
                                     {
-                                        int indexOf = line.IndexOf(". ", StringComparison.Ordinal);
+                                        var indexOf = line.IndexOf(". ", StringComparison.Ordinal);
                                         if (indexOf > 0 && indexOf < indexOfColon)
                                         {
                                             var periodWord = line.Substring(0, indexOf).TrimStart(' ', '-', '"');
@@ -519,6 +533,12 @@ namespace Nikse.SubtitleEdit.Core.Forms
                         {
                             insertDash = false;
                         }
+                    }
+
+                    if (insertDash && removedInFirstLine && !removedInSecondLine && !removedFirstLineNotStart &&
+                        !HtmlUtil.RemoveHtmlTags(arr[1], true).StartsWith("-"))
+                    {
+                        insertDash = false;
                     }
                 }
 
@@ -727,7 +747,7 @@ namespace Nikse.SubtitleEdit.Core.Forms
             {
                 var s = line.Substring(lastIndexOfPeriod, indexOfColon - lastIndexOfPeriod);
                 s = s.Trim('.', '-', ' ', '!', '?', '"', '\'');
-                if (IsHIDescription(s) || Settings.NameList != null && Settings.NameList.ContainsCaseInsensitive(s))
+                if (IsHIDescription(s) || Settings.NameList != null && Settings.NameList.ContainsCaseInsensitive(s, out var _))
                 {
                     var partialRemove = false;
                     if (Settings.RemoveTextBeforeColonOnlyUppercase)
@@ -832,7 +852,7 @@ namespace Nikse.SubtitleEdit.Core.Forms
                 return string.Empty;
             }
 
-            if (Settings.RemoveWhereContains)
+            if (Settings.RemoveWhereContains && Settings.RemoveIfTextContains != null)
             {
                 foreach (var removeIfTextContain in Settings.RemoveIfTextContains)
                 {

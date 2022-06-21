@@ -106,7 +106,9 @@ namespace Nikse.SubtitleEdit.Controls
 
             try
             {
-                textBox.Font = gs.SubtitleTextBoxFontBold ? new Font(gs.SubtitleFontName, gs.SubtitleTextBoxFontSize, FontStyle.Bold) : new Font(gs.SubtitleFontName, gs.SubtitleTextBoxFontSize);
+                var f = gs.SubtitleTextBoxFontBold ? new Font(gs.SubtitleFontName, gs.SubtitleTextBoxFontSize, FontStyle.Bold) : new Font(gs.SubtitleFontName, gs.SubtitleTextBoxFontSize);
+                TextBoxFont = f;
+                textBox.Font = f;
                 textBox.ForeColor = gs.SubtitleFontColor;
                 textBox.BackColor = gs.SubtitleBackgroundColor;
             }
@@ -116,6 +118,35 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        public Font TextBoxFont
+        {
+            get
+            {
+                if (_simpleTextBox != null)
+                {
+                    return _simpleTextBox.Font;
+                }
+
+                if (_uiTextBox != null)
+                {
+                    return _uiTextBox.Font;
+                }
+
+                return base.Font;
+            }
+            set
+            {
+                if (_simpleTextBox != null)
+                {
+                    _simpleTextBox.Font = value;
+                }
+
+                if (_uiTextBox != null)
+                {
+                    _uiTextBox.Font = value;
+                }
+            }
+        }
 
         public override string Text
         {

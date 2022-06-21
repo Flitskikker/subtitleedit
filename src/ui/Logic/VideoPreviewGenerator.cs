@@ -1,10 +1,12 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Forms;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Nikse.SubtitleEdit.Logic
 {
@@ -20,7 +22,7 @@ namespace Nikse.SubtitleEdit.Logic
 
             try
             {
-                var process = GenerateVideoFile(previewFileName, 3, 720, 480, Color.Black, true, 25);
+                var process = GenerateVideoFile(previewFileName, 3, 720, 480, Color.Black, true, 25, null);
                 process.Start();
                 process.WaitForExit();
 
@@ -32,11 +34,18 @@ namespace Nikse.SubtitleEdit.Logic
             }
         }
 
-        public static Process GenerateVideoFile(string previewFileName, int seconds, int width, int height, Color color, bool checkered, decimal frameRate, DataReceivedEventHandler dataReceivedHandler = null)
+        public static Process GenerateVideoFile(string previewFileName, int seconds, int width, int height, Color color, bool checkered, decimal frameRate, Bitmap bitmap, DataReceivedEventHandler dataReceivedHandler = null)
         {
             Process processMakeVideo;
 
-            if (checkered)
+            if (bitmap != null)
+            {
+                var tempImageFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".png");
+                var backgroundImage = ExportPngXml.ResizeBitmap(bitmap, width, height);
+                backgroundImage.Save(tempImageFileName, ImageFormat.Png);
+                processMakeVideo = GetFFmpegProcess(tempImageFileName, previewFileName, backgroundImage.Width, backgroundImage.Height, seconds, frameRate);
+            }
+            else if (checkered)
             {
                 const int rectangleSize = 9;
                 var backgroundImage = TextDesigner.MakeBackgroundImage(width, height, rectangleSize, Configuration.Settings.General.UseDarkTheme);
@@ -138,10 +147,7 @@ namespace Nikse.SubtitleEdit.Logic
                 }
             };
 
-            processMakeVideo.StartInfo.Arguments = processMakeVideo.StartInfo.Arguments
-                .Replace("  ", " ")
-                .Replace("  ", " ")
-                .Trim();
+            processMakeVideo.StartInfo.Arguments = processMakeVideo.StartInfo.Arguments.Trim();
 
             SetupDataReceiveHandler(dataReceivedHandler, processMakeVideo);
 
@@ -195,6 +201,26 @@ namespace Nikse.SubtitleEdit.Logic
             process.Start();
             process.WaitForExit();
             return outputFileName;
+        }
+
+        public static string[] GetScreenShotsForEachFrame(string videoFileName, string outputFolder)
+        {
+            Directory.CreateDirectory(outputFolder);
+            var outputFileName = Path.Combine(outputFolder, "image%05d.png");
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = GetFfmpegLocation(),
+                    Arguments = $"-i \"{videoFileName}\" -vf \"select=1\" -vsync vfr \"{outputFileName}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+            return Directory.GetFiles(outputFolder, "*.png").OrderBy(p => p).ToArray();
         }
 
         private static string GetFfmpegLocation()

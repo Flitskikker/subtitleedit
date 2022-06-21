@@ -104,6 +104,21 @@ namespace Nikse.SubtitleEdit.Core.Forms.FixCommonErrors
                     text = "<i>" + text.Substring(4);
                 }
             }
+
+            if (text.StartsWith("{\\") && text.Contains("}"))
+            {
+                tag = text.Substring(0, text.IndexOf('}') + 1);
+                var tagPlusPeriod = tag + "...";
+                if (text.StartsWith(tagPlusPeriod, StringComparison.Ordinal))
+                {
+                    text = tag + text.Substring(tagPlusPeriod.Length);
+                    while (text.StartsWith(tag + ".", StringComparison.Ordinal) || text.StartsWith(tag + " ", StringComparison.Ordinal))
+                    {
+                        text = tag + text.Substring(tagPlusPeriod.Length + 1);
+                    }
+                }
+            }
+
             tag = "<i> ...";
             if (text.StartsWith(tag, StringComparison.Ordinal))
             {
@@ -617,7 +632,7 @@ namespace Nikse.SubtitleEdit.Core.Forms.FixCommonErrors
             }
 
             string s = HtmlUtil.RemoveHtmlTags(text, true);
-            if (s.Contains(Environment.NewLine) && s.Replace(Environment.NewLine, " ").Replace("  ", " ").CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics) < Configuration.Settings.General.MergeLinesShorterThan)
+            if (s.Contains(Environment.NewLine) && s.Replace(Environment.NewLine, " ").Replace("  ", " ").CountCharacters(false) < Configuration.Settings.General.MergeLinesShorterThan)
             {
                 s = s.TrimEnd().TrimEnd('.', '?', '!', ':', ';');
                 s = s.TrimStart('-');

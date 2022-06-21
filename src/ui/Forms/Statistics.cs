@@ -113,16 +113,19 @@ https://github.com/SubtitleEdit/subtitleedit
             double minimumCharsSec = 100000000;
             double maximumCharsSec = 0;
             double totalCharsSec = 0;
-            foreach (Paragraph p in _subtitle.Paragraphs)
+            var gapMinimum = double.MaxValue;
+            var gapMaximum = 0d;
+            var gapTotal = 0d;
+            foreach (var p in _subtitle.Paragraphs)
             {
                 allText.Append(p.Text);
 
-                int len = GetLineLength(p);
+                var len = GetLineLength(p);
                 minimumLineLength = Math.Min(minimumLineLength, len);
                 maximumLineLength = Math.Max(len, maximumLineLength);
                 totalLineLength += len;
 
-                double duration = p.Duration.TotalMilliseconds;
+                var duration = p.Duration.TotalMilliseconds;
                 minimumDuration = Math.Min(duration, minimumDuration);
                 maximumDuration = Math.Max(duration, maximumDuration);
                 totalDuration += duration;
@@ -132,7 +135,24 @@ https://github.com/SubtitleEdit/subtitleedit
                 maximumCharsSec = Math.Max(charsSec, maximumCharsSec);
                 totalCharsSec += charsSec;
 
-                foreach (string line in p.Text.SplitToLines())
+                var next = _subtitle.GetParagraphOrDefault(_subtitle.GetIndex(p) + 1);
+                if (next != null)
+                {
+                    var gap = next.StartTime.TotalMilliseconds - p.EndTime.TotalMilliseconds;
+                    if (gap < gapMinimum)
+                    {
+                        gapMinimum = gap;
+                    }
+
+                    if (gap > gapMaximum)
+                    {
+                        gapMaximum = gap;
+                    }
+
+                    gapTotal += gap;
+                }
+
+                foreach (var line in p.Text.SplitToLines())
                 {
                     var l = GetSingleLineLength(line);
                     minimumSingleLineLength = Math.Min(l, minimumSingleLineLength);
@@ -152,14 +172,14 @@ https://github.com/SubtitleEdit/subtitleedit
             }
 
             var sb = new StringBuilder();
-            int sourceLength = _subtitle.ToText(_format).Length;
+            var sourceLength = _subtitle.ToText(_format).Length;
             var allTextToLower = allText.ToString().ToLowerInvariant();
 
             sb.AppendLine(string.Format(_l.NumberOfLinesX, _subtitle.Paragraphs.Count));
             sb.AppendLine(string.Format(_l.LengthInFormatXinCharactersY, _format.FriendlyName, sourceLength));
-            sb.AppendLine(string.Format(_l.NumberOfCharactersInTextOnly, allText.ToString().CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics)));
+            sb.AppendLine(string.Format(_l.NumberOfCharactersInTextOnly, allText.ToString().CountCharacters(false)));
             sb.AppendLine(string.Format(_l.TotalDuration, new TimeCode(totalDuration).ToDisplayString()));
-            sb.AppendLine(string.Format(_l.TotalCharsPerSecond, allText.ToString().CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics) / (totalDuration / TimeCode.BaseUnit)));
+            sb.AppendLine(string.Format(_l.TotalCharsPerSecond, (double)allText.ToString().CountCharacters(true) / (totalDuration / TimeCode.BaseUnit)));
             sb.AppendLine(string.Format(_l.TotalWords, _totalWords));
             sb.AppendLine(string.Format(_l.NumberOfItalicTags, Utilities.CountTagInText(allTextToLower, "<i>")));
             sb.AppendLine(string.Format(_l.NumberOfBoldTags, Utilities.CountTagInText(allTextToLower, "<b>")));
@@ -170,7 +190,7 @@ https://github.com/SubtitleEdit/subtitleedit
             sb.AppendLine(string.Format(_l.LineLengthMinimum, minimumLineLength) + " (" + GetIndicesWithLength(minimumLineLength) + ")");
             sb.AppendLine(string.Format(_l.LineLengthMaximum, maximumLineLength) + " (" + GetIndicesWithLength(maximumLineLength) + ")");
             sb.AppendLine(string.Format(_l.LineLengthAverage, totalLineLength / _subtitle.Paragraphs.Count));
-            sb.AppendLine(string.Format(_l.LinesPerSubtitleAverage, (((double)totalSingleLines) / _subtitle.Paragraphs.Count)));
+            sb.AppendLine(string.Format(_l.LinesPerSubtitleAverage, (double)totalSingleLines / _subtitle.Paragraphs.Count));
             sb.AppendLine();
             sb.AppendLine(string.Format(_l.SingleLineLengthMinimum, minimumSingleLineLength) + " (" + GetIndicesWithSingleLineLength(minimumSingleLineLength) + ")");
             sb.AppendLine(string.Format(_l.SingleLineLengthMaximum, maximumSingleLineLength) + " (" + GetIndicesWithSingleLineLength(maximumSingleLineLength) + ")");
@@ -193,17 +213,26 @@ https://github.com/SubtitleEdit/subtitleedit
             sb.AppendLine(string.Format(_l.CharactersPerSecondMaximum, maximumCharsSec) + " (" + GetIndicesWithCps(maximumCharsSec) + ")");
             sb.AppendLine(string.Format(_l.CharactersPerSecondAverage, totalCharsSec / _subtitle.Paragraphs.Count));
             sb.AppendLine();
+
+            if (_subtitle.Paragraphs.Count > 1)
+            {
+                sb.AppendLine(string.Format(_l.GapMinimum, gapMinimum) + " (" + GetIndicesWithGap(gapMinimum) + ")");
+                sb.AppendLine(string.Format(_l.GapMaximum, gapMaximum) + " (" + GetIndicesWithGap(gapMaximum) + ")");
+                sb.AppendLine(string.Format(_l.GapAverage, gapTotal / _subtitle.Paragraphs.Count - 1));
+                sb.AppendLine();
+            }
+
             _general = sb.ToString().Trim();
         }
 
         private static int GetLineLength(Paragraph p)
         {
-            return p.Text.Replace(Environment.NewLine, string.Empty).CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics);
+            return p.Text.Replace(Environment.NewLine, string.Empty).CountCharacters(Configuration.Settings.General.CpsLineLengthStrategy, false);
         }
 
         private static int GetSingleLineLength(string s)
         {
-            return s.CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics);
+            return s.CountCharacters(Configuration.Settings.General.CpsLineLengthStrategy, false);
         }
 
         private static int GetSingleLineWidth(string s)
@@ -216,7 +245,7 @@ https://github.com/SubtitleEdit/subtitleedit
         private string GetIndicesWithDuration(double duration)
         {
             var indices = new List<string>();
-            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
+            for (var i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 var p = _subtitle.Paragraphs[i];
                 if (Math.Abs(p.Duration.TotalMilliseconds - duration) < 0.01)
@@ -235,7 +264,7 @@ https://github.com/SubtitleEdit/subtitleedit
         private string GetIndicesWithCps(double cps)
         {
             var indices = new List<string>();
-            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
+            for (var i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 var p = _subtitle.Paragraphs[i];
                 if (Math.Abs(Utilities.GetCharactersPerSecond(p) - cps) < 0.01)
@@ -248,13 +277,36 @@ https://github.com/SubtitleEdit/subtitleedit
                     indices.Add("#" + (i + 1).ToString(CultureInfo.InvariantCulture));
                 }
             }
+
+            return string.Join(", ", indices);
+        }
+
+        private string GetIndicesWithGap(double cps)
+        {
+            var indices = new List<string>();
+            for (var i = 0; i < _subtitle.Paragraphs.Count-1; i++)
+            {
+                var p = _subtitle.Paragraphs[i];
+                var next = _subtitle.Paragraphs[i+1];
+                var gap = next.StartTime.TotalMilliseconds - p.EndTime.TotalMilliseconds;
+                if (Math.Abs(gap - cps) < 0.01)
+                {
+                    if (indices.Count >= NumberOfLinesToShow)
+                    {
+                        indices.Add("...");
+                        break;
+                    }
+                    indices.Add("#" + (i + 1).ToString(CultureInfo.InvariantCulture));
+                }
+            }
+
             return string.Join(", ", indices);
         }
 
         private string GetIndicesWithLength(int length)
         {
             var indices = new List<string>();
-            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
+            for (var i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 var p = _subtitle.Paragraphs[i];
                 if (GetLineLength(p) == length)
@@ -273,7 +325,7 @@ https://github.com/SubtitleEdit/subtitleedit
         private string GetIndicesWithSingleLineLength(int length)
         {
             var indices = new List<string>();
-            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
+            for (var i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
                 var p = _subtitle.Paragraphs[i];
                 foreach (var line in p.Text.SplitToLines())

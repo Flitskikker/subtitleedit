@@ -1,4 +1,5 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
+using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Globalization;
@@ -43,11 +44,12 @@ namespace Nikse.SubtitleEdit.Forms.DCinema
             comboBoxLanguage.Sorted = true;
 
             var ss = Configuration.Settings.SubtitleSettings;
+            checkBoxGenerateIdAuto.Checked = ss.DCinemaAutoGenerateSubtitleId;
+
             if (!string.IsNullOrEmpty(ss.CurrentDCinemaSubtitleId))
             {
                 textBoxSubtitleID.Text = ss.CurrentDCinemaSubtitleId;
-                int number;
-                if (int.TryParse(ss.CurrentDCinemaReelNumber, out number) &&
+                if (int.TryParse(ss.CurrentDCinemaReelNumber, out int number) &&
                     numericUpDownReelNumber.Minimum <= number && numericUpDownReelNumber.Maximum >= number)
                 {
                     numericUpDownReelNumber.Value = number;
@@ -137,7 +139,7 @@ namespace Nikse.SubtitleEdit.Forms.DCinema
 
         private void buttonGenerateID_Click(object sender, EventArgs e)
         {
-            textBoxSubtitleID.Text = GenerateID();
+            textBoxSubtitleID.Text = DCinemaSmpte2007.GenerateId();
         }
 
         private void buttonToday_Click(object sender, EventArgs e)
@@ -148,6 +150,7 @@ namespace Nikse.SubtitleEdit.Forms.DCinema
         private void buttonOK_Click_1(object sender, EventArgs e)
         {
             var ss = Configuration.Settings.SubtitleSettings;
+            ss.DCinemaAutoGenerateSubtitleId = checkBoxGenerateIdAuto.Checked;
             ss.CurrentDCinemaSubtitleId = textBoxSubtitleID.Text;
             ss.CurrentDCinemaMovieTitle = textBoxMovieTitle.Text;
             ss.CurrentDCinemaReelNumber = numericUpDownReelNumber.Value.ToString();
@@ -192,18 +195,12 @@ namespace Nikse.SubtitleEdit.Forms.DCinema
 
         private void button1_Click(object sender, EventArgs e)
         {
-            textBoxFontUri.Text = GenerateID();
+            textBoxFontUri.Text = DCinemaSmpte2007.GenerateId();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-        }
-
-        private string GenerateID()
-        {
-            var hex = Guid.NewGuid().ToString().RemoveChar('-');
-            return "urn:uuid:" + hex.Insert(8, "-").Insert(13, "-").Insert(18, "-").Insert(23, "-");
         }
     }
 }

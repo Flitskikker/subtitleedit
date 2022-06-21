@@ -40,18 +40,35 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             text = text.Replace("\\n", Environment.NewLine);
             bool keepNext = false;
             var sb = new StringBuilder(text.Length);
-            foreach (var c in text)
+            var hexLetters = "01234567890abcdef";
+            int i = 0;
+            while (i < text.Length)
             {
+                char c = text[i];
                 if (c == '\\' && !keepNext)
                 {
                     keepNext = true;
+                    if (i + 6 < text.Length && text[i + 1] == 'u' &&
+                        hexLetters.Contains(text[i + 2]) &&
+                        hexLetters.Contains(text[i + 3]) &&
+                        hexLetters.Contains(text[i + 4]) &&
+                        hexLetters.Contains(text[i + 5]))
+                    {
+                        var unicodeString = text.Substring(i, 6);
+                        var unescaped = System.Text.RegularExpressions.Regex.Unescape(unicodeString);
+                        sb.Append(unescaped);
+                        i += 5;
+                    }
                 }
                 else
                 {
                     sb.Append(c);
                     keepNext = false;
                 }
+
+                i++;
             }
+
             return sb.ToString();
         }
 
@@ -153,6 +170,11 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
         {
             var startIndex = s.IndexOfAny(new[] { "\"" + tag + "\"", "'" + tag + "'" }, StringComparison.Ordinal);
             if (startIndex < 0)
+            {
+                return null;
+            }
+
+            if (startIndex + 3 + tag.Length > s.Length)
             {
                 return null;
             }

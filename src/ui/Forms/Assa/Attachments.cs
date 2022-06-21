@@ -1,6 +1,5 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
-using Nikse.SubtitleEdit.Forms.Assa;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
@@ -27,7 +26,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
         };
 
         public string NewFooter { get; private set; }
-        private bool _loading = true;
+        private bool _loading;
 
         public Attachments(string source)
         {
@@ -35,6 +34,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             InitializeComponent();
             UiUtil.FixFonts(this);
 
+            _loading = true;
             labelInfo.Visible = false;
             textBoxInfo.Visible = false;
             textBoxInfo.ReadOnly = true;
@@ -62,6 +62,9 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             toolStripMenuItemStorageAttach.Text = LanguageSettings.Current.AssaAttachments.AttachFiles;
             importToolStripMenuItem.Text = LanguageSettings.Current.MultipleReplace.Import;
             toolStripMenuItemStorageExport.Text = LanguageSettings.Current.MultipleReplace.Export;
+            columnHeaderFileName.Text = LanguageSettings.Current.RestoreAutoBackup.FileName;
+            columnHeaderType.Text = LanguageSettings.Current.PluginsGet.Type;
+            columnHeaderFileSize.Text = LanguageSettings.Current.General.Size;
 
             Text = LanguageSettings.Current.AssaAttachments.Title;
             buttonAttachFile.Text = LanguageSettings.Current.AssaAttachments.AttachFiles;
@@ -85,7 +88,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
                 var s = line.Trim();
                 if (attachmentOn)
                 {
-                    if (s == "[V4+ Styles]" || s == "[Events]")
+                    if (s == "[V4+ Styles]" || s == "[V4 Styles]" || s == "[Events]")
                     {
                         AddToListIfNotEmpty(attachmentContent.ToString(), attachmentFileName, attachments, category);
                         attachmentOn = false;
@@ -347,8 +350,8 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             if (skipCount > 0)
             {
                 MessageBox.Show(string.Format(LanguageSettings.Current.AssaAttachments.FilesSkippedX, skipCount + Environment.NewLine +
-                                                Environment.NewLine +
-                                                string.Join(Environment.NewLine, skipFiles)));
+                                              Environment.NewLine +
+                                              string.Join(Environment.NewLine, skipFiles)));
             }
         }
 
@@ -356,7 +359,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
         {
             openFileDialog1.Title = LanguageSettings.Current.Main.Menu.File.Open.RemoveChar('&');
             openFileDialog1.FileName = string.Empty;
-            openFileDialog1.Filter = AdvancedSubStationAlpha.NameOfFormat + " |*.ass";
+            openFileDialog1.Filter = AdvancedSubStationAlpha.NameOfFormat + "|*.ass|" + SubStationAlpha.NameOfFormat + "|*.ssa;";
             openFileDialog1.FilterIndex = 0;
             openFileDialog1.Multiselect = false;
             var result = openFileDialog1.ShowDialog(this);
@@ -396,8 +399,8 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             if (skipCount > 0)
             {
                 MessageBox.Show(string.Format(LanguageSettings.Current.AssaAttachments.FilesSkippedX, skipCount + Environment.NewLine +
-                              Environment.NewLine +
-                              string.Join(Environment.NewLine, skipFiles)));
+                                Environment.NewLine +
+                                string.Join(Environment.NewLine, skipFiles)));
             }
 
         }

@@ -374,7 +374,7 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 ce.FixContinuationStyleTicked = false;
             }
-           
+
             _fixActions = new List<FixItem>
             {
                 new FixItem(_language.RemovedEmptyLinesUnsedLineBreaks, string.Empty, () => new FixEmptyLines().Fix(Subtitle, this), ce.EmptyLinesTicked),
@@ -729,19 +729,32 @@ namespace Nikse.SubtitleEdit.Forms
                 _ocrFixEngine?.Dispose();
                 _ocrFixEngineLanguage = threeLetterIsoLanguageName;
                 _ocrFixEngine = new OcrFixEngine(_ocrFixEngineLanguage, null, this);
+                var error = _ocrFixEngine.GetOcrFixReplaceListError();
+                if (error != null)
+                {
+                    MessageBox.Show(error);
+                }
             }
 
-            string fixAction = _language.FixCommonOcrErrors;
-            int noOfFixes = 0;
-            string lastLine = string.Empty;
-            for (int i = 0; i < Subtitle.Paragraphs.Count; i++)
+            var fixAction = _language.FixCommonOcrErrors;
+            var noOfFixes = 0;
+            var lastLine = string.Empty;
+            for (var i = 0; i < Subtitle.Paragraphs.Count; i++)
             {
                 var p = Subtitle.Paragraphs[i];
-                string text = _ocrFixEngine.FixOcrErrors(p.Text, i, lastLine, false, OcrFixEngine.AutoGuessLevel.Cautious);
+
+                var lastLastP = Subtitle.GetParagraphOrDefault(i - 2);
+                string lastLastLine = null;
+                if (lastLastP != null && !string.IsNullOrEmpty(lastLastP.Text))
+                {
+                    lastLastLine = lastLastP.Text;
+                }
+
+                var text = _ocrFixEngine.FixOcrErrors(p.Text, i, lastLine, lastLastLine, false, OcrFixEngine.AutoGuessLevel.Cautious);
                 lastLine = text;
                 if (AllowFix(p, fixAction) && p.Text != text)
                 {
-                    string oldText = p.Text;
+                    var oldText = p.Text;
                     p.Text = text;
                     noOfFixes++;
                     AddFixToListView(p, fixAction, oldText, p.Text);
@@ -846,25 +859,52 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void FormFixKeyDown(object sender, KeyEventArgs e)
         {
+            var fc = UiUtil.FindFocusedControl(this);
+            if (fc != null && (e.Modifiers == Keys.None || e.Modifiers == Keys.Shift))
+            {
+                var typeName = fc.GetType().Name;
+
+                // do not check for shortcuts if text is being entered and a textbox is focused
+                var textBoxTypes = new List<string> { "AdvancedTextBox", "SimpleTextBox", "SETextBox", "TextBox", "RichTextBox" };
+                if (textBoxTypes.Contains(typeName) &&
+                    ((e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z) || (e.KeyCode >= Keys.OemSemicolon && e.KeyCode <= Keys.OemBackslash) || e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9 || e.KeyValue >= 48 && e.KeyValue <= 57) &&
+                    !Configuration.Settings.General.AllowLetterShortcutsInTextBox)
+                {
+                    return;
+                }
+
+                // do not check for shortcuts if a number is being entered and a time box is focused
+                if (typeName == "UpDownEdit" &&
+                    (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9 || e.KeyValue >= 48 && e.KeyValue <= 57))
+                {
+                    return;
+                }
+            }
+
             if (e.KeyCode == Keys.Escape)
             {
                 DialogResult = DialogResult.Cancel;
+                e.SuppressKeyPress = true;
             }
             else if (e.KeyData == UiUtil.HelpKeys)
             {
                 UiUtil.ShowHelp("#fixcommonerrors");
+                e.SuppressKeyPress = true;
             }
             else if (e.KeyCode == Keys.Enter && buttonNextFinish.Text == _language.Next)
             {
                 ButtonFixClick(null, null);
+                e.SuppressKeyPress = true;
             }
             else if (subtitleListView1.Visible && subtitleListView1.Items.Count > 0 && e.KeyData == _goToLine)
             {
                 GoToLineNumber();
+                e.SuppressKeyPress = true;
             }
             else if (e.KeyData == _preview && listViewFixes.Items.Count > 0)
             {
                 GenerateDiff();
+                e.SuppressKeyPress = true;
             }
             else if (_mainGeneralGoToNextSubtitle == e.KeyData || _mainGeneralGoToNextSubtitlePlayTranslate == e.KeyData)
             {
@@ -874,7 +914,9 @@ namespace Nikse.SubtitleEdit.Forms
                     selectedIndex = subtitleListView1.SelectedItems[0].Index;
                     selectedIndex++;
                 }
+
                 subtitleListView1.SelectIndexAndEnsureVisible(selectedIndex);
+                e.SuppressKeyPress = true;
             }
             else if (_mainGeneralGoToPrevSubtitle == e.KeyData || _mainGeneralGoToPrevSubtitlePlayTranslate == e.KeyData)
             {
@@ -884,7 +926,9 @@ namespace Nikse.SubtitleEdit.Forms
                     selectedIndex = subtitleListView1.SelectedItems[0].Index;
                     selectedIndex--;
                 }
+
                 subtitleListView1.SelectIndexAndEnsureVisible(selectedIndex);
+                e.SuppressKeyPress = true;
             }
             else if (_mainListViewGoToNextError == e.KeyData)
             {
@@ -1441,12 +1485,12 @@ namespace Nikse.SubtitleEdit.Forms
             labelTextLineTotal.ForeColor = UiUtil.ForeColor;
             buttonSplitLine.Visible = false;
             var abl = Utilities.AutoBreakLine(s, _autoDetectGoogleLanguage).SplitToLines();
-            if (abl.Count > Configuration.Settings.General.MaxNumberOfLines || abl.Any(li => li.CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics) > Configuration.Settings.General.SubtitleLineMaximumLength))
+            if (abl.Count > Configuration.Settings.General.MaxNumberOfLines || abl.Any(li => li.CountCharacters(false) > Configuration.Settings.General.SubtitleLineMaximumLength))
             {
                 buttonSplitLine.Visible = true;
                 labelTextLineTotal.ForeColor = Color.Red;
             }
-            labelTextLineTotal.Text = string.Format(_languageGeneral.TotalLengthX, text.CountCharacters(false, Configuration.Settings.General.IgnoreArabicDiacritics));
+            labelTextLineTotal.Text = string.Format(_languageGeneral.TotalLengthX, text.CountCharacters(false));
         }
 
         private void ButtonFixesSelectAllClick(object sender, EventArgs e)

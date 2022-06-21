@@ -157,6 +157,7 @@ namespace Nikse.SubtitleEdit.Forms
             groupBoxAdjustDuration.Text = LanguageSettings.Current.AdjustDisplayDuration.Title;
             addFilesToolStripMenuItem.Text = l.AddFiles;
             groupBoxDeleteLines.Text = l.DeleteLines;
+            groupBoxAssaChangeRes.Text = LanguageSettings.Current.AssaResulationChanger.Title;
 
             comboBoxFrameRateFrom.Left = labelFromFrameRate.Left + labelFromFrameRate.Width + 3;
             comboBoxFrameRateTo.Left = labelToFrameRate.Left + labelToFrameRate.Width + 3;
@@ -208,7 +209,7 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 if (!format.IsVobSubIndexFile)
                 {
-                    formatNames.Add(format.Name);
+                    formatNames.Add(format.FriendlyName);
                     _allFormats.Add(format);
                 }
             }
@@ -349,7 +350,11 @@ namespace Nikse.SubtitleEdit.Forms
             checkBoxExtendOnly.Text = LanguageSettings.Current.AdjustDisplayDuration.ExtendOnly;
             labelAdjustViaPercent.Text = LanguageSettings.Current.AdjustDisplayDuration.SetAsPercent;
 
-
+            labelTargetRes.Text = LanguageSettings.Current.AssaResulationChanger.TargetVideoRes;
+            checkBoxMargins.Text = LanguageSettings.Current.AssaResulationChanger.ChangeResolutionMargins;
+            checkBoxFontSize.Text = LanguageSettings.Current.AssaResulationChanger.ChangeResolutionFontSize;
+            checkBoxPosition.Text = LanguageSettings.Current.AssaResulationChanger.ChangeResolutionPositions;
+            checkBoxDrawing.Text = LanguageSettings.Current.AssaResulationChanger.ChangeResolutionDrawing;
 
             var mode = Configuration.Settings.Tools.BatchConvertFixRtlMode;
             if (mode == RemoveUnicode)
@@ -369,17 +374,18 @@ namespace Nikse.SubtitleEdit.Forms
             labelMaxCharacters.Text = LanguageSettings.Current.MergedShortLines.MaximumCharacters;
             labelMaxMillisecondsBetweenLines.Text = LanguageSettings.Current.MergedShortLines.MaximumMillisecondsBetween;
             checkBoxOnlyContinuationLines.Text = LanguageSettings.Current.MergedShortLines.OnlyMergeContinuationLines;
-            if (Configuration.Settings.General.SubtitleLineMaximumLength > numericUpDownMaxCharacters.Maximum)
+
+            if (Configuration.Settings.Tools.MergeShortLinesMaxChars > numericUpDownMaxCharacters.Maximum)
             {
                 numericUpDownMaxCharacters.Value = numericUpDownMaxCharacters.Maximum;
             }
-            else if (Configuration.Settings.General.SubtitleLineMaximumLength < numericUpDownMaxCharacters.Minimum)
+            else if (Configuration.Settings.Tools.MergeShortLinesMaxChars < numericUpDownMaxCharacters.Minimum)
             {
                 numericUpDownMaxCharacters.Value = numericUpDownMaxCharacters.Minimum;
             }
             else
             {
-                numericUpDownMaxCharacters.Value = Configuration.Settings.General.SubtitleLineMaximumLength;
+                numericUpDownMaxCharacters.Value = Configuration.Settings.Tools.MergeShortLinesMaxChars;
             }
 
             if (Configuration.Settings.Tools.MergeShortLinesMaxGap >= numericUpDownMaxMillisecondsBetweenLines.Minimum &&
@@ -534,8 +540,14 @@ namespace Nikse.SubtitleEdit.Forms
                     Checked = Configuration.Settings.Tools.BatchConvertDeleteLines,
                     Action = CommandLineConverter.BatchAction.DeleteLines,
                     Control = groupBoxDeleteLines
-                }
-
+                },
+                new FixActionItem
+                {
+                    Text =  LanguageSettings.Current.AssaResulationChanger.Title,
+                    Checked = Configuration.Settings.Tools.BatchConvertAssaChangeRes,
+                    Action = CommandLineConverter.BatchAction.AssaChangeRes,
+                    Control = groupBoxAssaChangeRes
+                },
             };
             foreach (var fixItem in fixItems)
             {
@@ -599,7 +611,7 @@ namespace Nikse.SubtitleEdit.Forms
                     Cursor = Cursors.WaitCursor;
                     labelStatus.Text = LanguageSettings.Current.General.PleaseWait;
                     listViewInputFiles.BeginUpdate();
-                    foreach (string fileName in openFileDialog1.FileNames)
+                    foreach (var fileName in openFileDialog1.FileNames)
                     {
                         AddInputFile(fileName);
                         Application.DoEvents();
@@ -622,6 +634,7 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 return;
             }
+
             try
             {
                 foreach (ListViewItem lvi in listViewInputFiles.Items)
@@ -775,9 +788,9 @@ namespace Nikse.SubtitleEdit.Forms
 
                             item = new ListViewItem(fileName);
                             item.SubItems.Add(Utilities.FormatBytesToDisplayFileSize(fi.Length));
-                            listViewInputFiles.Items.Add(item);
                             item.SubItems.Add($"Matroska/{mkvSubFormat.Key} - {lang}");
                             item.SubItems.Add("-");
+                            listViewInputFiles.Items.Add(item);
                         }
                     }
                 }
@@ -805,6 +818,7 @@ namespace Nikse.SubtitleEdit.Forms
             }
 
             UpdateNumberOfFiles();
+            _listViewItemBeforeSearch = null;
         }
 
         private static string MakeMkvTrackInfoString(MatroskaTrackInfo track)
@@ -902,7 +916,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private TextEncoding GetCurrentEncoding(string fileName)
         {
-            bool useEncodingFromFile = comboBoxEncoding.SelectedIndex == comboBoxEncoding.Items.Count - 1;
+            var useEncodingFromFile = comboBoxEncoding.SelectedIndex == comboBoxEncoding.Items.Count - 1;
             if (useEncodingFromFile)
             {
                 if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
@@ -913,6 +927,7 @@ namespace Nikse.SubtitleEdit.Forms
                     }
                     return new TextEncoding(Encoding.UTF8, TextEncoding.Utf8WithBom);
                 }
+
                 var enc = LanguageAutoDetect.GetEncodingFromFile(fileName);
                 return new TextEncoding(enc, null);
             }
@@ -926,6 +941,21 @@ namespace Nikse.SubtitleEdit.Forms
             return format ?? new SubRip();
         }
 
+        private string ComboBoxSubtitleFormatText
+        {
+            get
+            {
+                var text = comboBoxSubtitleFormats.Text;
+                var idx = text.IndexOf('(');
+                if (idx > 0)
+                {
+                    text = text.Substring(0, idx).TrimEnd();
+                }
+
+                return text;
+            }
+        }
+
         private void buttonConvert_Click(object sender, EventArgs e)
         {
             if (buttonConvert.Text == LanguageSettings.Current.General.Cancel)
@@ -934,40 +964,40 @@ namespace Nikse.SubtitleEdit.Forms
                 return;
             }
 
-            UpdateChangeCasingSettings();
-            UpdateRtlSettings();
-            UpdateActionEnabledCache();
             if (listViewInputFiles.Items.Count == 0)
             {
                 MessageBox.Show(LanguageSettings.Current.BatchConvert.NothingToConvert);
                 return;
             }
-            if (!checkBoxOverwrite.Checked)
+
+            if (radioButtonSaveInOutputFolder.Checked && !Directory.Exists(textBoxOutputFolder.Text))
             {
                 if (textBoxOutputFolder.Text.Length < 2)
                 {
                     MessageBox.Show(LanguageSettings.Current.BatchConvert.PleaseChooseOutputFolder);
                     return;
                 }
-                if (!Directory.Exists(textBoxOutputFolder.Text))
+
+                try
                 {
-                    try
-                    {
-                        Directory.CreateDirectory(textBoxOutputFolder.Text);
-                    }
-                    catch (Exception exception)
-                    {
-                        MessageBox.Show(exception.Message);
-                        return;
-                    }
+                    Directory.CreateDirectory(textBoxOutputFolder.Text);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                    return;
                 }
             }
+
+            UpdateChangeCasingSettings();
+            UpdateRtlSettings();
+            UpdateActionEnabledCache();
             _converting = true;
             progressBar1.Style = ProgressBarStyle.Blocks;
             progressBar1.Maximum = listViewInputFiles.Items.Count;
             progressBar1.Value = 0;
             progressBar1.Visible = progressBar1.Maximum > 2;
-            string toFormat = comboBoxSubtitleFormats.Text;
+            var toFormat = ComboBoxSubtitleFormatText;
             SetControlState(false);
 
             _count = 0;
@@ -996,27 +1026,27 @@ namespace Nikse.SubtitleEdit.Forms
                 try
                 {
                     var binaryParagraphs = new List<IBinaryParagraph>();
-                    SubtitleFormat format = null;
+                    SubtitleFormat fromFormat = null;
                     var sub = new Subtitle();
                     var fi = new FileInfo(fileName);
                     if (fi.Length < ConvertMaxFileSize && !FileUtil.IsBluRaySup(fileName) && !FileUtil.IsVobSub(fileName))
                     {
-                        format = sub.LoadSubtitle(fileName, out _, null);
+                        fromFormat = sub.LoadSubtitle(fileName, out _, null);
 
-                        if (format == null)
+                        if (fromFormat == null)
                         {
                             foreach (var f in SubtitleFormat.GetBinaryFormats(true))
                             {
                                 if (f.IsMine(null, fileName))
                                 {
                                     f.LoadSubtitle(sub, null, fileName);
-                                    format = f;
+                                    fromFormat = f;
                                     break;
                                 }
                             }
                         }
 
-                        if (format == null)
+                        if (fromFormat == null)
                         {
                             var encoding = LanguageAutoDetect.GetEncodingFromFile(fileName);
                             var lines = FileUtil.ReadAllTextShared(fileName, encoding).SplitToLines();
@@ -1025,13 +1055,13 @@ namespace Nikse.SubtitleEdit.Forms
                                 if (f.IsMine(lines, fileName))
                                 {
                                     f.LoadSubtitle(sub, lines, fileName);
-                                    format = f;
+                                    fromFormat = f;
                                     break;
                                 }
                             }
                         }
 
-                        if (format == null)
+                        if (fromFormat == null)
                         {
                             var enc = LanguageAutoDetect.GetEncodingFromFile(fileName);
                             var s = File.ReadAllText(fileName, enc);
@@ -1049,11 +1079,11 @@ namespace Nikse.SubtitleEdit.Forms
                             if (genericParseSubtitle.Paragraphs.Count > 1)
                             {
                                 sub = genericParseSubtitle;
-                                format = new SubRip();
+                                fromFormat = new SubRip();
                             }
                         }
 
-                        if (format != null && format.GetType() == typeof(MicroDvd))
+                        if (fromFormat != null && fromFormat.GetType() == typeof(MicroDvd))
                         {
                             if (sub != null && sub.Paragraphs.Count > 0 && sub.Paragraphs[0].Duration.TotalMilliseconds < 1001)
                             {
@@ -1071,20 +1101,20 @@ namespace Nikse.SubtitleEdit.Forms
                     bool isVobSub = false;
                     bool isMatroska = false;
                     bool isTs = false;
-                    if (format == null && fileName.EndsWith(".sup", StringComparison.OrdinalIgnoreCase) && FileUtil.IsBluRaySup(fileName))
+                    if (fromFormat == null && fileName.EndsWith(".sup", StringComparison.OrdinalIgnoreCase) && FileUtil.IsBluRaySup(fileName))
                     {
                         var log = new StringBuilder();
                         bluRaySubtitles = BluRaySupParser.ParseBluRaySup(fileName, log);
                     }
-                    else if (format == null && fileName.EndsWith(".sub", StringComparison.OrdinalIgnoreCase) && FileUtil.IsVobSub(fileName))
+                    else if (fromFormat == null && fileName.EndsWith(".sub", StringComparison.OrdinalIgnoreCase) && FileUtil.IsVobSub(fileName))
                     {
                         isVobSub = true;
                     }
-                    else if (format == null && (fileName.EndsWith(".mkv", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".mks", StringComparison.OrdinalIgnoreCase)) && item.SubItems[2].Text.StartsWith("Matroska", StringComparison.Ordinal))
+                    else if (fromFormat == null && (fileName.EndsWith(".mkv", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".mks", StringComparison.OrdinalIgnoreCase)) && item.SubItems[2].Text.StartsWith("Matroska", StringComparison.Ordinal))
                     {
                         isMatroska = true;
                     }
-                    else if (format == null &&
+                    else if (fromFormat == null &&
                              (fileName.EndsWith(".ts", StringComparison.OrdinalIgnoreCase) ||
                               fileName.EndsWith(".m2ts", StringComparison.OrdinalIgnoreCase) ||
                               fileName.EndsWith(".mts", StringComparison.OrdinalIgnoreCase) ||
@@ -1094,7 +1124,7 @@ namespace Nikse.SubtitleEdit.Forms
                     {
                         isTs = true;
                     }
-                    if (format == null && bluRaySubtitles.Count == 0 && !isVobSub && !isMatroska && !isTs)
+                    if (fromFormat == null && bluRaySubtitles.Count == 0 && !isVobSub && !isMatroska && !isTs)
                     {
                         IncrementAndShowProgress();
                     }
@@ -1203,6 +1233,20 @@ namespace Nikse.SubtitleEdit.Forms
                                                 {
                                                     fileName = fileName.Substring(0, fileName.LastIndexOf('.')) + ".#" + trackId + "." + GetMkvLanguage(track.Language) + "mkv";
                                                 }
+
+                                                if (track.CodecId.Equals("S_TEXT/UTF8", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    fromFormat = new SubRip();
+                                                }
+                                                else if (track.CodecId.Equals("S_TEXT/SSA", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    fromFormat = new SubStationAlpha();
+                                                }
+                                                else if (track.CodecId.Equals("S_TEXT/ASS", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    fromFormat = new AdvancedSubStationAlpha();
+                                                }
+
                                                 mkvFileNames.Add(fileName);
                                                 break;
                                             }
@@ -1343,13 +1387,13 @@ namespace Nikse.SubtitleEdit.Forms
                                             Configuration.Settings.Tools.BatchConvertLanguage,
                                             fileName,
                                             toFormat,
-                                            format,
+                                            fromFormat,
                                             binaryParagraphs);
                                         ApplyFixesStep2(parameter, Configuration.Settings.Tools.BatchConvertFixRtlMode);
 
                                         var preExt = TsToBluRaySup.GetFileNameEnding(programMapTableParser, id);
                                         int dummy = 0;
-                                        CommandLineConverter.BatchConvertSave(toFormat, TimeSpan.Zero, targetEncoding, outputFolder, 0, ref dummy, ref dummy, SubtitleFormat.AllSubtitleFormats.ToList(), fileName, parameter.Subtitle, new SubRip(), null, overwrite, 0, targetFrameRate, null, new List<CommandLineConverter.BatchAction>(), null, true, null, null, null, preExt);
+                                        CommandLineConverter.BatchConvertSave(toFormat, TimeSpan.Zero, targetEncoding, outputFolder, string.Empty, 0, ref dummy, ref dummy, SubtitleFormat.AllSubtitleFormats.ToList(), fileName, parameter.Subtitle, new SubRip(), null, overwrite, 0, targetFrameRate, null, new List<CommandLineConverter.BatchAction>(), null, true, null, null, null, preExt);
                                         tsConvertedCount++;
                                     }
                                 }
@@ -1382,11 +1426,11 @@ namespace Nikse.SubtitleEdit.Forms
                                         Configuration.Settings.Tools.BatchConvertLanguage,
                                         fileName,
                                         toFormat,
-                                        format,
+                                        fromFormat,
                                         binaryParagraphs);
                                     ApplyFixesStep2(parameter, Configuration.Settings.Tools.BatchConvertFixRtlMode);
 
-                                    CommandLineConverter.BatchConvertSave(toFormat, TimeSpan.Zero, targetEncoding, outputFolder, 0, ref dummy, ref dummy, SubtitleFormat.AllSubtitleFormats.ToList(), fileName, parameter.Subtitle, new SubRip(), null, overwrite, 0, targetFrameRate, null, new List<CommandLineConverter.BatchAction>(), null, true, null, null, null, preExt);
+                                    CommandLineConverter.BatchConvertSave(toFormat, TimeSpan.Zero, targetEncoding, outputFolder, string.Empty, 0, ref dummy, ref dummy, SubtitleFormat.AllSubtitleFormats.ToList(), fileName, parameter.Subtitle, new SubRip(), null, overwrite, 0, targetFrameRate, null, new List<CommandLineConverter.BatchAction>(), null, true, null, null, null, preExt);
                                     tsConvertedCount++;
                                 }
                             }
@@ -1397,14 +1441,14 @@ namespace Nikse.SubtitleEdit.Forms
                             }
                         }
 
-                        if (comboBoxSubtitleFormats.Text == AdvancedSubStationAlpha.NameOfFormat && _assStyle != null)
+                        if (ComboBoxSubtitleFormatText == AdvancedSubStationAlpha.NameOfFormat && _assStyle != null)
                         {
                             if (!string.IsNullOrWhiteSpace(_assStyle) && !checkBoxUseStyleFromSource.Checked)
                             {
                                 sub.Header = _assStyle;
                             }
                         }
-                        else if (comboBoxSubtitleFormats.Text == SubStationAlpha.NameOfFormat && _ssaStyle != null)
+                        else if (ComboBoxSubtitleFormatText == SubStationAlpha.NameOfFormat && _ssaStyle != null)
                         {
                             if (!string.IsNullOrWhiteSpace(_ssaStyle) && !checkBoxUseStyleFromSource.Checked)
                             {
@@ -1412,7 +1456,7 @@ namespace Nikse.SubtitleEdit.Forms
                             }
                         }
 
-                        bool skip = CheckSkipFilter(fileName, format, sub);
+                        bool skip = CheckSkipFilter(fileName, fromFormat, sub);
                         if (skip)
                         {
                             item.SubItems[3].Text = LanguageSettings.Current.BatchConvert.FilterSkipped;
@@ -1441,7 +1485,7 @@ namespace Nikse.SubtitleEdit.Forms
                                 Configuration.Settings.Tools.BatchConvertLanguage,
                                 fileName,
                                 toFormat,
-                                format,
+                                fromFormat,
                                 binaryParagraphs);
 
                             if (!worker1.IsBusy)
@@ -1508,6 +1552,11 @@ namespace Nikse.SubtitleEdit.Forms
             if (IsActionEnabled(CommandLineConverter.BatchAction.DeleteLines))
             {
                 DeleteLines(sub);
+            }
+
+            if (IsActionEnabled(CommandLineConverter.BatchAction.AssaChangeRes))
+            {
+                AssaChangeResolution(sub);
             }
 
             if (IsActionEnabled(CommandLineConverter.BatchAction.RemoveStyle) && !string.IsNullOrEmpty(textBoxRemoveStyle.Text))
@@ -1588,7 +1637,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             if (IsActionEnabled(CommandLineConverter.BatchAction.MergeShortLines))
             {
-                var mergedShortLinesSub = MergeShortLinesUtils.MergeShortLinesInSubtitle(sub, Configuration.Settings.Tools.MergeShortLinesMaxGap, Configuration.Settings.General.SubtitleLineMaximumLength, Configuration.Settings.Tools.MergeShortLinesOnlyContinuous);
+                var mergedShortLinesSub = MergeShortLinesUtils.MergeShortLinesInSubtitle(sub, (int)numericUpDownMaxMillisecondsBetweenLines.Value, (int)numericUpDownMaxCharacters.Value, checkBoxOnlyContinuationLines.Checked);
                 if (mergedShortLinesSub.Paragraphs.Count != sub.Paragraphs.Count)
                 {
                     sub.Paragraphs.Clear();
@@ -1643,6 +1692,103 @@ namespace Nikse.SubtitleEdit.Forms
             }
 
             return sub;
+        }
+
+        private void AssaChangeResolution(Subtitle sub)
+        {
+            if (sub.OriginalFormat.Name != AdvancedSubStationAlpha.NameOfFormat)
+            {
+                return;
+            }
+
+            if (!checkBoxMargins.Checked && !checkBoxFontSize.Checked && !checkBoxPosition.Checked && !checkBoxDrawing.Checked)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(sub.Header))
+            {
+                sub.Header = AdvancedSubStationAlpha.DefaultHeader;
+            }
+
+            // default resolution for ASSA
+            var sourceWidth = 384;
+            var sourceHeight = 288;
+
+            var oldPlayResX = AdvancedSubStationAlpha.GetTagValueFromHeader("PlayResX", "[Script Info]", sub.Header);
+            if (int.TryParse(oldPlayResX, out var w))
+            {
+                sourceWidth = w;
+            }
+
+            var oldPlayResY = AdvancedSubStationAlpha.GetTagValueFromHeader("PlayResY", "[Script Info]", sub.Header);
+            if (int.TryParse(oldPlayResY, out var h))
+            {
+                sourceHeight = h;
+            }
+
+            var targetWidth = numericUpDownTargetWidth.Value;
+            var targetHeight = numericUpDownTargetHeight.Value;
+
+            if (sourceWidth == 0 || sourceHeight == 0 || targetWidth == 0 || targetHeight == 0)
+            {
+                return;
+            }
+
+            if (sourceWidth == targetWidth && sourceHeight == targetHeight)
+            {
+                return;
+            }
+
+            var fixMargins = checkBoxMargins.Checked;
+            var fixFonts = checkBoxFontSize.Checked;
+            var fixPos = checkBoxPosition.Checked;
+            var fixDraw = checkBoxDrawing.Checked;
+            var styles = AdvancedSubStationAlpha.GetSsaStylesFromHeader(sub.Header);
+            foreach (var style in styles)
+            {
+                if (fixMargins)
+                {
+                    style.MarginLeft = AssaResampler.Resample(sourceWidth, targetWidth, style.MarginLeft);
+                    style.MarginRight = AssaResampler.Resample(sourceWidth, targetWidth, style.MarginRight);
+                    style.MarginVertical = AssaResampler.Resample(sourceHeight, targetHeight, style.MarginVertical);
+                }
+
+                if (fixFonts)
+                {
+                    style.FontSize = AssaResampler.Resample(sourceHeight, targetHeight, style.FontSize);
+                }
+
+                if (fixFonts || fixDraw)
+                {
+                    style.OutlineWidth = (decimal)AssaResampler.Resample(sourceHeight, targetHeight, (float)style.OutlineWidth);
+                    style.ShadowWidth = (decimal)AssaResampler.Resample(sourceHeight, targetHeight, (float)style.ShadowWidth);
+                    style.Spacing = (decimal)AssaResampler.Resample(sourceWidth, targetWidth, (float)style.Spacing);
+                }
+            }
+
+            sub.Header = AdvancedSubStationAlpha.GetHeaderAndStylesFromAdvancedSubStationAlpha(sub.Header, styles);
+
+            sub.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResX", "PlayResX: " + targetWidth.ToString(CultureInfo.InvariantCulture), "[Script Info]", sub.Header);
+            sub.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResY", "PlayResY: " + targetHeight.ToString(CultureInfo.InvariantCulture), "[Script Info]", sub.Header);
+
+            foreach (var p in sub.Paragraphs)
+            {
+                if (fixFonts)
+                {
+                    p.Text = AssaResampler.ResampleOverrideTagsFont(sourceWidth, targetWidth, sourceHeight, targetHeight, p.Text);
+                }
+
+                if (fixPos)
+                {
+                    p.Text = AssaResampler.ResampleOverrideTagsPosition(sourceWidth, targetWidth, sourceHeight, targetHeight, p.Text);
+                }
+
+                if (fixDraw)
+                {
+                    p.Text = AssaResampler.ResampleOverrideTagsDrawing(sourceWidth, targetWidth, sourceHeight, targetHeight, p.Text, null);
+                }
+            }
         }
 
         private void DeleteLines(Subtitle sub)
@@ -2104,7 +2250,7 @@ namespace Nikse.SubtitleEdit.Forms
                     {
                         dir = Path.GetDirectoryName(p.FileName);
                     }
-                    var success = CommandLineConverter.BatchConvertSave(targetFormat, TimeSpan.Zero, GetCurrentEncoding(p.FileName), dir, _count, ref _converted, ref _errors, _allFormats, p.FileName, p.Subtitle, p.SourceFormat, binaryParagraphs, overwrite, -1, null, null, null, null, false, progressCallback);
+                    var success = CommandLineConverter.BatchConvertSave(targetFormat, TimeSpan.Zero, GetCurrentEncoding(p.FileName), dir, string.Empty, _count, ref _converted, ref _errors, _allFormats, p.FileName, p.Subtitle, p.SourceFormat, binaryParagraphs, overwrite, -1, null, null, null, null, false, progressCallback);
                     if (success)
                     {
                         p.Item.SubItems[3].Text = LanguageSettings.Current.BatchConvert.Converted;
@@ -2127,7 +2273,7 @@ namespace Nikse.SubtitleEdit.Forms
         private void ComboBoxSubtitleFormatsSelectedIndexChanged(object sender, EventArgs e)
         {
             checkBoxUseStyleFromSource.Visible = false;
-            if (comboBoxSubtitleFormats.Text == AdvancedSubStationAlpha.NameOfFormat || comboBoxSubtitleFormats.Text == SubStationAlpha.NameOfFormat)
+            if (ComboBoxSubtitleFormatText == AdvancedSubStationAlpha.NameOfFormat || ComboBoxSubtitleFormatText == SubStationAlpha.NameOfFormat)
             {
                 buttonStyles.Text = LanguageSettings.Current.BatchConvert.Style;
                 buttonStyles.Visible = true;
@@ -2136,7 +2282,7 @@ namespace Nikse.SubtitleEdit.Forms
                 checkBoxUseStyleFromSource.Visible = true;
                 checkBoxUseStyleFromSource.Left = buttonStyles.Left + buttonStyles.Width - checkBoxUseStyleFromSource.Width;
             }
-            else if (comboBoxSubtitleFormats.Text == Ebu.NameOfFormat)
+            else if (ComboBoxSubtitleFormatText == Ebu.NameOfFormat)
             {
                 buttonStyles.Text = LanguageSettings.Current.BatchConvert.Settings;
                 buttonStyles.Visible = true;
@@ -2148,19 +2294,19 @@ namespace Nikse.SubtitleEdit.Forms
                 comboBoxEncoding.Enabled = true;
                 buttonBrowseEncoding.Visible = true;
             }
-            else if (comboBoxSubtitleFormats.Text == BluRaySubtitle ||
-                     comboBoxSubtitleFormats.Text == VobSubSubtitle ||
-                     comboBoxSubtitleFormats.Text == DostImageSubtitle ||
-                     comboBoxSubtitleFormats.Text == BdnXmlSubtitle ||
-                     comboBoxSubtitleFormats.Text == FcpImageSubtitle ||
-                     comboBoxSubtitleFormats.Text == LanguageSettings.Current.ExportCustomText.Title)
+            else if (ComboBoxSubtitleFormatText == BluRaySubtitle ||
+                     ComboBoxSubtitleFormatText == VobSubSubtitle ||
+                     ComboBoxSubtitleFormatText == DostImageSubtitle ||
+                     ComboBoxSubtitleFormatText == BdnXmlSubtitle ||
+                     ComboBoxSubtitleFormatText == FcpImageSubtitle ||
+                     ComboBoxSubtitleFormatText == LanguageSettings.Current.ExportCustomText.Title)
             {
                 buttonStyles.Text = LanguageSettings.Current.BatchConvert.Settings;
                 buttonStyles.Visible = true;
                 comboBoxEncoding.Enabled = false;
                 buttonBrowseEncoding.Visible = false;
             }
-            else if (comboBoxSubtitleFormats.Text == LanguageSettings.Current.BatchConvert.PlainText)
+            else if (ComboBoxSubtitleFormatText == LanguageSettings.Current.BatchConvert.PlainText)
             {
                 buttonStyles.Text = LanguageSettings.Current.BatchConvert.Settings;
                 buttonStyles.Visible = true;
@@ -2177,35 +2323,35 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void ButtonStylesClick(object sender, EventArgs e)
         {
-            if (comboBoxSubtitleFormats.Text == AdvancedSubStationAlpha.NameOfFormat || comboBoxSubtitleFormats.Text == SubStationAlpha.NameOfFormat)
+            if (ComboBoxSubtitleFormatText == AdvancedSubStationAlpha.NameOfFormat || ComboBoxSubtitleFormatText == SubStationAlpha.NameOfFormat)
             {
                 ShowAssSsaStyles();
             }
-            else if (comboBoxSubtitleFormats.Text == Ebu.NameOfFormat)
+            else if (ComboBoxSubtitleFormatText == Ebu.NameOfFormat)
             {
                 ShowEbuSettings();
             }
-            else if (comboBoxSubtitleFormats.Text == BluRaySubtitle)
+            else if (ComboBoxSubtitleFormatText == BluRaySubtitle)
             {
                 ImageExportSettings(ExportPngXml.ExportFormats.BluraySup);
             }
-            else if (comboBoxSubtitleFormats.Text == VobSubSubtitle)
+            else if (ComboBoxSubtitleFormatText == VobSubSubtitle)
             {
                 ImageExportSettings(ExportPngXml.ExportFormats.VobSub);
             }
-            else if (comboBoxSubtitleFormats.Text == DostImageSubtitle)
+            else if (ComboBoxSubtitleFormatText == DostImageSubtitle)
             {
                 ImageExportSettings(ExportPngXml.ExportFormats.Dost);
             }
-            else if (comboBoxSubtitleFormats.Text == BdnXmlSubtitle)
+            else if (ComboBoxSubtitleFormatText == BdnXmlSubtitle)
             {
                 ImageExportSettings(ExportPngXml.ExportFormats.BdnXml);
             }
-            else if (comboBoxSubtitleFormats.Text == FcpImageSubtitle)
+            else if (ComboBoxSubtitleFormatText == FcpImageSubtitle)
             {
                 ImageExportSettings(ExportPngXml.ExportFormats.Fcp);
             }
-            else if (comboBoxSubtitleFormats.Text == LanguageSettings.Current.BatchConvert.PlainText)
+            else if (ComboBoxSubtitleFormatText == LanguageSettings.Current.BatchConvert.PlainText)
             {
                 using (var form = new ExportText())
                 {
@@ -2217,7 +2363,7 @@ namespace Nikse.SubtitleEdit.Forms
                     form.ShowDialog(this);
                 }
             }
-            else if (comboBoxSubtitleFormats.Text == LanguageSettings.Current.ExportCustomText.Title)
+            else if (ComboBoxSubtitleFormatText == LanguageSettings.Current.ExportCustomText.Title)
             {
                 ShowExportCustomTextSettings();
             }
@@ -2266,7 +2412,7 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 var assa = new AdvancedSubStationAlpha();
                 var sub = new Subtitle();
-                if (comboBoxSubtitleFormats.Text == assa.Name)
+                if (ComboBoxSubtitleFormatText == assa.Name)
                 {
                     if (!string.IsNullOrEmpty(_assStyle))
                     {
@@ -2285,7 +2431,7 @@ namespace Nikse.SubtitleEdit.Forms
                         sub.Header = _ssaStyle;
                     }
                     var ssa = new SubStationAlpha();
-                    if (comboBoxSubtitleFormats.Text == ssa.Name)
+                    if (ComboBoxSubtitleFormatText == ssa.Name)
                     {
                         form = new SubStationAlphaStylesBatchConvert(sub, ssa);
                         if (form.ShowDialog(this) == DialogResult.OK)
@@ -2319,6 +2465,7 @@ namespace Nikse.SubtitleEdit.Forms
             listViewInputFiles.Items.Clear();
             UpdateNumberOfFiles();
             UpdateTransportStreamSettings();
+            _listViewItemBeforeSearch = null;
         }
 
         private void RemoveSelectedFiles()
@@ -2354,6 +2501,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             UpdateNumberOfFiles();
             UpdateTransportStreamSettings();
+            _listViewItemBeforeSearch = null;
         }
 
         private void RemoveToolStripMenuItemClick(object sender, EventArgs e)
@@ -2444,6 +2592,8 @@ namespace Nikse.SubtitleEdit.Forms
             Configuration.Settings.Tools.BatchConvertApplyDurationLimits = IsActionEnabled(CommandLineConverter.BatchAction.ApplyDurationLimits);
             Configuration.Settings.Tools.MergeShortLinesMaxGap = (int)numericUpDownMaxMillisecondsBetweenLines.Value;
             Configuration.Settings.Tools.MergeShortLinesOnlyContinuous = checkBoxOnlyContinuationLines.Checked;
+            Configuration.Settings.Tools.BatchConvertDeleteLines = IsActionEnabled(CommandLineConverter.BatchAction.DeleteLines);
+            Configuration.Settings.Tools.BatchConvertAssaChangeRes = IsActionEnabled(CommandLineConverter.BatchAction.AssaChangeRes);
 
             UpdateRtlSettings();
         }
@@ -2702,6 +2852,7 @@ namespace Nikse.SubtitleEdit.Forms
             textBoxFilter.Visible = comboBoxFilter.SelectedIndex == 3 || comboBoxFilter.SelectedIndex == 4 || comboBoxFilter.SelectedIndex == 5;
         }
 
+        private List<ListViewItem> _listViewItemBeforeSearch;
         private void textBoxFilter_TextChanged(object sender, EventArgs e)
         {
             if (listViewInputFiles.Items.Count == 0)
@@ -2711,15 +2862,20 @@ namespace Nikse.SubtitleEdit.Forms
 
             if (comboBoxFilter.SelectedIndex == 5)
             {
-                var listViewItems = new List<ListViewItem>();
-                foreach (ListViewItem item in listViewInputFiles.Items)
+                if (_listViewItemBeforeSearch == null)
                 {
-                    listViewItems.Add(item);
+                    var listViewItems = new List<ListViewItem>();
+                    foreach (ListViewItem item in listViewInputFiles.Items)
+                    {
+                        listViewItems.Add(item);
+                    }
+
+                    _listViewItemBeforeSearch = listViewItems;
                 }
 
                 listViewInputFiles.BeginUpdate();
                 listViewInputFiles.Items.Clear();
-                listViewInputFiles.Items.AddRange(listViewItems.FindAll(item => item.SubItems[2].Text.Contains(textBoxFilter.Text, StringComparison.OrdinalIgnoreCase)).ToArray());
+                listViewInputFiles.Items.AddRange(_listViewItemBeforeSearch.FindAll(item => item.SubItems[2].Text.Contains(textBoxFilter.Text, StringComparison.OrdinalIgnoreCase)).ToArray());
                 listViewInputFiles.EndUpdate();
                 UpdateNumberOfFiles();
             }
@@ -2747,6 +2903,18 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void linkLabelOpenOutputFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (!Directory.Exists(textBoxOutputFolder.Text))
+            {
+                try
+                {
+                    Directory.CreateDirectory(textBoxOutputFolder.Text);
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
             if (Directory.Exists(textBoxOutputFolder.Text))
             {
                 UiUtil.OpenFolder(textBoxOutputFolder.Text);
@@ -2778,6 +2946,7 @@ namespace Nikse.SubtitleEdit.Forms
             groupBoxRemoveStyle.Visible = false;
             groupBoxAdjustDuration.Visible = false;
             groupBoxDeleteLines.Visible = false;
+            groupBoxAssaChangeRes.Visible = false;
 
             if (listViewConvertOptions.SelectedIndices.Count != 1)
             {
@@ -2927,13 +3096,10 @@ namespace Nikse.SubtitleEdit.Forms
                         for (var i = 0; i < comboBoxEncoding.Items.Count; i++)
                         {
                             var item = comboBoxEncoding.Items[i];
-                            if (item is TextEncoding te)
+                            if (item is TextEncoding te && te.Encoding.WebName == encoding.WebName)
                             {
-                                if (te.Encoding.WebName == encoding.WebName)
-                                {
-                                    comboBoxEncoding.SelectedIndex = i;
-                                    break;
-                                }
+                                comboBoxEncoding.SelectedIndex = i;
+                                break;
                             }
                         }
                     }
@@ -3007,6 +3173,26 @@ namespace Nikse.SubtitleEdit.Forms
         private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             buttonInputBrowse_Click(sender, e);
+        }
+
+        private void buttonGetResolutionFromVideo_Click(object sender, EventArgs e)
+        {
+            using (var openFileDialog1 = new OpenFileDialog())
+            {
+                openFileDialog1.Title = LanguageSettings.Current.General.OpenVideoFileTitle;
+                openFileDialog1.FileName = string.Empty;
+                openFileDialog1.Filter = UiUtil.GetVideoFileFilter(false);
+                openFileDialog1.FileName = string.Empty;
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    var info = UiUtil.GetVideoInfo(openFileDialog1.FileName);
+                    if (info != null && info.Success)
+                    {
+                        numericUpDownTargetWidth.Value = info.Width;
+                        numericUpDownTargetHeight.Value = info.Height;
+                    }
+                }
+            }
         }
     }
 }

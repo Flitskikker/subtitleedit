@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.Core.Common.TextLengthCalculator;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             }
 
             // </font> </i>
-            if (threeLengthTag && len > 3 && text[len - 4] == '<' && text[len - 3] == '/')
+            if (threeLengthTag && text[len - 4] == '<' && text[len - 3] == '/')
             {
                 return true;
             }
@@ -121,6 +122,54 @@ namespace Nikse.SubtitleEdit.Core.Common
             var lines = new List<string>();
             int start = 0;
             int max = s.Length;
+            int i = 0;
+            while (i < max)
+            {
+                var ch = s[i];
+                if (ch == '\r')
+                {
+                    if (i < s.Length - 2 && s[i + 1] == '\r' && s[i + 2] == '\n') // \r\r\n
+                    {
+                        lines.Add(start < i ? s.Substring(start, i - start) : string.Empty);
+                        i += 3;
+                        start = i;
+                        continue;
+                    }
+
+                    if (i < s.Length - 1 && s[i + 1] == '\n') // \r\n
+                    {
+                        lines.Add(start < i ? s.Substring(start, i - start) : string.Empty);
+                        i += 2;
+                        start = i;
+                        continue;
+                    }
+
+                    lines.Add(start < i ? s.Substring(start, i - start) : string.Empty);
+                    i++;
+                    start = i;
+                    continue;
+                }
+
+                if (ch == '\n' || ch == '\u2028')
+                {
+                    lines.Add(start < i ? s.Substring(start, i - start) : string.Empty);
+                    i++;
+                    start = i;
+                    continue;
+                }
+
+                i++;
+            }
+
+            lines.Add(start < i ? s.Substring(start, i - start) : string.Empty);
+            return lines;
+        }
+
+        public static List<string> SplitToLines(this string s, int maxCount)
+        {
+            var lines = new List<string>();
+            int start = 0;
+            int max = Math.Min(maxCount, s.Length);
             int i = 0;
             while (i < max)
             {
@@ -490,75 +539,14 @@ namespace Nikse.SubtitleEdit.Core.Common
         /// Count characters excl. white spaces, ssa-tags, html-tags, control-characters, normal spaces and
         /// Arabic diacritics depending on parameter.
         /// </summary>
-        public static int CountCharacters(this string value, bool removeNormalSpace, bool ignoreArabicDiacritics)
+        public static int CountCharacters(this string value, string strategy, bool forCps)
         {
-            int length = 0;
-            const char zeroWidthSpace = '\u200B';
-            const char zeroWidthNoBreakSpace = '\uFEFF';
-            char normalSpace = removeNormalSpace ? ' ' : zeroWidthSpace;
-            bool ssaTagOn = false;
-            bool htmlTagOn = false;
-            var max = value.Length;
-            for (int i = 0; i < max; i++)
-            {
-                char ch = value[i];
-                if (ssaTagOn)
-                {
-                    if (ch == '}')
-                    {
-                        ssaTagOn = false;
-                    }
-                }
-                else if (htmlTagOn)
-                {
-                    if (ch == '>')
-                    {
-                        htmlTagOn = false;
-                    }
-                }
-                else if (ch == '{' && i < value.Length - 1 && value[i + 1] == '\\')
-                {
-                    ssaTagOn = true;
-                }
-                else if (ch == '<' && i < value.Length - 1 && (value[i + 1] == '/' || char.IsLetter(value[i + 1])) &&
-                         value.IndexOf('>', i) > 0 && IsKnownHtmlTag(value, i))
-                {
-                    htmlTagOn = true;
-                }
-                else if (!char.IsControl(ch) &&
-                         ch != zeroWidthSpace &&
-                         ch != zeroWidthNoBreakSpace &&
-                         ch != normalSpace &&
-                         ch != '\u200E' &&
-                         ch != '\u200F' &&
-                         ch != '\u202A' &&
-                         ch != '\u202B' &&
-                         ch != '\u202C' &&
-                         ch != '\u202D' &&
-                         ch != '\u202E' &&
-                         !(ignoreArabicDiacritics && ch >= '\u064B' && ch <= '\u0653'))
-                {
-                    length++;
-                }
-            }
-
-            return length;
+            return (int)Math.Round(CalcFactory.MakeCalculator(strategy).CountCharacters(value, forCps), MidpointRounding.AwayFromZero);
         }
 
-        private static bool IsKnownHtmlTag(string input, int idx)
+        public static decimal CountCharacters(this string value, bool forCps)
         {
-            var s = input.Remove(0, idx + 1).ToLowerInvariant();
-            return s.StartsWith('/') ||
-                   s.StartsWith("i>", StringComparison.Ordinal) ||
-                   s.StartsWith("b>", StringComparison.Ordinal) ||
-                   s.StartsWith("u>", StringComparison.Ordinal) ||
-                   s.StartsWith("font ", StringComparison.Ordinal) ||
-                   s.StartsWith("ruby", StringComparison.Ordinal) ||
-                   s.StartsWith("span>", StringComparison.Ordinal) ||
-                   s.StartsWith("p>", StringComparison.Ordinal) ||
-                   s.StartsWith("br>", StringComparison.Ordinal) ||
-                   s.StartsWith("div>", StringComparison.Ordinal) ||
-                   s.StartsWith("div ", StringComparison.Ordinal);
+            return CalcFactory.MakeCalculator(Configuration.Settings.General.CpsLineLengthStrategy).CountCharacters(value, forCps);
         }
 
         public static bool HasSentenceEnding(this string value)

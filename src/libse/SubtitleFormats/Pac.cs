@@ -1008,18 +1008,18 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
         public override string Extension => ".pac";
 
-        public virtual bool IsFPC { get; set; } = false;
+        public virtual bool IsFpc { get; set; }
 
         public const string NameOfFormat = "PAC (Screen Electronics)";
 
         public override string Name => NameOfFormat;
 
-        private static readonly byte[] MarkerStartOfUnicode = new byte[] { 0x1f, 0xef, 0xbb, 0xbf };
+        private static readonly byte[] MarkerStartOfUnicode = { 0x1f, 0xef, 0xbb, 0xbf };
         private const byte MarkerEndOfUnicode = 0x2e;
         private const byte MarkerReplaceEndOfUnicode = 0xff;
 
-        private bool doWritePACHeaderOpt => IsFPC; // Unknown paragraph header. Seems optionnal both for PAC and FPC: inserted here for expected broader FPC compatibility, including prior versions of SubtitleEdit
-        private static readonly byte[] PACHeaderOpt = new byte[] { 0x80, 0x80, 0x80 };
+        private bool DoWritePacHeaderOpt => IsFpc; // Unknown paragraph header. Seems optional both for PAC and FPC: inserted here for expected broader FPC compatibility, including prior versions of SubtitleEdit
+        private static readonly byte[] PacHeaderOpt = { 0x80, 0x80, 0x80 };
 
         public bool Save(string fileName, Subtitle subtitle)
         {
@@ -1035,7 +1035,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
             // header
             stream.WriteByte(1);
-            for (int i = 1; i < 23; i++)
+            for (var i = 1; i < 23; i++)
             {
                 stream.WriteByte(0);
             }
@@ -1043,23 +1043,32 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             stream.WriteByte(0x60);
 
             // paragraphs
-            int number = 0;
-            foreach (var p in subtitle.Paragraphs)
+            var number = 1;
+            var firstParagraph = subtitle.Paragraphs.FirstOrDefault();
+            if (firstParagraph != null &&
+                Math.Abs(firstParagraph.StartTime.TotalMilliseconds) < 0.001 &&
+                firstParagraph.EndTime.TotalMilliseconds < 350)
             {
-                WriteParagraph(stream, p, number, number + 1 == subtitle.Paragraphs.Count);
+                number = 0;
+            }
+
+            for (var index = 0; index < subtitle.Paragraphs.Count; index++)
+            {
+                var p = subtitle.Paragraphs[index];
+                WriteParagraph(stream, p, number, index + 1 == subtitle.Paragraphs.Count);
                 number++;
             }
 
             // footer
             stream.WriteByte(0xff);
-            for (int i = 0; i < 11; i++)
+            for (var i = 0; i < 11; i++)
             {
                 stream.WriteByte(0);
             }
 
             stream.WriteByte(0x11);
             stream.WriteByte(0);
-            byte[] footerBuffer = Encoding.ASCII.GetBytes("dummy end of file");
+            var footerBuffer = Encoding.ASCII.GetBytes("dummy end of file");
             stream.Write(footerBuffer, 0, footerBuffer.Length);
             return true;
         }
@@ -1069,7 +1078,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             WriteTimeCode(fs, p.StartTime);
             WriteTimeCode(fs, p.EndTime);
 
-            if (CodePage == -1 && !IsFPC)
+            if (CodePage == -1 && !IsFpc)
             {
                 GetCodePage(null, 0, 0);
             }
@@ -1106,7 +1115,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             var encoding = GetEncoding(CodePage);
             byte[] textBuffer;
 
-            if (IsFPC)
+            if (IsFpc)
             {
                 textBuffer = GetUnicodeBytes(text, alignment);
             }
@@ -1160,12 +1169,15 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             }
 
             // write text length
-            var length = (UInt16)(textBuffer.Length + 4 + (doWritePACHeaderOpt ? PACHeaderOpt.Length : 0));
+            var length = (ushort)(textBuffer.Length + 4 + (DoWritePacHeaderOpt ? PacHeaderOpt.Length : 0));
             fs.Write(BitConverter.GetBytes(length), 0, 2);
 
             fs.WriteByte(verticalAlignment); // fs.WriteByte(0x0a); // sometimes 0x0b? - this seems to be vertical alignment - 0 to 11
-            if (doWritePACHeaderOpt)
-                fs.Write(PACHeaderOpt, 0, PACHeaderOpt.Length);
+            if (DoWritePacHeaderOpt)
+            {
+                fs.Write(PacHeaderOpt, 0, PacHeaderOpt.Length);
+            }
+
             fs.WriteByte(0xfe);
             fs.WriteByte(alignment); //2=centered, 1=left aligned, 0=right aligned, 09=Fount2 (large font),
             //55=safe area override (too long line), 0A=Fount2 + centered, 06=centered + safe area override
@@ -1176,8 +1188,8 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             if (!isLast)
             {
                 fs.WriteByte(0);
-                fs.WriteByte((byte)((number + 1) % 256));
-                fs.WriteByte((byte)((number + 1) / 256));
+                fs.WriteByte((byte)(number % 256));
+                fs.WriteByte((byte)(number / 256));
                 fs.WriteByte(0x60);
             }
         }
@@ -1192,18 +1204,16 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
             text = text.Replace("<I>", "<i>");
             text = text.Replace("</I>", "</i>");
-
-            if (Utilities.CountTagInText(text, "<i>") == 1 && text.StartsWith("<i>", StringComparison.Ordinal) && text.EndsWith("</i>", StringComparison.Ordinal))
-            {
-                return "<" + HtmlUtil.RemoveHtmlTags(text).Replace(Environment.NewLine, Environment.NewLine + "<");
-            }
-
             var sb = new StringBuilder();
             var parts = text.SplitToLines();
+            var nextPre = string.Empty;
             foreach (string line in parts)
             {
-                string s = line.Trim();
-                if (Utilities.CountTagInText(s, "<i>") == 1 && s.StartsWith("<i>", StringComparison.Ordinal) && s.EndsWith("</i>", StringComparison.Ordinal))
+                string s = nextPre + line.Trim();
+                nextPre = string.Empty;
+                var noOfStartTags = Utilities.CountTagInText(s, "<i>");
+                var noOfEndTags = Utilities.CountTagInText(s, "</i>");
+                if (noOfStartTags == 1 && noOfEndTags == 1 && s.StartsWith("<i>", StringComparison.Ordinal) && s.EndsWith("</i>", StringComparison.Ordinal))
                 {
                     sb.AppendLine("<" + HtmlUtil.RemoveHtmlTags(s));
                 }
@@ -1214,6 +1224,11 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     s = s.Replace("___@___", ">");
                     s = s.Replace(" <", "<");
                     s = s.Replace("> ", ">");
+                    if (noOfStartTags > noOfEndTags)
+                    {
+                        s = s.TrimEnd() + ">";
+                        nextPre = "<i>";
+                    }
                     sb.AppendLine(s);
                 }
             }
@@ -1223,9 +1238,14 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
         internal static void WriteTimeCode(Stream fs, TimeCode timeCode)
         {
             // write four bytes time code
-            string highPart = $"{timeCode.Hours:00}{timeCode.Minutes:00}";
-            byte frames = (byte)MillisecondsToFramesMaxFrameRate(timeCode.Milliseconds);
-            string lowPart = $"{timeCode.Seconds:00}{frames:00}";
+            var hours = Math.Max(0, timeCode.Hours);
+            var minutes = Math.Max(0, timeCode.Minutes);
+            var seconds = Math.Max(0, timeCode.Seconds);
+            var milliseconds = Math.Max(0, timeCode.Milliseconds);
+
+            string highPart = $"{hours:00}{minutes:00}";
+            byte frames = (byte)MillisecondsToFramesMaxFrameRate(milliseconds);
+            string lowPart = $"{seconds:00}{frames:00}";
 
             int high = int.Parse(highPart);
             if (high < 256)
@@ -1316,17 +1336,17 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
         {
             subtitle.Paragraphs.Clear();
             subtitle.Header = null;
-
             bool usesSecondaryCodePage = UsesSecondaryCodePage(buffer);
             int index = 0;
             while (index < buffer.Length)
             {
-                Paragraph p = GetPacParagraph(ref index, buffer, usesSecondaryCodePage);
+                var p = GetPacParagraph(ref index, buffer, usesSecondaryCodePage, subtitle.Paragraphs.Count);
                 if (p != null)
                 {
                     subtitle.Paragraphs.Add(p);
                 }
             }
+
             subtitle.Renumber();
         }
 
@@ -1356,20 +1376,29 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
         private static bool CompareBytes(byte[] buff, int pos, byte[] seq)
         {
             if (buff.Length < pos + seq.Length)
+            {
                 return false;
+            }
+
             for (int i = 0; i < seq.Length; i++)
+            {
                 if (buff[pos + i] != seq[i])
+                {
                     return false;
+                }
+            }
+
             return true;
         }
 
-        private Paragraph GetPacParagraph(ref int index, byte[] buffer, bool usesSecondaryCodePage)
+        private Paragraph GetPacParagraph(ref int index, byte[] buffer, bool usesSecondaryCodePage, int paragraphIndex)
         {
-            bool isStory = index < 15;
+            var isStory = index < 15;
             if (isStory)
             {
                 index = 15;
             }
+
             while (true)
             {
                 index++;
@@ -1378,14 +1407,19 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     return null;
                 }
 
-                if (buffer[index] == 0xFE && (buffer[index - 15] == 0x60 || buffer[index - 15] == 0x61))
+                if (buffer[index] == 0xFE)
                 {
-                    break;
-                }
+                    var minus15 = buffer[index - 15];
+                    if (minus15 == 0x60 || minus15 == 0x61 || minus15 == 0x62)
+                    {
+                        break;
+                    }
 
-                if (buffer[index] == 0xFE && (buffer[index - 12] == 0x60 || buffer[index - 12] == 0x61))
-                {
-                    break;
+                    var minus12 = buffer[index - 12];
+                    if (minus12 == 0x60 || minus12 == 0x61 || minus12 == 0x62)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -1394,9 +1428,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             byte alignment = buffer[feIndex + 1];
             bool isSecondaryCodePage = (alignment & 0x08) != 0;
             alignment &= 0x07;
-
             var p = new Paragraph();
-
             int timeStartIndex = feIndex - 15;
             if (buffer[timeStartIndex] == 0x60)
             {
@@ -1409,27 +1441,27 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 p.StartTime = GetTimeCode(timeStartIndex + 1, buffer);
                 p.EndTime = GetTimeCode(timeStartIndex + 5, buffer);
             }
-            else if (buffer[timeStartIndex] == 0x61)
+            else if (buffer[timeStartIndex] == 0x61 || buffer[timeStartIndex] == 0x62)
             {
                 p.StartTime = GetTimeCode(timeStartIndex + 1, buffer);
                 p.EndTime = GetTimeCode(timeStartIndex + 5, buffer);
                 int length = buffer[timeStartIndex + 9] + buffer[timeStartIndex + 10] * 256;
-                if (length < 1 || length > 200 ||
-                    p.StartTime.TotalSeconds - _lastStartTotalSeconds < 1 || p.StartTime.TotalSeconds - _lastStartTotalSeconds > 1500 ||
-                    p.EndTime.TotalSeconds - _lastEndTotalSeconds < 1 || p.EndTime.TotalSeconds - _lastEndTotalSeconds > 1500)
+                if (length < 1 || length > 200 || (paragraphIndex != 1 &&
+                    (p.StartTime.TotalSeconds - _lastStartTotalSeconds < 1 || p.StartTime.TotalSeconds - _lastStartTotalSeconds > 1500 ||
+                    p.EndTime.TotalSeconds - _lastEndTotalSeconds < 1 || p.EndTime.TotalSeconds - _lastEndTotalSeconds > 1500)))
                 {
                     return null;
                 }
             }
-            else if (buffer[timeStartIndex + 3] == 0x61)
+            else if (buffer[timeStartIndex + 3] == 0x61 || buffer[timeStartIndex + 3] == 0x62)
             {
                 timeStartIndex += 3;
                 p.StartTime = GetTimeCode(timeStartIndex + 1, buffer);
                 p.EndTime = GetTimeCode(timeStartIndex + 5, buffer);
                 int length = buffer[timeStartIndex + 9] + buffer[timeStartIndex + 10] * 256;
-                if (length < 1 || length > 200 ||
-                    p.StartTime.TotalSeconds - _lastStartTotalSeconds < 1 || p.StartTime.TotalSeconds - _lastStartTotalSeconds > 1500 ||
-                    p.EndTime.TotalSeconds - _lastEndTotalSeconds < 1 || p.EndTime.TotalSeconds - _lastEndTotalSeconds > 1500)
+                if (length < 1 || length > 200 || (paragraphIndex != 1 &&
+                   (p.StartTime.TotalSeconds - _lastStartTotalSeconds < 1 || p.StartTime.TotalSeconds - _lastStartTotalSeconds > 1500 ||
+                   p.EndTime.TotalSeconds - _lastEndTotalSeconds < 1 || p.EndTime.TotalSeconds - _lastEndTotalSeconds > 1500)))
                 {
                     return null;
                 }
@@ -1438,6 +1470,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             {
                 return null;
             }
+
             int textLength = buffer[timeStartIndex + 9] + buffer[timeStartIndex + 10] * 256;
             if (textLength > 500)
             {
@@ -1447,11 +1480,11 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             _lastStartTotalSeconds = p.StartTime.TotalSeconds;
             _lastEndTotalSeconds = p.EndTime.TotalSeconds;
 
-            int maxIndex = timeStartIndex + 10 + textLength;
+            var maxIndex = timeStartIndex + 10 + textLength;
 
-            byte verticalAlignment = buffer[timeStartIndex + 11];
+            var verticalAlignment = buffer[timeStartIndex + 11];
 
-            if (CodePage == -1 && !IsFPC)
+            if (CodePage == -1 && !IsFpc)
             {
                 GetCodePage(buffer, index, endDelimiter);
             }
@@ -1459,13 +1492,13 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             var overrides = (CodePage == CodePageLatinTurkish) ? LatinTurkishOverrides : null;
             var sb = new StringBuilder();
             index = feIndex + 3;
-            bool w16 = buffer[index] == 0x1f && Encoding.ASCII.GetString(buffer, index + 1, 3) == "W16";
+            var w16 = buffer[index] == 0x1f && Encoding.ASCII.GetString(buffer, index + 1, 3) == "W16";
             if (w16)
             {
                 index += 5;
             }
 
-            bool isUnicode = false;
+            var isUnicode = false;
             while (index < buffer.Length && index <= maxIndex) // buffer[index] != endDelimiter)
             {
                 if (buffer.Length > index + 3 && buffer[index] == 0x1f && Encoding.ASCII.GetString(buffer, index + 1, 3) == "W16")
@@ -1475,7 +1508,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 }
                 else if (CompareBytes(buffer, index, MarkerStartOfUnicode))
                 {
-                    isUnicode = true; IsFPC = true;
+                    isUnicode = true; IsFpc = true;
                     index += MarkerStartOfUnicode.Length;
                 }
                 else if (buffer.Length > index + 2 && buffer[index] == 0x1f && buffer[index + 1] == 'C' && char.IsDigit((char)buffer[index + 2]))
@@ -1540,19 +1573,31 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 else if (isUnicode)
                 {
                     if (buffer[index] == MarkerEndOfUnicode)
+                    {
                         isUnicode = false;
+                    }
                     else if (buffer[index] == MarkerReplaceEndOfUnicode)
+                    {
                         sb.Append((char)MarkerEndOfUnicode);
+                    }
                     else
                     {
                         int len = 1;
                         byte b = buffer[index];
                         if (b >= 0xE0)
+                        {
                             len = 3;
+                        }
                         else if (b >= 0xC0)
+                        {
                             len = 2;
+                        }
+
                         if (buffer.Length > index + len - 1)
+                        {
                             sb.Append(Encoding.UTF8.GetString(buffer, index, len));
+                        }
+
                         index += len - 1;
                     }
                 }
@@ -1592,6 +1637,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
                 index++;
             }
+
             if (index + 20 >= buffer.Length)
             {
                 return null;
@@ -1650,7 +1696,15 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     p.Text = "{\\an3}" + p.Text;
                 }
             }
-            p.Text = p.Text.RemoveControlCharactersButWhiteSpace();
+
+            // Remove position tags
+            var indexOfPositioningCodes = p.Text.IndexOf("\u002e\u001f");
+            if (indexOfPositioningCodes > 0)
+            {
+                p.Text = p.Text.Substring(0, indexOfPositioningCodes + 1);
+            }
+
+            p.Text = p.Text.RemoveControlCharactersButWhiteSpace().TrimEnd();
             return p;
         }
 
@@ -1678,11 +1732,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
             while (index >= 0 && index < text.Length - 1)
             {
-                bool insertSpace = false;
-                if (index > 1 && text[index - 1] != ' ')
-                {
-                    insertSpace = true;
-                }
+                var insertSpace = index >= 1 && text[index - 1] != ' ';
 
                 text = text.Insert(index + 1, "i>");
                 if (insertSpace)
@@ -1700,14 +1750,22 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 }
                 else
                 {
-                    if (indexOfNewLine < 0 || (indexOfEnd > 0 && indexOfEnd < indexOfNewLine))
+                    if (indexOfNewLine < 0 || (indexOfEnd > 0 && (indexOfEnd < indexOfNewLine || indexOfEnd == -1)))
                     {
                         insertSpace = indexOfEnd > 1 && text[indexOfEnd - 1] != ' ';
                         text = text.Insert(indexOfEnd, "</i");
                         if (insertSpace)
                         {
-                            text = text.Insert(indexOfEnd + 4, " ");
-                            indexOfEnd++;
+                            if (text.Length > indexOfEnd + 4 && ".!?\"".Contains(text[indexOfEnd + 4]))
+                            {
+                                insertSpace = false;
+                            }
+
+                            if (insertSpace)
+                            {
+                                text = text.Insert(indexOfEnd + 4, " ");
+                                indexOfEnd++;
+                            }
                         }
                         index = text.IndexOf('<', indexOfEnd + 3);
                     }
@@ -1718,9 +1776,18 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     }
                 }
             }
-            text = text.Replace("</i>", "</i> ");
-            text = text.Replace("  ", " ");
-            return pre + text.Replace(" " + Environment.NewLine, Environment.NewLine).Trim();
+
+            text = text
+                .Replace("  ", " ")
+                .Replace("  ", " ")
+                .Replace(" " + Environment.NewLine, Environment.NewLine)
+                .Replace(" " + Environment.NewLine, Environment.NewLine)
+                .Replace(Environment.NewLine + " ", Environment.NewLine)
+                .Replace(Environment.NewLine + " ", Environment.NewLine)
+                .Replace("</i>" + Environment.NewLine + "<i>", Environment.NewLine)
+                .Trim();
+
+            return pre + HtmlUtil.FixInvalidItalicTags(text);
         }
 
         public static Encoding GetEncoding(int codePage)
@@ -1784,6 +1851,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             {
                 // ignored
             }
+
             return CodePageLatin;
         }
 
@@ -1835,6 +1903,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                         index++;
                     }
                 }
+
                 previewBuffer = new byte[textIndex];
                 for (int i = 0; i < textIndex; i++)
                 {
@@ -2306,6 +2375,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
             {
                 throw new InvalidOperationException($"Unknown byte ({b}) in subtitle file @ binary offset {index}.");
             }
+
             return string.Empty;
         }
 

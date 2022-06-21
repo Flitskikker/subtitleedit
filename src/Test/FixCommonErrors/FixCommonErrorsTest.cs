@@ -482,7 +482,7 @@ namespace Test.FixCommonErrors
                 Configuration.Settings.Tools.OcrFixUseHardcodedRules = true;
                 const string input = "l-l'll see you.";
                 var ofe = new Nikse.SubtitleEdit.Logic.Ocr.OcrFixEngine("eng", "us_en", form);
-                var res = ofe.FixOcrErrorsViaHardcodedRules(input, "Previous line.", new HashSet<string>());
+                var res = ofe.FixOcrErrorsViaHardcodedRules(input, "Previous line.", null, new HashSet<string>());
                 Assert.AreEqual(res, "I-I'll see you.");
             }
         }
@@ -495,7 +495,7 @@ namespace Test.FixCommonErrors
                 Configuration.Settings.Tools.OcrFixUseHardcodedRules = true;
                 const string input = "Foobar\r\n<i>-";
                 var ofe = new Nikse.SubtitleEdit.Logic.Ocr.OcrFixEngine("eng", "us_en", form);
-                var res = ofe.FixOcrErrorsViaHardcodedRules(input, "Previous line.", new HashSet<string>());
+                var res = ofe.FixOcrErrorsViaHardcodedRules(input, "Previous line.", null, new HashSet<string>());
                 Assert.AreEqual(res, "Foobar\r\n<i>-");
             }
         }
@@ -508,7 +508,7 @@ namespace Test.FixCommonErrors
                 Configuration.Settings.Tools.OcrFixUseHardcodedRules = true;
                 const string input = "i.e., your killer.";
                 var ofe = new Nikse.SubtitleEdit.Logic.Ocr.OcrFixEngine("eng", "not there", form);
-                var res = ofe.FixOcrErrors(input, 1, "Ends with comma,", false, Nikse.SubtitleEdit.Logic.Ocr.OcrFixEngine.AutoGuessLevel.Cautious);
+                var res = ofe.FixOcrErrors(input, 1, "Ends with comma,", null, false, Nikse.SubtitleEdit.Logic.Ocr.OcrFixEngine.AutoGuessLevel.Cautious);
                 Assert.AreEqual(res, "i.e., your killer.");
             }
         }
@@ -521,7 +521,7 @@ namespace Test.FixCommonErrors
                 Configuration.Settings.Tools.OcrFixUseHardcodedRules = true;
                 const string input = "www.addic7ed.com";
                 var ofe = new Nikse.SubtitleEdit.Logic.Ocr.OcrFixEngine("eng", "us_en", form);
-                var res = ofe.FixOcrErrorsViaHardcodedRules(input, "Previous line.", new HashSet<string>());
+                var res = ofe.FixOcrErrorsViaHardcodedRules(input, "Previous line.", null, new HashSet<string>());
                 Assert.AreEqual(res, input);
             }
         }
@@ -724,6 +724,28 @@ namespace Test.FixCommonErrors
                 InitializeFixCommonErrorsLine(target, "Give me...$20!");
                 new FixMissingSpaces().Fix(_subtitle, new EmptyFixCallback { Language = "en" });
                 Assert.AreEqual("Give me... $20!", _subtitle.Paragraphs[0].Text);
+            }
+        }
+
+        [TestMethod]
+        public void FixMissingSpacesAfterFontStart()
+        {
+            using (var target = GetFixCommonErrorsLib())
+            {
+                InitializeFixCommonErrorsLine(target, "You!<font color=\"#ffff00\">Well, bye!</font>");
+                new FixMissingSpaces().Fix(_subtitle, new EmptyFixCallback { Language = "en" });
+                Assert.AreEqual("You! <font color=\"#ffff00\">Well, bye!</font>", _subtitle.Paragraphs[0].Text);
+            }
+        }
+
+        [TestMethod]
+        public void FixMissingSpacesAfterFontStart2()
+        {
+            using (var target = GetFixCommonErrorsLib())
+            {
+                InitializeFixCommonErrorsLine(target, "<font color=\"#00ffff\">Yeah, so...</font> That goes in there," + Environment.NewLine + "does it ?<font color=\"#00ffff\">Yeah.</font>");
+                new FixMissingSpaces().Fix(_subtitle, new EmptyFixCallback { Language = "en" });
+                Assert.AreEqual("<font color=\"#00ffff\">Yeah, so...</font> That goes in there," + Environment.NewLine + "does it ? <font color=\"#00ffff\">Yeah.</font>", _subtitle.Paragraphs[0].Text);
             }
         }
 
@@ -1737,6 +1759,15 @@ namespace Test.FixCommonErrors
             Assert.AreEqual(result, "WOMAN 2: <i>24 hours a day at BabyC.</i>");
         }
 
+
+        [TestMethod]
+        public void FixEllipsesStartItalic6()
+        {
+            var result = Helper.FixEllipsesStartHelper("{\\i1}...But that is true.{\\i0}");
+            Assert.AreEqual(result, "{\\i1}But that is true.{\\i0}");
+        }
+
+
         [TestMethod]
         public void FixEllipsesStartFont1()
         {
@@ -2107,6 +2138,18 @@ namespace Test.FixCommonErrors
                 Configuration.Settings.Tools.MusicSymbol = "♫";
                 new FixMusicNotation().Fix(_subtitle, new EmptyFixCallback());
                 Assert.AreEqual("♫ Hello world ♫", _subtitle.Paragraphs[0].Text);
+            }
+        }
+
+        [TestMethod]
+        public void FixMusicNotationQuestionMarks2()
+        {
+            using (var target = GetFixCommonErrorsLib())
+            {
+                InitializeFixCommonErrorsLine(target, "<i>? And he said: ?</i>");
+                Configuration.Settings.Tools.MusicSymbol = "♫";
+                new FixMusicNotation().Fix(_subtitle, new EmptyFixCallback());
+                Assert.AreEqual("<i>♫ And he said: ♫</i>", _subtitle.Paragraphs[0].Text);
             }
         }
 
