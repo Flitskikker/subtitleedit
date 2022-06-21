@@ -1450,6 +1450,12 @@
     <EmbeddedResource Include="Forms\BatchConvertTsSettings.resx">
       <DependentUpon>BatchConvertTsSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BeautifyTimeCodes.resx">
+      <DependentUpon>BeautifyTimeCodes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BeautifyTimeCodesProfile.resx">
+      <DependentUpon>BeautifyTimeCodesProfile.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\BinaryEdit\BinEdit.resx">
       <DependentUpon>BinEdit.cs</DependentUpon>
     </EmbeddedResource>

@@ -2667,7 +2667,8 @@ $HorzAlign          =   Center
             public enum Preset : int
             {
                 Default = 0,
-                Netflix = 1
+                Netflix = 1,
+                SDI = 2,
             }
 
             public enum ConnectedSubtitlesBehaviorEnum : int
@@ -2711,19 +2712,58 @@ $HorzAlign          =   Center
                     ConnectedSubtitlesRightGreenZone = 12;
                     ConnectedSubtitlesTreatConnected = 180;
 
-                    ChainingGeneralUseZones = true;
+                    ChainingGeneralUseZones = false;
                     ChainingGeneralMaxGap = 500;
                     ChainingGeneralLeftGreenZone = 12;
                     ChainingGeneralLeftRedZone = 12;
                     ChainingGeneralShotChangeBehavior = ChainingGeneralShotChangeBehaviorEnum.ExtendUntilShotChange;
-                    ChainingInCueOnShotUseZones = true;
+                    ChainingInCueOnShotUseZones = false;
                     ChainingInCueOnShotMaxGap = 500;
                     ChainingInCueOnShotLeftGreenZone = 12;
                     ChainingInCueOnShotLeftRedZone = 12;
-                    ChainingOutCueOnShotUseZones = true;
+                    ChainingOutCueOnShotUseZones = false;
                     ChainingOutCueOnShotMaxGap = 500;
                     ChainingOutCueOnShotRightRedZone = 12;
                     ChainingOutCueOnShotRightGreenZone = 12;
+                }
+                else if (preset == Preset.SDI)
+                {
+                    Gap = 4;
+
+                    InCuesGap = 2;
+                    InCuesLeftGreenZone = 12;
+                    InCuesLeftRedZone = 7;
+                    InCuesRightRedZone = 7;
+                    InCuesRightGreenZone = 12;
+
+                    OutCuesGap = 2;
+                    OutCuesLeftGreenZone = 12;
+                    OutCuesLeftRedZone = 7;
+                    OutCuesRightRedZone = 7;
+                    OutCuesRightGreenZone = 12;
+
+                    ConnectedSubtitlesLeftGap = 2;
+                    ConnectedSubtitlesRightGap = 2;
+                    ConnectedSubtitlesBehavior = ConnectedSubtitlesBehaviorEnum.SnapClosestCueToShotChange;
+                    ConnectedSubtitlesLeftGreenZone = 12;
+                    ConnectedSubtitlesLeftRedZone = 7;
+                    ConnectedSubtitlesRightRedZone = 7;
+                    ConnectedSubtitlesRightGreenZone = 12;
+                    ConnectedSubtitlesTreatConnected = 240;
+
+                    ChainingGeneralUseZones = false;
+                    ChainingGeneralMaxGap = 1000;
+                    ChainingGeneralLeftGreenZone = 25;
+                    ChainingGeneralLeftRedZone = 24;
+                    ChainingGeneralShotChangeBehavior = ChainingGeneralShotChangeBehaviorEnum.ExtendCrossingShotChange;
+                    ChainingInCueOnShotUseZones = false;
+                    ChainingInCueOnShotMaxGap = 1000;
+                    ChainingInCueOnShotLeftGreenZone = 25;
+                    ChainingInCueOnShotLeftRedZone = 24;
+                    ChainingOutCueOnShotUseZones = false;
+                    ChainingOutCueOnShotMaxGap = 1000;
+                    ChainingOutCueOnShotRightRedZone = 24;
+                    ChainingOutCueOnShotRightGreenZone = 25;
                 }
                 else
                 {

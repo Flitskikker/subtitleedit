@@ -2419,6 +2419,7 @@
             public string WaveformListViewFocusMouseEnter { get; set; }
             public string WaveformSingleClickSelect { get; set; }
             public string WaveformSnapToShotChanges { get; set; }
+            public string WaveformEditShotChangesProfile { get; set; }
             public string WaveformAutoGen { get; set; }
             public string WaveformBorderHitMs1 { get; set; }
             public string WaveformBorderHitMs2 { get; set; }

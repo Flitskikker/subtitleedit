@@ -200,6 +200,11 @@ namespace Nikse.SubtitleEdit.Forms
             ResetSettings(BeautifyTimeCodesSettings.BeautifyTimeCodesProfile.Preset.Netflix);
         }
 
+        private void toolStripMenuItemLoadSDI_Click(object sender, EventArgs e)
+        {
+            ResetSettings(BeautifyTimeCodesSettings.BeautifyTimeCodesProfile.Preset.SDI);
+        }
+
         private void ResetSettings(BeautifyTimeCodesSettings.BeautifyTimeCodesProfile.Preset preset)
         {
             if (MessageBox.Show(this, "This will reset your current profile and replace all values with those of the selected preset. This cannot be undone.\n\nDo you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)

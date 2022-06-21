@@ -647,6 +647,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             checkBoxListViewMouseEnterFocus.Text = language.WaveformListViewFocusMouseEnter;
             checkBoxWaveformSingleClickSelect.Text = language.WaveformSingleClickSelect;
             checkBoxWaveformSnapToShotChanges.Text = language.WaveformSnapToShotChanges;
+            buttonEditShotChangesProfile.Text = language.WaveformEditShotChangesProfile;
             checkBoxWaveformAutoGen.Text = language.WaveformAutoGen;
             labelWaveformBorderHitMs1.Text = language.WaveformBorderHitMs1;
             labelWaveformBorderHitMs2.Text = language.WaveformBorderHitMs2;
@@ -1010,6 +1011,8 @@ namespace Nikse.SubtitleEdit.Forms.Options
             {
                 numericUpDownWaveformBorderHitMs.Value = Configuration.Settings.VideoControls.WaveformBorderHitMs;
             }
+
+            buttonEditShotChangesProfile.Left = checkBoxWaveformSnapToShotChanges.Left + checkBoxWaveformSnapToShotChanges.Width + 16;
 
             checkBoxUseFFmpeg.Checked = gs.UseFFmpegForWaveExtraction;
             textBoxFFmpegPath.Text = gs.FFmpegLocation;
@@ -4063,6 +4066,14 @@ namespace Nikse.SubtitleEdit.Forms.Options
             labelUpdateFileTypeAssociationsStatus.Text = LanguageSettings.Current.Settings.FileTypeAssociationsUpdated;
             FileTypeAssociations.Refresh();
             System.Threading.SynchronizationContext.Current.Post(TimeSpan.FromMilliseconds(3000), () => labelUpdateFileTypeAssociationsStatus.Text = string.Empty);
+        }
+
+        private void buttonEditShotChangesProfile_Click(object sender, EventArgs e)
+        {
+            using (var form = new BeautifyTimeCodesProfile(0))
+            {
+                form.ShowDialog(this);
+            }
         }
     }
 }
