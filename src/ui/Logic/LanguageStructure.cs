@@ -98,6 +98,7 @@
             public string Collapse { get; set; }
             public string ShortcutX { get; set; }
             public string ExampleX { get; set; }
+            public string Error { get; set; }
             public string Reset { get; set; }
         }
 
@@ -351,6 +352,36 @@
             public string MkvLanguageStyleTwoLetter { get; set; }
             public string MkvLanguageStyleThreeLetter { get; set; }
             public string MkvLanguageStyleEmpty { get; set; }
+        }
+
+        public class Beamer
+        {
+            public string Title { get; set; }
+        }
+
+        public class BeautifyTimeCodes
+        {
+            public string Title { get; set; }
+            public string GroupTimeCodes { get; set; }
+            public string AlignTimeCodes { get; set; }
+            public string ExtractExactTimeCodes { get; set; }
+            public string ExtractTimeCodes { get; set; }
+            public string CancelTimeCodes { get; set; }
+            public string GroupShotChanges { get; set; }
+            public string SnapToShotChanges { get; set; }
+            public string ImportShotChanges { get; set; }
+            public string EditProfile { get; set; }
+            public string NoTimeCodesLoaded { get; set; }
+            public string XTimeCodesLoaded { get; set; }
+            public string NoTimeCodesLoadedError { get; set; }
+            public string NoShotChangesLoaded { get; set; }
+            public string XShotChangesLoaded { get; set; }
+            public string NoShotChangesLoadedError { get; set; }
+        }
+
+        public class BeautifyTimeCodesProfile
+        {
+            public string Title { get; set; }
         }
 
         public class BinEdit
@@ -1291,6 +1322,8 @@
             public string CommonErrorsFixed { get; set; }
             public string BeforeRenumbering { get; set; }
             public string RenumberedStartingFromX { get; set; }
+            public string BeforeBeautifyTimeCodes { get; set; }
+            public string BeautifiedTimeCodes { get; set; }
             public string BeforeRemovalOfTextingForHearingImpaired { get; set; }
             public string TextingForHearingImpairedRemovedOneLine { get; set; }
             public string TextingForHearingImpairedRemovedXLines { get; set; }
@@ -1590,6 +1623,7 @@
                     public string SplitLongLines { get; set; }
                     public string MinimumDisplayTimeBetweenParagraphs { get; set; }
                     public string SortBy { get; set; }
+                    public string BeautifyTimeCodes { get; set; }
                     public string Number { get; set; }
                     public string StartTime { get; set; }
                     public string EndTime { get; set; }
@@ -2267,6 +2301,7 @@
             public string BurnIn { get; set; }
             public string SpellCheck { get; set; }
             public string NetflixQualityCheck { get; set; }
+            public string BeautifyTimeCodes { get; set; }
             public string SettingsName { get; set; }
             public string ToggleBookmarks { get; set; }
             public string ToggleBookmarksWithComment { get; set; }
@@ -2602,7 +2637,6 @@
             public string WaveformGoToPreviousShotChange { get; set; }
             public string WaveformGoToNextShotChange { get; set; }
             public string WaveformToggleShotChange { get; set; }
-            public string WaveformRemoveOrExportShotChanges { get; set; }
             public string WaveformGuessStart { get; set; }
             public string GoBack1Frame { get; set; }
             public string GoForward1Frame { get; set; }
